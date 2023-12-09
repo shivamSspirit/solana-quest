@@ -28,7 +28,7 @@ export default function Home() {
   const {setTheme} = useTheme()
   return (
     <main>
-      <h1 className="text-3xl">Mah nwoo</h1>
+      <h1 className="text-8xl font-title">SOLANA QUEST</h1>
       <Button variant="default"  >Connect Wallet</Button>
       <Button variant="secondary">Connect Wallet</Button>
       <Button variant="outline">Connect Wallet</Button>

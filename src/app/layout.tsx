@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Space_Grotesk, Rammetto_One } from 'next/font/google'
 import './globals.css'
 import JotaiProvider from '@components/providers/Jotai'
 import ThemeProvider from '@components/providers/Theme'
 import SolanaProvider from '@components/providers/Solana'
 
-const inter = Inter({ subsets: ['latin'] })
+const spaceGrotesk = Space_Grotesk({ 
+  subsets: ['latin'], display: "swap", variable: "--text-font", weight: ['400', '500', '600'] })
+const RammettoOne = Rammetto_One({ weight: '400',display: "swap", variable: "--title-font", subsets: ['latin']})
 
 export const metadata: Metadata = {
   title: 'Solana Quest',
@@ -18,8 +20,8 @@ export default function RootLayout({
     children: React.ReactNode
   }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable}  ${RammettoOne.variable}`}>
+      <body >
         <JotaiProvider>
           <ThemeProvider 
             attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange >
