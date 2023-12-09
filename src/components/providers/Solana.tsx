@@ -16,7 +16,7 @@ type Props = {
   children?: React.ReactNode
 };
 
-export const Wallet: FC<Props> = ({children}) => {
+const Solana: FC<Props> = ({children}) => {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
   const network = WalletAdapterNetwork.Devnet;
 
@@ -41,3 +41,5 @@ export const Wallet: FC<Props> = ({children}) => {
     </ConnectionProvider>
   );
 };
+
+export default Solana

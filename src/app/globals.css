@@ -2,26 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background: 244 38% 92%;
+    --foreground: 231 23% 12%;
+    --start-stop: 257 100% 59%;
+    --end-stop: 257 60% 16%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 257 100% 59%;
+    --primary-start-stop: 244 100% 87%;
+    --primary-end-stop: 244 38% 92%;
+    --primary-foreground: 231 23% 12%; 
+    --secondary: 245 58% 87%;
+    --secondary-start-stop: 244 94% 96%;
+    --secondary-end-stop: 245 58% 87%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 245 100% 91%;
+    --accent-foreground: 231 23% 12%; 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-start-stop: 359 55% 60%;
+    --destructive-end-stop: 0 72% 39%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --border-start-stop: 245 100% 70%;
+    --border-mid-stop: 247 99% 100%;
+    --border-end-stop: 257 84% 54%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 257 100% 60%;
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 258 93% 6%;
+    --foreground: 210 22% 96%;
+    --start-stop: 257 100% 59%;
+    --end-stop: 245 100% 85%;
+    --card: 222.2 84% 4.9%;
+    --card-start-stop: 259 30% 27%;
+    --card-end-stop: 258 93% 6%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 257 100% 59%;
+    --primary-start-stop: 258 30% 28%;
+    --primary-end-stop: 258 93% 6%;
+    --primary-foreground: 210 22% 96%; 
+    --secondary: 264 64% 20%;
+    --secondary-start-stop: 258 93% 6%;
+    --secondary-end-stop: 259 45% 17%;
+    --secondary-foreground: 210 22% 96%; 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 258 93% 13%;
+    --accent-foreground: 210 22% 96%; 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-start-stop: 359 55% 21%;
+    --destructive-end-stop: 359 72% 43%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --border-start-stop: 245 100% 90%;
+    --border-mid-stop: 245 100% 0%;
+    --border-end-stop: 245 100% 73%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 257 100% 60%;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
 }
+
