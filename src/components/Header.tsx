@@ -4,7 +4,7 @@ import { Wallet } from "lucide-react"
 
 const Header = () => {
   return (
-    <header className="flex gap-4 w-fit mx-auto sm:ml-auto sm:mr-10 mt-8">
+    <header className="flex gap-4 w-fit ml-auto mr-4 sm:mr-10 mt-8">
       <Button className="gap-2 px-8">
         <Wallet />
         Connect Wallet

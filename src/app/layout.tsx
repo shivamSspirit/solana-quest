@@ -22,15 +22,18 @@ export default function RootLayout({
     children: React.ReactNode
   }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable}  ${RammettoOne.variable}`}>
-      <body >
+    <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable}  ${RammettoOne.variable}
+      `}>
+      <body className="" >
         <JotaiProvider>
           <ThemeProvider 
             attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange >
             <SolanaProvider>
+              <div className="w-[100vw] relative overscroll-x-none overflow-x-hidden">
               <Header />
               {children}
-              <Footer />
+                <Footer />
+              </div>
             </SolanaProvider>
           </ThemeProvider>
         </JotaiProvider>

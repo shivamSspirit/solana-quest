@@ -54,14 +54,14 @@ export default function Home() {
       <Image priority src={backgroundDark} alt="dark background" 
         className="hidden scale-150 lg:scale-100 origin-top mx-auto absolute -z-50 top-0 lg:-top-32"  />
       <section>
-        <span className="pointer-events-none">
+        <span className="pointer-events-none overflow-x-hidden w-screen mx-auto">
           {theme === "dark" && (
             <Image priority src={backgroundDark} alt="dark background" 
-              className="scale-150 lg:scale-100 origin-top mx-auto absolute -z-50 top-0 lg:-top-32"  />
+              className="scale-150 overflow-x-hidden lg:scale-100 origin-top mx-auto absolute -z-50 top-0 lg:-top-32 "  />
           )}
           {theme === "light" && (
             <Image priority src={backgroundLight} alt="dark background" 
-              className="scale-150 lg:scale-100 origin-top mx-auto absolute -z-50 top-0 "  />
+              className="scale-150 overflow-x-hidden max-w-full lg:scale-100 origin-top mx-auto absolute -z-50 top-0 "  />
           )}
         </span>
         <div className="text-center my-16 lg:my-24 2xl:my-32">
