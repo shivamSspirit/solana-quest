@@ -6,7 +6,7 @@ import { cn } from "lib/utils"
 
 const buttonBorderVariants = cva(
   `from-[-12.59%] via-[50.97%] to-[86.21%] rounded-full p-[0.1rem]
-text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50`,
+text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 inline-block`,
   {
     variants: {
       variant: {
@@ -32,7 +32,7 @@ via-border-stop-mid/0 to-border-stop-end `,
 )
 
 const buttonVariants = cva(
-  `inline-flex items-center justify-center whitespace-nowrap rounded-full 
+  `flex items-center justify-center whitespace-nowrap rounded-full 
 from-[-4.59%] to-[100%] `,
   {
     variants: {
@@ -64,22 +64,23 @@ from-[-4.59%] to-[100%] `,
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
   VariantProps<typeof buttonVariants> {
-    asChild?: boolean
+    asChild?: boolean,
+    outerClass?: string
   }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, children, ...props }, ref) => {
+  ({ className, disabled, variant, size, asChild = false, children, outerClass, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
-      <Comp
-        className={cn(buttonBorderVariants({ variant}), "")}
-        ref={ref}
+      <span
+        className={cn(buttonBorderVariants({ variant }), disabled && "opacity-50 pointer-events-none" ,outerClass)}
         {...props}
       >
-        <span
+        <Comp
+          ref={ref}
           className={cn(buttonVariants({ variant, size, className }), "")} >{children}
-        </span>
-      </Comp>
+        </Comp>
+      </span>
     )
   }
 )

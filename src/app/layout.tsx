@@ -4,6 +4,8 @@ import './globals.css'
 import JotaiProvider from '@components/providers/Jotai'
 import ThemeProvider from '@components/providers/Theme'
 import SolanaProvider from '@components/providers/Solana'
+import Header from '@components/Header'
+import Footer from '@components/Footer'
 
 const spaceGrotesk = Space_Grotesk({ 
   subsets: ['latin'], display: "swap", variable: "--text-font", weight: ['400', '500', '600'] })
@@ -26,7 +28,9 @@ export default function RootLayout({
           <ThemeProvider 
             attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange >
             <SolanaProvider>
+              <Header />
               {children}
+              <Footer />
             </SolanaProvider>
           </ThemeProvider>
         </JotaiProvider>

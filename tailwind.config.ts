@@ -18,12 +18,15 @@ module.exports = {
       backgroundImage: {
         'button-gradient': "linear-gradient(98deg, var(--tw-gradient-stops))",
         'border-gradient': "linear-gradient(160deg, var(--tw-gradient-stops))",
+        'card-border-gradient': "linear-gradient(127deg, var(--tw-gradient-stops))",
+        'card-gradient': "linear-gradient(151deg, var(--tw-gradient-stops))",
       },
       colors: {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        title: "hsl(var(--title))",
         stop: {
           start: "hsl(var(--start-stop))",
           end: "hsl(var(--end-stop))",
@@ -75,6 +78,10 @@ module.exports = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+          stop: {
+            start: "hsl(var(--card-start-stop))",
+            end: "hsl(var(--card-end-stop))",
+          }
         },
       },
       borderRadius: {

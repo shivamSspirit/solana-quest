@@ -6,9 +6,12 @@
   :root {
     --background: 244 38% 92%;
     --foreground: 231 23% 12%;
+    --title: 231 67% 21%;
     --start-stop: 257 100% 59%;
     --end-stop: 257 60% 16%;
     --card: 0 0% 100%;
+    --card-start-stop: 0 0% 91%;
+    --card-end-stop: 256 100% 91%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
@@ -29,7 +32,7 @@
     --destructive-end-stop: 0 72% 39%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
-    --border-start-stop: 245 100% 70%;
+    --border-start-stop: 245 100% 19%;
     --border-mid-stop: 247 99% 100%;
     --border-end-stop: 257 84% 54%;
     --input: 214.3 31.8% 91.4%;
@@ -40,6 +43,7 @@
   .dark {
     --background: 258 93% 6%;
     --foreground: 210 22% 96%;
+    --title: 257 100% 92%;
     --start-stop: 257 100% 59%;
     --end-stop: 245 100% 85%;
     --card: 222.2 84% 4.9%;
