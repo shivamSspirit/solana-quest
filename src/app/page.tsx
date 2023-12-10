@@ -48,6 +48,11 @@ export default function Home() {
 
   return (
     <>
+
+      <Image priority src={backgroundLight} alt="dark background" 
+        className="hidden scale-150 lg:scale-100 origin-top mx-auto absolute -z-50 top-0 "  />
+      <Image priority src={backgroundDark} alt="dark background" 
+        className="hidden scale-150 lg:scale-100 origin-top mx-auto absolute -z-50 top-0 lg:-top-32"  />
       <section>
         <span className="pointer-events-none">
           {theme === "dark" && (
