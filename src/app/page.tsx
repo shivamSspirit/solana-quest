@@ -51,11 +51,11 @@ export default function Home() {
       <section>
         <span className="pointer-events-none">
           {theme === "dark" && (
-            <Image src={backgroundDark} alt="dark background" 
+            <Image priority src={backgroundDark} alt="dark background" 
               className="scale-150 lg:scale-100 origin-top mx-auto absolute -z-50 top-0 lg:-top-32"  />
           )}
           {theme === "light" && (
-            <Image src={backgroundLight} alt="dark background" 
+            <Image priority src={backgroundLight} alt="dark background" 
               className="scale-150 lg:scale-100 origin-top mx-auto absolute -z-50 top-0 "  />
           )}
         </span>
@@ -63,7 +63,7 @@ export default function Home() {
           <h1 className="font-title py-4 text-5xl sm:text-6xl md:text-7xl lg:text-8xl bg-gradient-to-b from-title to-title/60 bg-clip-text text-transparent">SOLANA QUEST</h1>
           <p className="lg:text-lg">Learn how to build on Solana; <br /> the superpowers and the gotchas.</p>
           <span className="relative md:-top-20 inline-block">
-            <Image src={hero} alt="Solana Quest Illustration" 
+            <Image priority src={hero} alt="Solana Quest Illustration" 
               className="w-full h-auto block"/>
             <span className="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-transparent
               via-transparent to-background " />
