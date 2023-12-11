@@ -12,7 +12,13 @@ function sleep(millisec = 0) {
         });
 };
 
+function trimKey(key: string) {
+   return key.slice(0, 5) + "...." + key.slice(-5, -1);
+}
+
+
 export {
   cn,
-  sleep
+  sleep,
+        trimKey
 }
