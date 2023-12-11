@@ -14,10 +14,10 @@ const Footer: React.FC = () => {
   return (
     <footer className="relative text-center mt-8 lg:mt-16">
       {theme === "dark" && (
-        <Image src={StarsDark} alt="Stars" className="absolute top-4 left-0" />
+        <Image src={StarsDark} layout="responsive" alt="Stars" className="absolute top-4 left-0" />
       )}
       {theme === "light" && (
-        <Image src={StarsLight} alt="Stars" className="absolute top-4 left-0" />
+        <Image src={StarsLight} layout="responsive" alt="Stars" className="absolute top-4 left-0" />
       )}
       <Divider className="w-full lg:w-3/4 h-0.5 " />
       <div className="w-fit mx-auto my-6 pb-8">

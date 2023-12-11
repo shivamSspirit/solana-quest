@@ -17,14 +17,7 @@ import backgroundLight from "lib/assets/background-light.png"
 import hero from "lib/assets/hero.png"
 import join from "@lib/assets/join-illustration.png"
 import challenges from '@lib/fakeChallenges';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@components/ui/card"
+
 import { Button } from '@components/ui/button';
 import ChallengeCard from '@components/ui/ChallengeCard';
 import Divider from '@components/ui/Divider';
@@ -45,23 +38,25 @@ export default function Home() {
 
   const {theme} = useTheme()
 
-
   return (
     <>
-
-      <Image priority src={backgroundLight} alt="dark background" 
-        className="hidden scale-150 lg:scale-100 origin-top mx-auto absolute -z-50 top-0 "  />
-      <Image priority src={backgroundDark} alt="dark background" 
-        className="hidden scale-150 lg:scale-100 origin-top mx-auto absolute -z-50 top-0 lg:-top-32"  />
       <section>
-        <span className="pointer-events-none overflow-x-hidden w-screen mx-auto">
+        <span className="pointer-events-none overscroll-none snap-none overflow-hidden ">
           {theme === "dark" && (
             <Image priority src={backgroundDark} alt="dark background" 
-              className="scale-150 overflow-x-hidden lg:scale-100 origin-top mx-auto absolute -z-50 top-0 lg:-top-32 "  />
+              className="scale-150 overflow-x-hidden max-w-full lg:scale-100 origin-top mx-auto absolute -z-50 top-0 pointer-events-none !h-auto"
+              objectFit="contain"
+              objectPosition="top center"
+              layout="responsive"
+              />
           )}
           {theme === "light" && (
-            <Image priority src={backgroundLight} alt="dark background" 
-              className="scale-150 overflow-x-hidden max-w-full lg:scale-100 origin-top mx-auto absolute -z-50 top-0 "  />
+            <Image priority src={backgroundLight} alt="light background" 
+              className="scale-150 overflow-x-hidden max-w-full lg:scale-100 origin-top mx-auto absolute -z-50 top-0 pointer-events-none  !h-auto"
+              objectFit="contain"
+              objectPosition="top center"
+              layout="responsive"
+              />
           )}
         </span>
         <div className="text-center my-16 lg:my-24 2xl:my-32">
@@ -69,7 +64,7 @@ export default function Home() {
           <p className="lg:text-lg">Learn how to build on Solana; <br /> the superpowers and the gotchas.</p>
           <span className="relative md:-top-20 inline-block">
             <Image priority src={hero} alt="Solana Quest Illustration" 
-              className="w-full h-auto block"/>
+              className="w-full h-auto block" layout="responsive"/>
             <span className="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-transparent
               via-transparent to-background " />
           </span>
@@ -125,7 +120,7 @@ export default function Home() {
             </Button>
           </div>
           <div>
-            <Image src={join} alt="Join Illustration" />
+            <Image src={join} layout="repsonsive" alt="Join Illustration" />
           </div>
         </section>
 

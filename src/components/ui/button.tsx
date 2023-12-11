@@ -6,7 +6,7 @@ import { cn } from "lib/utils"
 
 const buttonBorderVariants = cva(
   `from-[-12.59%] via-[50.97%] to-[86.21%] rounded-full p-[0.1rem]
-text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 inline-block`,
+text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 inline-block overscroll-none overflow-hidden`,
   {
     variants: {
       variant: {
