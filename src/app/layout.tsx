@@ -6,6 +6,7 @@ import ThemeProvider from '@components/providers/Theme'
 import SolanaProvider from '@components/providers/Solana'
 import Header from '@components/Header'
 import Footer from '@components/Footer'
+import { Toaster } from '@components/ui/toaster'
 
 const spaceGrotesk = Space_Grotesk({ 
   subsets: ['latin'], display: "swap", variable: "--text-font", weight: ['400', '500', '600'] })
@@ -30,10 +31,11 @@ export default function RootLayout({
             attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange >
             <SolanaProvider>
               <div className="w-[100vw] relative overflow-x-hidden h-[100vh]">
-              <Header />
-              {children}
+                <Header />
+                {children}
                 <Footer />
               </div>
+              <Toaster />
             </SolanaProvider>
           </ThemeProvider>
         </JotaiProvider>

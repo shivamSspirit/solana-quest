@@ -16,9 +16,20 @@ function trimKey(key: string) {
    return key.slice(0, 5) + "...." + key.slice(-5, -1);
 }
 
+async function copyToClipboard(text: string): Promise<void> {
+    try {
+        await navigator.clipboard.writeText(text);
+        console.log('Text successfully copied to clipboard.');
+    } catch (err) {
+        console.error('Failed to copy text to clipboard:', err);
+    }
+}
+
+
 
 export {
   cn,
   sleep,
-        trimKey
+        trimKey,
+        copyToClipboard
 }
