@@ -8,6 +8,7 @@ import { At, Copy, Rocket, Star, Badge, Crown } from "@lib/icons"
 import Divider from "@components/ui/Divider"
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card"
 import { useToast } from "@components/ui/use-toast"
+import UpdateSocials from "./UpdateSocials"
 
 const Portfolio: React.FC = () => {
     const {wallet} = useWallet()
@@ -38,9 +39,9 @@ const Portfolio: React.FC = () => {
                         <Copy className="w-6 h-6" />
                     </Button>
                 </span>
-                <Button className="gap-2" outerClass="mt-6">
-                    <At /> Update Socials
-                </Button>
+
+                <UpdateSocials />
+
             </div>
             <Divider className="my-8 lg:my-12" />
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-2" >
@@ -74,7 +75,7 @@ const Portfolio: React.FC = () => {
                             {challenges.length === 0 && (
                                 <>
                                     <p className="text-lg">Show off your skills. <br /> 
-                                                                    Learn everything you need to build on Solana!</p>
+                                        Learn everything you need to build on Solana!</p>
                                     <Button className="w-fit gap-2 text-lg" size="lg" outerClass="w-fit" >
                                         <Rocket /> Start a Challenge
                                     </Button>

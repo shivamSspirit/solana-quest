@@ -9,6 +9,7 @@ import Crown from "./Crown"
 import Star from "./Star"
 import Badge from "./Badge"
 import Copy from "./Copy"
+import Tick from "./Tick"
 
 export {
   Lock,
@@ -21,5 +22,6 @@ export {
   At, 
   Star,
   Badge,
-  Copy
+  Copy,
+  Tick
 }
