@@ -9,11 +9,19 @@ import Divider from "@components/ui/Divider"
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card"
 import { useToast } from "@components/ui/use-toast"
 import UpdateSocials from "./UpdateSocials"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@components/ui/table"
 
 const Portfolio: React.FC = () => {
     const {wallet} = useWallet()
 
-    const challenges = []
+    interface Challenge {
+        name: string,
+        live: string,
+        status: string,
+        contract: string,
+        updated: string
+    }
+    const challenges: Challenge[] = []
 
     const {toast} = useToast()
 
@@ -80,7 +88,31 @@ const Portfolio: React.FC = () => {
                                         <Rocket /> Start a Challenge
                                     </Button>
                                 </>
-                            )}     
+                            )}
+                            {challenges.length !== 0 && (
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Name</TableHead>
+                                            <TableHead>Contract</TableHead>
+                                            <TableHead>Live Demo</TableHead>
+                                            <TableHead>Updated</TableHead>
+                                            <TableHead>Status</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {challenges.map(c => (
+                                            <TableRow key={c.contract} >
+                                                <TableCell>{c.name}</TableCell>
+                                                <TableCell>{c.contract}</TableCell>
+                                                <TableCell>{c.live}</TableCell>
+                                                <TableCell>{c.updated}</TableCell>
+                                                <TableCell>{c.status}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            )}
                         </CardContent>
                     </CardHeader>
                 </Card>

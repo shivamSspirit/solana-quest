@@ -23,9 +23,9 @@
     --secondary-start-stop: 244 94% 96%;
     --secondary-end-stop: 245 58% 87%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
+    --muted: 244 38% 92%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 245 100% 91%;
+    --accent: 245 100% 85%;
     --accent-foreground: 231 23% 12%; 
     --destructive: 0 100% 47%;
     --destructive-start-stop: 359 55% 60%;
@@ -35,7 +35,7 @@
     --border-start-stop: 245 100% 19%;
     --border-mid-stop: 247 99% 100%;
     --border-end-stop: 257 84% 54%;
-    --input: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 81.4%;
     --ring: 257 100% 60%;
     --radius: 0.5rem;
   }
