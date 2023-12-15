@@ -59,7 +59,7 @@ export default async function PostPage({ params }: ChallengeProps) {
 
       <hr className="block my-6 lg:my-10 border-muted-foreground/30" />
       <Mdx code={post.body.code} />
-      <div className={`flex flex-col sm:flex-row sticky mt-8 lg:mt-16 bottom-8 w-fit ml-auto sm:mx-auto gap-4 lg:gap-8`}>
+      <div className={`flex flex-col sm:flex-row sticky mt-8 lg:mt-16 bottom-20 sm:bottom-8 w-fit ml-auto sm:mx-auto gap-4 lg:gap-8`}>
         <Button className="gap-2 w-full" variant="outline"  >
           <Github className="stroke-foreground" />
           View on Github
