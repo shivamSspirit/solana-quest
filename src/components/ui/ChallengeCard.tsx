@@ -20,7 +20,8 @@ interface ChallegeCardProps {
 }
 const ChallengeCard: React.FC<ChallegeCardProps> = ({unlocked, icon, title, serial, link, description}) => {
   return (
-    <Card className="">
+    <a href="/challenge/intro-to-cpi">
+    <Card className=""  >
       <CardHeader>
         <CardDescription className="text-card-foreground">Challenge #{serial}</CardDescription>
         <span dangerouslySetInnerHTML={{__html: icon}} />
@@ -30,8 +31,7 @@ const ChallengeCard: React.FC<ChallegeCardProps> = ({unlocked, icon, title, seri
         <p className="leading-6" >{description}  </p>
       </CardContent>
       <CardFooter className="w-full" >
-        <Button asChild disabled={!unlocked} className={"tracking-wide gap-2 "} outerClass="w-full" >
-          <Link href={link} aria-disabled={!unlocked}>
+        <Button disabled={!unlocked} className={"tracking-wide gap-2 w-full"} outerClass="w-full" >
             {unlocked ? (
               <>
                 <Rocket />
@@ -43,10 +43,10 @@ const ChallengeCard: React.FC<ChallegeCardProps> = ({unlocked, icon, title, seri
                   LOCKED
                 </>
               ) }
-          </Link>
         </Button>
       </CardFooter>
     </Card>
+    </a>
   )
 }
 

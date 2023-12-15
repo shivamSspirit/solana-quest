@@ -3,6 +3,8 @@ import { allChallenges } from "contentlayer/generated"
 
 import { Metadata } from "next"
 import { Mdx } from "components/mdx-components"
+import { Button } from "@components/ui/button"
+import { Github, Rocket } from "@lib/icons"
 
 interface ChallengeProps {
   params: {
@@ -50,12 +52,22 @@ export default async function PostPage({ params }: ChallengeProps) {
   }
 
   return (
-    <article className="py-6 prose dark:prose-invert">
-      <p>{post.serial}</p>
+    <article className="py-6 prose px-4 dark:prose-invert mx-auto">
+      <p>Challenge #{post.serial}</p>
       <h1 className="mb-2">{post.title}</h1>
-      
-      <hr className="my-4" />
+
+      <hr className="block my-6 lg:my-10 border-muted-foreground/30" />
       <Mdx code={post.body.code} />
+      <div className={`flex sticky mt-16 bottom-8 w-fit mx-auto gap-4 lg:gap-8`}>
+        <Button className="gap-2" variant="outline" >
+          <Github />
+          View on Github
+        </Button>
+        <Button className="gap-2" >
+          <Rocket />
+          Submit Challenge
+        </Button>
+      </div>
     </article>
   )
 }
