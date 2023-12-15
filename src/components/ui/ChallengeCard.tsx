@@ -20,7 +20,7 @@ interface ChallegeCardProps {
 }
 const ChallengeCard: React.FC<ChallegeCardProps> = ({unlocked, icon, title, serial, link, description}) => {
   return (
-    <a href="/challenge/intro-to-cpi">
+    <Link href="/challenge/intro-to-cpi">
     <Card className=""  >
       <CardHeader>
         <CardDescription className="text-card-foreground">Challenge #{serial}</CardDescription>
@@ -46,7 +46,7 @@ const ChallengeCard: React.FC<ChallegeCardProps> = ({unlocked, icon, title, seri
         </Button>
       </CardFooter>
     </Card>
-    </a>
+    </Link>
   )
 }
 

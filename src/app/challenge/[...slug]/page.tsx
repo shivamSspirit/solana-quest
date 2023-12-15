@@ -4,7 +4,8 @@ import { allChallenges } from "contentlayer/generated"
 import { Metadata } from "next"
 import { Mdx } from "components/mdx-components"
 import { Button } from "@components/ui/button"
-import { Github, Rocket } from "@lib/icons"
+import { Github } from "@lib/icons"
+import SubmitChallenge from "./SubmitChallenge"
 
 interface ChallengeProps {
   params: {
@@ -60,13 +61,10 @@ export default async function PostPage({ params }: ChallengeProps) {
       <Mdx code={post.body.code} />
       <div className={`flex sticky mt-16 bottom-8 w-fit mx-auto gap-4 lg:gap-8`}>
         <Button className="gap-2" variant="outline" >
-          <Github  />
+          <Github className="stroke-foreground" />
           View on Github
         </Button>
-        <Button className="gap-2" >
-          <Rocket />
-          Submit Challenge
-        </Button>
+        <SubmitChallenge serial={post.serial} title={post.title} />
       </div>
     </article>
   )
