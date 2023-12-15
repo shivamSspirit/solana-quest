@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
         <span className="flex gap-4 w-fit mx-auto">
           <Button className="flex gap-2 h-auto p-0 text-base font-normal" variant="link" >
             <Link target="_blank" className="flex items-center gap-2" href="https://github.com/">
-              <Github /> 
+              <Github gradient /> 
               Fork me
             </Link>
           </Button>

@@ -10,6 +10,10 @@ import Star from "./Star"
 import Badge from "./Badge"
 import Copy from "./Copy"
 import Tick from "./Tick"
+import Telegram from "./Telegram"
+import X from "./X"
+import Discord from "./Discord"
+import Instagram from "./Instagram"
 
 export {
   Lock,
@@ -23,5 +27,9 @@ export {
   Star,
   Badge,
   Copy,
-  Tick
+  Tick,
+  Telegram,
+  X,
+  Discord,
+  Instagram
 }

@@ -60,7 +60,7 @@ export default async function PostPage({ params }: ChallengeProps) {
       <Mdx code={post.body.code} />
       <div className={`flex sticky mt-16 bottom-8 w-fit mx-auto gap-4 lg:gap-8`}>
         <Button className="gap-2" variant="outline" >
-          <Github />
+          <Github  />
           View on Github
         </Button>
         <Button className="gap-2" >

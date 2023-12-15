@@ -4,7 +4,7 @@ import profilePic from "lib/assets/profile.png"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { copyToClipboard, sleep, trimKey } from "@lib/utils"
 import { Button } from "@components/ui/button"
-import { At, Copy, Rocket, Star, Badge, Crown } from "@lib/icons"
+import { At, Copy, Rocket, Star, Badge, Crown, Telegram, X, Discord, Github, Instagram } from "@lib/icons"
 import Divider from "@components/ui/Divider"
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card"
 import { useToast } from "@components/ui/use-toast"
@@ -24,6 +24,14 @@ const Portfolio: React.FC = () => {
     const challenges: Challenge[] = []
 
     const {toast} = useToast()
+
+    const profile = {
+        instagram: "instagram",
+        twitter: "twiiter",
+        discord: "discord",
+        github: "github",
+        telegram: "telegram"
+    }
 
     return (
         <main className="w-5/6 lg:w-4/6 mx-auto py-12 lg:py-14" >
@@ -46,6 +54,34 @@ const Portfolio: React.FC = () => {
                         className="px-2" variant="ghost">
                         <Copy className="w-6 h-6" />
                     </Button>
+                </span>
+
+                <span className="flex gap-4 pt-2 pb-4" >
+                    {profile.telegram && (
+                        <a target="_blank" href={profile.telegram}>
+                        <Telegram gradient />
+                        </a>
+                    )}
+                    {profile.twitter && (
+                        <a target="_blank" href={profile.twitter}>
+                        <X gradient />
+                        </a>
+                    )}
+                    {profile.discord && (
+                        <a target="_blank" href={profile.discord}>
+                        <Discord gradient />
+                        </a>
+                    )}
+                    {profile.github && (
+                        <a target="_blank" href={profile.github}>
+                        <Github gradient />
+                        </a>
+                    )}
+                    {profile.instagram && (
+                        <a target="_blank" href={profile.instagram}>
+                        <Instagram gradient />
+                        </a>
+                    )}
                 </span>
 
                 <UpdateSocials />
