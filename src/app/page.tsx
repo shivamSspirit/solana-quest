@@ -62,7 +62,7 @@ export default function Home() {
         <div className="text-center my-16 lg:my-24 2xl:my-32">
           <h1 className="font-title py-4 text-5xl sm:text-6xl md:text-7xl lg:text-8xl bg-gradient-to-b from-title to-title/60 bg-clip-text text-transparent">SOLANA QUEST</h1>
           <p className="lg:text-lg">Learn how to build on Solana; <br /> the superpowers and the gotchas.</p>
-          <span className="relative md:-top-20 inline-block">
+          <span className="relative md:-top-20 inline-block w-full">
             <Image priority src={hero} alt="Solana Quest Illustration" 
               className="w-full h-auto block" layout="responsive"/>
             <span className="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-transparent
