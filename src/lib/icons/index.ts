@@ -14,6 +14,7 @@ import Telegram from "./Telegram"
 import X from "./X"
 import Discord from "./Discord"
 import Instagram from "./Instagram"
+import Mail from "./Mail"
 
 export {
   Lock,
@@ -31,5 +32,6 @@ export {
   Telegram,
   X,
   Discord,
-  Instagram
+  Instagram,
+  Mail
 }

@@ -75,9 +75,11 @@ export type SolQuest = {
       ],
       "args": [
         {
-          "name": "social",
+          "name": "socials",
           "type": {
-            "defined": "Social"
+            "vec": {
+              "defined": "Social"
+            }
           }
         }
       ]
@@ -120,10 +122,6 @@ export type SolQuest = {
                 "defined": "Social"
               }
             }
-          },
-          {
-            "name": "mateSocialsSize",
-            "type": "u64"
           }
         ]
       }
@@ -246,9 +244,11 @@ export const IDL: SolQuest = {
       ],
       "args": [
         {
-          "name": "social",
+          "name": "socials",
           "type": {
-            "defined": "Social"
+            "vec": {
+              "defined": "Social"
+            }
           }
         }
       ]
@@ -291,10 +291,6 @@ export const IDL: SolQuest = {
                 "defined": "Social"
               }
             }
-          },
-          {
-            "name": "mateSocialsSize",
-            "type": "u64"
           }
         ]
       }
