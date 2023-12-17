@@ -1,11 +1,14 @@
 'use server'
 
+import { utils, web3 } from "@coral-xyz/anchor"
 import serverEnv from "./env/server"
 import promiser from "./promiser"
+import publicEnv from "./env/public"
 
 const UNDERDOG_PROJECTS_URL = `${serverEnv.UNDERDOG_BASE_URL}/projects/${serverEnv.UNDERDOG_PROJECT_ID}/nfts`
 
-export async function getNft(publicKey: string): Promise<string | null> {
+export async function getNft(publicKey: string): Promise<{image: string, mintKey: string} | null> {
+  console.log("getNFT() was called")
   const url = new URL(`${UNDERDOG_PROJECTS_URL}/search`)
   url.searchParams.set("limit", serverEnv.UNDERDOG_PROJECT_ID)
   url.searchParams.set("search", publicKey)
@@ -32,11 +35,19 @@ export async function getNft(publicKey: string): Promise<string | null> {
     throw new Error(`getNFT() - Response was not OK - ${response.status} \n ${JSON.stringify(data)}`)
   }
 
+  console.log("getNFT() was ended")
   if(data.results.length === 0) return null
-  else return data.results[0]['image'] as string
+  else {
+    const d = data['results'][0]
+    return ({
+      image: d['image'],
+      mintKey: d['mintAddress']
+    })
+  }
 }
 
 export async function mintNft(imageLink: string, userPublicKey: string): Promise<number> {
+  console.log("mintNFT() was called")
   const mintUrl = new URL(UNDERDOG_PROJECTS_URL)
   const mintOptions: RequestInit = {
     method: "POST",
@@ -69,10 +80,12 @@ export async function mintNft(imageLink: string, userPublicKey: string): Promise
     throw new Error(`mintNFT() - Response was not OK - ${response.status} \n ${JSON.stringify(data)}`)
   }
 
+  console.log("mintNFT() was ended")
   return data['nftId']
 }
 
 export async function getMintKeyOfNft(nftId: number): Promise<string> {
+  console.log("getMintKeyOfNft() was called")
   const url = new URL(`${UNDERDOG_PROJECTS_URL}/${nftId}`)
   const options: RequestInit = {
     headers: {
@@ -97,5 +110,37 @@ export async function getMintKeyOfNft(nftId: number): Promise<string> {
     throw new Error(`getMintKeyOfNft() - Response was not OK - ${response.status} \n ${JSON.stringify(data)}`)
   }
 
+  console.log("Mint Retrieve info ? - ", data)
+
+  console.log("getMintKeyOfNft() was ended")
   return data['mintAddress']
 }
+
+function getAdminWallet() {
+    return web3.Keypair.fromSecretKey(
+        utils.bytes.bs58.decode(serverEnv.GAS_PRIVATE_KEY)
+    );
+}
+
+// export async function initializeAccount(base64Tx: string) {
+//   const serializedTransaction = Buffer.from(base64Tx, 'base64');
+//   const transaction = web3.Transaction.from(serializedTransaction);
+//
+//   console.log(serverEnv.GAS_PRIVATE_KEY)
+//   const payer = getAdminWallet()
+//   transaction.partialSign(payer)
+//
+//   const endpoint = web3.clusterApiUrl(publicEnv.NEXT_PUBLIC_DEVNET ? "devnet" : "mainnet-beta")
+//   const connection = new web3.Connection(endpoint); // Or devnet/testnet
+//   const [confirm, confirmError] = await promiser(web3.sendAndConfirmTransaction(connection, transaction, [payer], {
+//     skipPreflight: true
+//   }))
+//
+//   if(confirmError) {
+//     console.error(`Initialize Account Server - Error while sendAndConfirm ${JSON.stringify(confirmError)}`)
+//     throw new Error(`Initialize Account Server - Error while sendAndConfirm ${JSON.stringify(confirmError)}`)
+//   }
+//   
+//   return confirm
+//
+// }
