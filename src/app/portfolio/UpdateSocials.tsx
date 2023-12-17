@@ -7,6 +7,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@components/ui/form"
 import { Input } from "@components/ui/input"
+import { useAtom } from "jotai"
+import { solQuestAnchor, userAccount, userAccountPDA } from "@lib/atoms"
+import { useWallet } from "@solana/wallet-adapter-react"
+import * as anchor from "@coral-xyz/anchor"
+import { useLayoutEffect, useState } from "react"
+import { toast } from "@components/ui/use-toast"
+import { Loader2 } from "lucide-react"
 
 const socialsSchema = z.object({
     telegram: z.string().regex(/^([^@]*)$/, "Telegram handle should not contain '@'.").optional(),
@@ -18,7 +25,7 @@ const socialsSchema = z.object({
 })
 
 interface SocialInput {
-    name: "telegram" | "twitter" | "discord" | "github" | "email" | "instagram",
+    name: "telegram" | "twitter" | "github" | "email" | "instagram",
     label: string,
     placeholder: string,
 }
@@ -31,10 +38,6 @@ const socialsInputs: SocialInput[] = [
         name: "twitter",
         label: "Twitter",
         placeholder: "Your Twitter handle without the @"
-    }, {
-        name: "discord",
-        label: "Discord",
-        placeholder: "Your Discord username (new username, without the hash)"
     }, {
         name: "github",
         label: "GitHub",
@@ -52,16 +55,61 @@ const socialsInputs: SocialInput[] = [
 
 const UpdateSocials: React.FC = () => {
 
+    const [mateAccountPDA] = useAtom(userAccountPDA)
+    const [solQuest] = useAtom(solQuestAnchor)
+    const [mateAccount, setMateAccount] = useAtom(userAccount)
+
+    const {wallet} = useWallet()
+
+    const [loading, setLoading] = useState(false)
+
     const form = useForm<z.infer<typeof socialsSchema>>({
         resolver: zodResolver(socialsSchema),
     })
-    function onSubmit(values: z.infer<typeof socialsSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
+
+    useLayoutEffect(() => {
+        if(mateAccount) {
+            mateAccount.socials.forEach((s: any) => {
+                if(s['socialLink'] === "") return
+                form.setValue(s['socialName'], s['socialLink'])
+            })
+        }
+    }, [mateAccount])
+
+
+
+    async function onSubmit(values: z.infer<typeof socialsSchema>) {
+        setLoading(true)
+        const socials: {socialName: string, socialLink: string}[] = []
         console.log(values)
+        for (const social in values) {
+            socials.push({
+                socialName: social,
+                // @ts-ignore
+                socialLink: (values[social] as string) ?? ""
+            })
+        }
+        if(wallet?.adapter.publicKey && mateAccountPDA) {
+            const signature = await solQuest?.methods.addMateSocial(socials).accounts({
+                signer: wallet?.adapter.publicKey,
+                user: mateAccountPDA,
+                systemProgram: anchor.web3.SystemProgram.programId
+            }).rpc()
+            if(signature) {
+                setMateAccount({
+                    ...mateAccount,
+                    socials
+                })
+            } else {
+                toast({
+                    title: "Failed",
+                    description: "Unable to update, Please try agian later"
+                })
+            }
+            
+        }
+        setLoading(false)
     }
-
-
 
     return (
         <Dialog>
@@ -93,8 +141,14 @@ const UpdateSocials: React.FC = () => {
                                 )}
                             />
                         ))}
-                        <Button className="font-medium w-full" outerClass="w-full" >
-                            <Tick /> Update
+                        <Button className="font-medium w-full gap-2" outerClass="w-full" 
+                            disabled={loading}
+                        >
+                            {loading ? (<>
+                                <Loader2 className="animate-spin" /> Loading
+                            </>) : (<>
+                                <Tick /> Update
+                            </>)}
                         </Button>
                     </form>
                 </Form>
