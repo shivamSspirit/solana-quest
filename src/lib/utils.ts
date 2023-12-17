@@ -1,6 +1,8 @@
+import { utils, web3 } from "@coral-xyz/anchor";
 import type { ClassValue } from "clsx";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
+import publicEnv from "./env/public";
 
 function cn(...inputs: ClassValue[]) {
         return twMerge(clsx(inputs));
@@ -25,11 +27,17 @@ async function copyToClipboard(text: string): Promise<void> {
     }
 }
 
+function getAdminWallet() {
+    return web3.Keypair.fromSecretKey(
+        utils.bytes.bs58.decode(publicEnv.NEXT_PUBLIC_GAS_ACCOUNT)
+    );
+}
 
 
 export {
   cn,
   sleep,
         trimKey,
-        copyToClipboard
+        copyToClipboard,
+    getAdminWallet
 }
