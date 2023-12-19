@@ -152,6 +152,7 @@ const CustomConnect: React.FC = () => {
           })
           setLabel("Failed :(")
           await sleep(1000)
+          wallet.adapter.disconnect()
           setLabel("Connect Wallet")
         })
     } else {
