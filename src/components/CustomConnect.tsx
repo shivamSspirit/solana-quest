@@ -57,18 +57,18 @@ const CustomConnect: React.FC = () => {
       setUserAccount(mateAccountPDA)
       console.log("start get")
       getNft(wallet.adapter.publicKey.toString())
-        .then(async d => {
+        .then(async nft => {
           const [mateAcc, mateError] = await promiser(solQuest.account.mate.fetch(mateAccountPDA))
           // mateAcc?.socials[0]
-          if(mateAcc && d) {
+          if(mateAcc && nft) {
             setMateAcc(mateAcc)
+            setImage(nft.image) //image exist in collection -> user exists
+            setLabel(trimKey(wallet.adapter.publicKey?.toString() || "") || "no public key")
             console.log("Account Connected")
             toast({
               title: "Successfull",
               description: "Account Connected"
             })
-            setImage(d.image) //image exist in collection -> user exists
-            setLabel(trimKey(wallet.adapter.publicKey?.toString() || "") || "no public key")
           }  else {
             console.log("Account Creating")
             console.table({pubkey: wallet.adapter.publicKey, signTransaction})
@@ -77,20 +77,20 @@ const CustomConnect: React.FC = () => {
               console.log("IF BLOCK OF ACC CREATION PASSED PASSED")
               const imageUrl = `https://robohash.org/${wallet.adapter.publicKey!.toString()}`
               let mintKey: string
-              if(!d) {
+              if(!nft) {
                 const nftId = await mintNft(imageUrl, wallet.adapter.publicKey!.toString())
-                await sleep(3000)
+                await sleep(1000)
                 mintKey = await getMintKeyOfNft(nftId)
                 console.log("Mint Key - ",mintKey)
                 let retries = 0
                 while(retries < 6 && mintKey === "") {
-                  await sleep(1500)
+                  await sleep(1000)
                   mintKey = await getMintKeyOfNft(nftId)
                 }
                 if(mintKey === ""){
                   throw new Error("Mint Key was not found")
                 }
-              } else mintKey = d.mintKey
+              } else mintKey = nft.mintKey
 
               // const tx = new anchor.web3.Transaction()
               // const initializeAccountInstruction = await solQuest.methods
@@ -145,11 +145,14 @@ const CustomConnect: React.FC = () => {
             }
           }
         })
-        .catch(() => {
+        .catch(async () => {
           toast({
             title: "Ohoo :(",
             description: "Something went wrong, Please try again"
           })
+          setLabel("Failed :(")
+          await sleep(1000)
+          setLabel("Connect Wallet")
         })
     } else {
       setLabel("Connect Wallet")
