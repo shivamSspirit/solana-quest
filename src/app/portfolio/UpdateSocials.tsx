@@ -69,6 +69,7 @@ const UpdateSocials: React.FC = () => {
 
     useLayoutEffect(() => {
         if(mateAccount) {
+            console.log("Mate Account Socials - ",mateAccount.socials)
             mateAccount.socials.forEach((s: any) => {
                 if(s['socialLink'] === "") return
                 form.setValue(s['socialName'], s['socialLink'])
@@ -89,16 +90,35 @@ const UpdateSocials: React.FC = () => {
                 socialLink: (values[social] as string) ?? ""
             })
         }
+        console.table({old: mateAccount.socials, new: socials})
+        if(mateAccount.socials === socials) {
+            toast({
+                title: "No Updates",
+                description: "All values are same"
+            })
+            setLoading(false)
+            return
+        } 
         if(wallet?.adapter.publicKey && mateAccountPDA) {
             const signature = await solQuest?.methods.addMateSocial(socials).accounts({
                 signer: wallet?.adapter.publicKey,
                 user: mateAccountPDA,
                 systemProgram: anchor.web3.SystemProgram.programId
-            }).rpc()
+            }).rpc().catch(() => {
+                    setLoading(false)
+                    toast({
+                        title: "Failed",
+                        description: "Unable to update, Please try agian later"
+                    })
+                })
             if(signature) {
                 setMateAccount({
                     ...mateAccount,
                     socials
+                })
+                toast({
+                    title: "Successfull",
+                    description: "Updated your socials"
                 })
             } else {
                 toast({
