@@ -33,8 +33,8 @@ const Solana: FC<Props> = ({children}) => {
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect={false}>
-        <WalletModalProvider>
+      <WalletProvider wallets={wallets} autoConnect={true} >
+        <WalletModalProvider >
           { children }
         </WalletModalProvider>
       </WalletProvider>
