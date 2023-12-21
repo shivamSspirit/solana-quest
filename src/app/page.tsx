@@ -85,7 +85,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="w-5/6 mx-auto space-y-8">
+        <section className="w-5/6 mx-auto space-y-8" id="explore">
           <span className="w-auto space-y-2 tracking-wider">
             <h2 className="text-2xl lg:text-3xl w-fit font-bold">Explore Quests</h2>
             <Divider className="w-3/5 lg:w-1/5 h-0.5"  />

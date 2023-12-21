@@ -56,95 +56,95 @@ const CustomConnect: React.FC = () => {
 
       setUserAccount(mateAccountPDA)
       console.log("start get")
-      getNft(wallet.adapter.publicKey.toString())
-        .then(async nft => {
-          const [mateAcc, mateError] = await promiser(solQuest.account.mate.fetch(mateAccountPDA))
-          // mateAcc?.socials[0]
-          if(mateAcc && nft) {
-            setMateAcc(mateAcc)
-            setImage(nft.image) //image exist in collection -> user exists
-            setLabel(trimKey(wallet.adapter.publicKey?.toString() || "") || "no public key")
-            console.log("Account Connected")
-            toast({
-              title: "Successfull",
-              description: "Account Connected"
-            })
-          }  else {
-            console.log("Account Creating")
-            console.table({pubkey: wallet.adapter.publicKey, signTransaction})
+      solQuest.account.mate.fetch(mateAccountPDA).then(async (mateAcc) => {
+        // mateAcc?.socials[0]
+        if(mateAcc) {
+          const nft = await getNft(mateAcc.mateNft.toString())
+          setMateAcc(mateAcc)
+          const imageUrl = `https://robohash.org/${wallet.adapter.publicKey!.toString()}`
+          setImage(nft?.image ??  imageUrl ) //image exist in collection -> user exists
+          setLabel(trimKey(wallet.adapter.publicKey?.toString() || "") || "no public key")
+          console.log("Account Connected")
+          toast({
+            title: "Successfull",
+            description: "Account Connected"
+          })
+        }  else {
+          console.log("Account Creating")
+          console.table({pubkey: wallet.adapter.publicKey, signTransaction})
 
-            if(wallet.adapter.publicKey && solQuest && signTransaction) {
-              console.log("IF BLOCK OF ACC CREATION PASSED PASSED")
-              const imageUrl = `https://robohash.org/${wallet.adapter.publicKey!.toString()}`
-              let mintKey: string
-              if(!nft) {
-                const nftId = await mintNft(imageUrl, wallet.adapter.publicKey!.toString())
+          if(wallet.adapter.publicKey && solQuest && signTransaction) {
+            console.log("IF BLOCK OF ACC CREATION PASSED PASSED")
+            const imageUrl = `https://robohash.org/${wallet.adapter.publicKey!.toString()}`
+            let mintKey: string
+            if(!nft) {
+              const nftId = await mintNft(imageUrl, wallet.adapter.publicKey!.toString())
+              await sleep(1000)
+              mintKey = await getMintKeyOfNft(nftId)
+              console.log("Mint Key - ",mintKey)
+              let retries = 0
+              while(retries < 6 && mintKey === "") {
                 await sleep(1000)
                 mintKey = await getMintKeyOfNft(nftId)
-                console.log("Mint Key - ",mintKey)
-                let retries = 0
-                while(retries < 6 && mintKey === "") {
-                  await sleep(1000)
-                  mintKey = await getMintKeyOfNft(nftId)
-                }
-                if(mintKey === ""){
-                  throw new Error("Mint Key was not found")
-                }
-              } else mintKey = nft.mintKey
-
-              // const tx = new anchor.web3.Transaction()
-              // const initializeAccountInstruction = await solQuest.methods
-              //   .initializeUser(new anchor.web3.PublicKey(mintKey)).accounts({
-              //     signer: wallet.adapter.publicKey,
-              //     user: mateAccountPDA,
-              //     systemProgram: anchor.web3.SystemProgram.programId,
-              //   })
-              //   .instruction()
-              // tx.add(initializeAccountInstruction)
-              //
-              // const latestBlockhash = await connection.getLatestBlockhash()
-              // tx.recentBlockhash = latestBlockhash.blockhash
-              // tx.feePayer = wallet.adapter.publicKey
-              //
-              // const [signedTransaction,signError] = await promiser(sendTransaction(tx, connection))
-              // if(signError) {
-              //   console.error(`InitialzeAccount - error while signing transaction - ${JSON.stringify(signError)}`)
-              //   throw new Error(`InitialzeAccount - error while signing transaction - ${JSON.stringify(signError)}`)
-              // }
-              // const serializedTransaction = signedTransaction.serialize({
-              //   requireAllSignatures: false
-              // });
-              // const base64Transaction = serializedTransaction.toString('base64');
-
-              // const confirm = await initializeAccount(base64Transaction)
-
-              // const [confirmTx, confirmErr] = await promiser(connection.confirmTransaction({
-              //   signature: signedTransaction,
-              //   ...latestBlockhash
-              // }))
-              const [confirmTx, confirmErr] = await promiser(solQuest.methods
-                .initializeUser(new anchor.web3.PublicKey(mintKey)).accounts({
-                  signer: wallet.adapter.publicKey,
-                  user: mateAccountPDA,
-                  systemProgram: anchor.web3.SystemProgram.programId,
-                })
-                .rpc())
-              if(confirmErr) {
-                console.error(`InitialzeAccount - error while sending transaction - ${JSON.stringify(confirmErr)}`)
-                throw new Error(`InitialzeAccount - error while sending transaction - ${JSON.stringify(confirmErr)}`)
               }
-
-              if(confirmTx) {
-                setImage(imageUrl)
-                setLabel(trimKey(wallet.adapter.publicKey?.toString() || "") || "no public key")
-                toast({
-                  title: "Successfull",
-                  description: "Account Created"
-                })
+              if(mintKey === ""){
+                throw new Error("Mint Key was not found")
               }
+            } else mintKey = nft.mintKey
+
+            // const tx = new anchor.web3.Transaction()
+            // const initializeAccountInstruction = await solQuest.methods
+            //   .initializeUser(new anchor.web3.PublicKey(mintKey)).accounts({
+            //     signer: wallet.adapter.publicKey,
+            //     user: mateAccountPDA,
+            //     systemProgram: anchor.web3.SystemProgram.programId,
+            //   })
+            //   .instruction()
+            // tx.add(initializeAccountInstruction)
+            //
+            // const latestBlockhash = await connection.getLatestBlockhash()
+            // tx.recentBlockhash = latestBlockhash.blockhash
+            // tx.feePayer = wallet.adapter.publicKey
+            //
+            // const [signedTransaction,signError] = await promiser(sendTransaction(tx, connection))
+            // if(signError) {
+            //   console.error(`InitialzeAccount - error while signing transaction - ${JSON.stringify(signError)}`)
+            //   throw new Error(`InitialzeAccount - error while signing transaction - ${JSON.stringify(signError)}`)
+            // }
+            // const serializedTransaction = signedTransaction.serialize({
+            //   requireAllSignatures: false
+            // });
+            // const base64Transaction = serializedTransaction.toString('base64');
+
+            // const confirm = await initializeAccount(base64Transaction)
+
+            // const [confirmTx, confirmErr] = await promiser(connection.confirmTransaction({
+            //   signature: signedTransaction,
+            //   ...latestBlockhash
+            // }))
+            const [confirmTx, confirmErr] = await promiser(solQuest.methods
+              .initializeUser(new anchor.web3.PublicKey(mintKey)).accounts({
+                signer: wallet.adapter.publicKey,
+                user: mateAccountPDA,
+                systemProgram: anchor.web3.SystemProgram.programId,
+              })
+              .rpc())
+            if(confirmErr) {
+              console.error(`InitialzeAccount - error while sending transaction - ${JSON.stringify(confirmErr)}`)
+              throw new Error(`InitialzeAccount - error while sending transaction - ${JSON.stringify(confirmErr)}`)
+            }
+
+            if(confirmTx) {
+              setImage(imageUrl)
+              setLabel(trimKey(wallet.adapter.publicKey?.toString() || "") || "no public key")
+              toast({
+                title: "Successfull",
+                description: "Account Created"
+              })
             }
           }
-        })
+        }
+      })
         .catch(async () => {
           toast({
             title: "Ohoo :(",
