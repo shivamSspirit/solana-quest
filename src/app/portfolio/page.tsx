@@ -14,6 +14,7 @@ import { Loader2 } from "lucide-react"
 import { useAtom } from "jotai"
 import { pfp, userAccount } from "@lib/atoms"
 import { useLayoutEffect, useState } from "react"
+import Link from "next/link"
 
 const Portfolio: React.FC = () => {
     const {wallet, connecting } = useWallet()
@@ -142,8 +143,11 @@ const Portfolio: React.FC = () => {
                                 <>
                                     <p className="text-lg">Show off your skills. <br /> 
                                         Learn everything you need to build on Solana!</p>
-                                    <Button className="w-fit gap-2 text-lg" size="lg" outerClass="w-fit" >
+                                    
+                                    <Button className="w-fit gap-2 text-lg" size="lg" outerClass="w-fit"  asChild >
+                                        <Link href="/#explore">
                                         <Rocket /> Start a Challenge
+                                        </Link>
                                     </Button>
                                 </>
                             )}
