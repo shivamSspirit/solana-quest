@@ -22,6 +22,7 @@ export default function RootLayout({
 }: {
     children: React.ReactNode
   }) {
+
   return (
     <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable}  ${RammettoOne.variable} 
       `}>

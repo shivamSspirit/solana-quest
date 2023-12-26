@@ -7,8 +7,10 @@ import {
   WalletModalProvider,
 } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
-import { atom } from 'jotai';
-
+import { useAtom } from 'jotai'
+import { lastSubmitted, userAccount } from '@lib/atoms'
+import { useLayoutEffect } from 'react';
+//
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
 
@@ -30,6 +32,18 @@ const Solana: FC<Props> = ({children}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [network]
   );
+
+  const [_, setLastSubmitted] = useAtom(lastSubmitted)
+  const [mateAccount] = useAtom(userAccount)
+  useLayoutEffect(() => {
+    if(mateAccount && mateAccount['questCompletedByMate']){
+      const length = mateAccount['questCompletedByMate'].length
+      if(length === 0) return
+      console.log("quest completed - ",mateAccount['questCompletedByMate'][length-1])
+      const s = mateAccount['questCompletedByMate'][length-1].id as number
+      setLastSubmitted(s)
+    }
+  }, [mateAccount])
 
   return (
     <ConnectionProvider endpoint={endpoint}>
