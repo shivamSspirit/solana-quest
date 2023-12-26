@@ -20,8 +20,8 @@ const ChallengeTable: React.FC<{challenges: Challenge[]}> = ({challenges}) => {
                 {challenges.map(c => (
                     <TableRow key={c.contract} >
                         <TableCell>{c.name}</TableCell>
-                        <TableCell className="max-w-[1rem]"><a 
-                            className=""
+                        <TableCell className="max-w-[1rem] truncate"><a 
+                            className="truncate"
                             target='_blank'
                             href={`https://xray.helius.xyz/token/${c.contract}?network=${net}`}>{c.contract}...</a></TableCell>
                         <TableCell>{c.live}</TableCell>

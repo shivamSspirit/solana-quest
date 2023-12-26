@@ -17,6 +17,7 @@ import { useLayoutEffect, useState } from "react"
 import Link from "next/link"
 import ChallengeTable from "./ChallengeTable"
 import { allChallenges } from "contentlayer/generated"
+import BN from "bn.js"
 export interface Challenge {
         name: string,
         live: string,
@@ -49,12 +50,13 @@ const Portfolio: React.FC = () => {
                 const currChallengeFromContent = allChallenges.find((a) => {
                     return a.serial === c.id
                 })
+                console.log(Object.keys(c['status'])[0])
                 const newChallenge = {
                     name: currChallengeFromContent?.title,
                     contract: c['transaction'],
                     live: c['deployedUrl'],
-                    updated: new Date(),
-                    status: "Submitted"
+                    updated: new Date(new BN(c['updatedTime']).toNumber() * 1000),
+                    status: Object.keys(c['status'])[0]
                 }
                 displayChallenges.push(newChallenge)
             })

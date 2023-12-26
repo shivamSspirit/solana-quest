@@ -59,9 +59,15 @@ dependencies:
   '@tailwindcss/typography':
     specifier: ^0.5.10
     version: 0.5.10(tailwindcss@3.3.6)
+  '@types/bn.js':
+    specifier: ^5.1.5
+    version: 5.1.5
   '@types/mdx':
     specifier: ^2.0.10
     version: 2.0.10
+  bn.js:
+    specifier: ^5.2.1
+    version: 5.2.1
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -5028,6 +5034,12 @@ packages:
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}
     dependencies:
       '@types/estree': 1.0.5
+    dev: false
+
+  /@types/bn.js@5.1.5:
+    resolution: {integrity: sha512-V46N0zwKRF5Q00AZ6hWtN0T8gGmDUaUzLWQvHFo5yThtVwK/VCenFY3wXVbOvNfajEpsTfQM4IN9k/d6gUVX3A==}
+    dependencies:
+      '@types/node': 20.10.3
     dev: false
 
   /@types/connect@3.4.38:
