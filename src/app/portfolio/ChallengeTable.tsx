@@ -24,7 +24,8 @@ const ChallengeTable: React.FC<{challenges: Challenge[]}> = ({challenges}) => {
                             className="truncate"
                             target='_blank'
                             href={`https://xray.helius.xyz/token/${c.contract}?network=${net}`}>{c.contract}...</a></TableCell>
-                        <TableCell>{c.live}</TableCell>
+                        <TableCell>
+                            <a target="_blank" href={c.live} >{c.live}</a></TableCell>
                         <TableCell>{c.updated.toDateString()}</TableCell>
                         <TableCell>{c.status}</TableCell>
                     </TableRow>
