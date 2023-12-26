@@ -87,8 +87,8 @@ const SubmitChallenge: React.FC<{serial: number, title: string}> = ({serial, tit
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="gap-2" disabled={serial >= lastSubmitted} >
-          {serial >= lastSubmitted ? (
+        <Button className="gap-2" disabled={serial > lastSubmitted} >
+          {serial > lastSubmitted ? (
             <>
               <Lock />
               LOCKED
