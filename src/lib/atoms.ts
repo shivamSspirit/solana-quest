@@ -15,11 +15,14 @@ const userAccountPDA = atom<web3.PublicKey | null>(null)
 
 const userAccount = atom<any>(null)
 
+const lastSubmitted = atom<number>(2)
+
 export {
   anchor,
   pfp,
   gasKeypair,
   solQuestAnchor,
   userAccountPDA,
-  userAccount
+  userAccount,
+  lastSubmitted
 }

@@ -1,42 +1,33 @@
 'use client';
-// import {
-//   WalletMultiButton
-// } from '@solana/wallet-adapter-react-ui';
-// import {useAnchorWallet, useWallet} from "@solana/wallet-adapter-react"
-// import { useAtom } from 'jotai';
-// import { anchorProgram } from '../lib/anchor';
-// import { useEffect } from 'react';
-// import { anchor } from 'lib/atoms';
-// import { Wallet } from '@coral-xyz/anchor';
-// import { Button } from 'components/ui/button';
-// import {Sun} from "lucide-react"
 import { useTheme } from 'next-themes';
 import Image from "next/image"
 import backgroundDark from "lib/assets/background-dark.png"
 import backgroundLight from "lib/assets/background-light.png"
 import hero from "lib/assets/hero.png"
 import join from "@lib/assets/join-illustration.png"
-import challenges from '@lib/fakeChallenges';
 
 import { Button } from '@components/ui/button';
 import ChallengeCard from '@components/ui/ChallengeCard';
 import Divider from '@components/ui/Divider';
 import Link from 'next/link';
 import { Lock, Rocket } from '@lib/icons';
+import { allChallenges } from 'contentlayer/generated';
+import { useAtom } from 'jotai';
+import { lastSubmitted as lastSubmittedAtom } from '@lib/atoms';
+import { useLayoutEffect } from 'react';
 
 export default function Home() {
-  // const anchorWallet = useAnchorWallet()
-  // const [anchorAtom, setAnchorAtom] = useAtom(anchor)
-  // useEffect(() => {
-  //   if(anchorWallet) {
-  //     setAnchorAtom(anchorProgram(anchorWallet as Wallet))
-  //   }
-  // },[])
-
-  // <WalletMultiButton />
-  //
 
   const {theme} = useTheme()
+  console.log("all challenges - ", allChallenges)
+  const sortedChallenges = allChallenges.sort((a, b) => a.serial - b.serial);
+  console.log("sorted challenges - ", sortedChallenges)
+
+  const firstThreeChallenges = sortedChallenges.slice(0,3)
+  console.log("first three - ", firstThreeChallenges)
+  const restOfChallenges = sortedChallenges.slice(3)
+
+  const [lastSubmitted] = useAtom(lastSubmittedAtom)
 
   return (
     <>
@@ -91,8 +82,15 @@ export default function Home() {
             <Divider className="w-3/5 lg:w-1/5 h-0.5"  />
           </span>
           <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-            {challenges.map(c => (
-              <ChallengeCard {...c} key={c.serial} />
+            {firstThreeChallenges.map(c => (
+              <ChallengeCard  key={c.serial} 
+                serial={c.serial}
+                link={`/challenge/${c.title}`}
+                title={c.title}
+                description={c.description}
+                unlocked={c.serial <= lastSubmitted}
+                icon={c.icon}
+              />
             ))}
           </div>
         </section>
@@ -126,8 +124,15 @@ export default function Home() {
 
         <section className="w-5/6 mx-auto">
           <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-            {challenges.map(c => (
-              <ChallengeCard {...c} key={c.serial} />
+            {restOfChallenges.map(c => (
+              <ChallengeCard  key={c.serial} 
+                serial={c.serial}
+                link={`/challenge/${c.title}`}
+                title={c.title}
+                description={c.description}
+                unlocked={c.serial <= lastSubmitted}
+                icon={c.icon}
+              />
             ))}
           </div>
         </section>

@@ -4,17 +4,25 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Rocket } from "@lib/icons"
+import { solQuestAnchor, userAccountPDA } from "@lib/atoms"
+import { Lock, Rocket } from "@lib/icons"
+import { useWallet } from "@solana/wallet-adapter-react"
+import { useAtom } from "jotai"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import * as anchor from "@coral-xyz/anchor"
+import { toast } from "@components/ui/use-toast"
+import { Loader2 } from "lucide-react"
+import { lastSubmitted as lastSubmittedAtom } from '@lib/atoms';
 
 const challengeSchema = z.object({
   deployedURL: z.string().url("Must be a valid URL"),
-  solscanURL: z.string().url("Must be a valid URL")
+  transactionSignature: z.string()
 })
 
 interface ChallegeInput {
-  name: "deployedURL" | "solscanURL",
+  name: "deployedURL" | "transactionSignature",
   label: string,
   placeholder: string,
 }
@@ -26,29 +34,71 @@ const challengeInputs: ChallegeInput[] = [
     placeholder: "https://your-site.vercel.app/"
   },
   {
-    name: "solscanURL",
-    label: "Solscan URL",
-    placeholder: "https://sepolia.solscan.io/address/**YourContractAdc..."
+    name: "transactionSignature",
+    label: "Transaction Signature / ID",
+    placeholder: "8EJChgyT2Ygjci4Z8PGEcth4YvmjFUx4ujEDCFcpAy37"
   }
 ]
 
 const SubmitChallenge: React.FC<{serial: number, title: string}> = ({serial, title}) => {
 
+  const [mateAccountPDA] = useAtom(userAccountPDA)
+  const [solQuest] = useAtom(solQuestAnchor)
+  const [lastSubmitted] = useAtom(lastSubmittedAtom)
+
+  const {wallet} = useWallet()
+
+  const [loading, setLoading] = useState(false)
+
   const form = useForm<z.infer<typeof challengeSchema>>({
     resolver: zodResolver(challengeSchema),
   })
-  function onSubmit(values: z.infer<typeof challengeSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof challengeSchema>) {
+    setLoading(true)
+    if(wallet?.adapter.publicKey && mateAccountPDA && solQuest) {
+      const resp = await solQuest?.methods.addCompletedQuest(serial, values.deployedURL, values.transactionSignature)
+        .accounts({
+          signer: wallet.adapter.publicKey,
+          user: mateAccountPDA,
+          systemProgram: anchor.web3.SystemProgram.programId
+        })
+        .rpc().catch(() => {
+          setLoading(false)
+          toast({
+            title: "Failed",
+            description: "Unable to submit challenge, Please try agian later"
+          })
+        })
+      if(resp) {
+        toast({
+          title: "Successful",
+          description: "We have received your submission"
+        })
+      } else {
+        toast({
+          title: "Failed",
+          description: "Unable to submit challenge, Please try agian later"
+        })
+      }
+    }
+    setLoading(false)
   }
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="gap-2" >
-          <Rocket />
-          Submit Challenge
+        <Button className="gap-2" disabled={serial >= lastSubmitted} >
+          {serial >= lastSubmitted ? (
+            <>
+              <Lock />
+              LOCKED
+            </>
+          ) : (
+              <>
+                <Rocket />
+                Submit Challenge
+              </>
+            )}
         </Button>
       </PopoverTrigger>
       <PopoverContent>
@@ -74,7 +124,11 @@ const SubmitChallenge: React.FC<{serial: number, title: string}> = ({serial, tit
               />
             ))}
             <Button className="font-medium w-full gap-2" outerClass="w-full" >
-              <Rocket /> Submit
+              {loading ? (<>
+                <Loader2 className="animate-spin" /> Loading
+              </>) : (<>
+                  <Rocket /> Submit
+                </>)}
             </Button>
           </form>
         </Form>

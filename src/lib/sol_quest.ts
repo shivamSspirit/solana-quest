@@ -49,8 +49,16 @@ export type SolQuest = {
       ],
       "args": [
         {
-          "name": "questId",
+          "name": "id",
           "type": "i8"
+        },
+        {
+          "name": "deployedUrl",
+          "type": "string"
+        },
+        {
+          "name": "transaction",
+          "type": "string"
         }
       ]
     },
@@ -106,7 +114,9 @@ export type SolQuest = {
           {
             "name": "questCompletedByMate",
             "type": {
-              "vec": "i8"
+              "vec": {
+                "defined": "Quest"
+              }
             }
           },
           {
@@ -145,6 +155,36 @@ export type SolQuest = {
       }
     },
     {
+      "name": "Quest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "i8"
+          },
+          {
+            "name": "deployedUrl",
+            "type": "string"
+          },
+          {
+            "name": "transaction",
+            "type": "string"
+          },
+          {
+            "name": "updatedTime",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": "Status"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "MateRole",
       "type": {
         "kind": "enum",
@@ -160,6 +200,20 @@ export type SolQuest = {
           },
           {
             "name": "Platinum"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Status",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "SUBMITTED"
+          },
+          {
+            "name": "ACCEPTED"
           }
         ]
       }
@@ -218,8 +272,16 @@ export const IDL: SolQuest = {
       ],
       "args": [
         {
-          "name": "questId",
+          "name": "id",
           "type": "i8"
+        },
+        {
+          "name": "deployedUrl",
+          "type": "string"
+        },
+        {
+          "name": "transaction",
+          "type": "string"
         }
       ]
     },
@@ -275,7 +337,9 @@ export const IDL: SolQuest = {
           {
             "name": "questCompletedByMate",
             "type": {
-              "vec": "i8"
+              "vec": {
+                "defined": "Quest"
+              }
             }
           },
           {
@@ -314,6 +378,36 @@ export const IDL: SolQuest = {
       }
     },
     {
+      "name": "Quest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "i8"
+          },
+          {
+            "name": "deployedUrl",
+            "type": "string"
+          },
+          {
+            "name": "transaction",
+            "type": "string"
+          },
+          {
+            "name": "updatedTime",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": "Status"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "MateRole",
       "type": {
         "kind": "enum",
@@ -329,6 +423,20 @@ export const IDL: SolQuest = {
           },
           {
             "name": "Platinum"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Status",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "SUBMITTED"
+          },
+          {
+            "name": "ACCEPTED"
           }
         ]
       }

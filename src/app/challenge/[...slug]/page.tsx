@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation"
 import { allChallenges } from "contentlayer/generated"
-
 import { Metadata } from "next"
 import { Mdx } from "components/mdx-components"
 import { Button } from "@components/ui/button"
@@ -47,7 +46,6 @@ export async function generateStaticParams(): Promise<ChallengeProps["params"][]
 
 export default async function PostPage({ params }: ChallengeProps) {
   const post = await getPostFromParams(params)
-
   if (!post) {
     notFound()
   }

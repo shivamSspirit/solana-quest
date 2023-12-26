@@ -15,32 +15,51 @@ import { useAtom } from "jotai"
 import { pfp, userAccount } from "@lib/atoms"
 import { useLayoutEffect, useState } from "react"
 import Link from "next/link"
-
-const Portfolio: React.FC = () => {
-    const {wallet, connecting } = useWallet()
-    const [image] = useAtom(pfp)
-    const {toast} = useToast()
-
-    interface Challenge {
+import ChallengeTable from "./ChallengeTable"
+import { allChallenges } from "contentlayer/generated"
+export interface Challenge {
         name: string,
         live: string,
         status: string,
         contract: string,
-        updated: string
+        updated: Date
     }
-    const challenges: Challenge[] = []
+const Portfolio: React.FC = () => {
+    const {wallet, connecting } = useWallet()
+    const [userChallenges, setUserChallenges] = useState<Challenge[]>([])
+    const [image] = useAtom(pfp)
+    const {toast} = useToast()
 
     const [mateAccount] = useAtom(userAccount)
 
     const [profile, setProfile] = useState<Record<string, string>>({})
 
     useLayoutEffect(() => {
+        console.log(mateAccount)
         if(mateAccount) {
             const profile: Record<string, string> = {}
             mateAccount.socials.forEach((s: any) => {
                 profile[s['socialName']] = s['socialLink']
             })
             setProfile(profile)
+
+            const challenges = mateAccount['questCompletedByMate'] as any[]
+            const displayChallenges: any[] = []
+            challenges.map(c => {
+                const currChallengeFromContent = allChallenges.find((a) => {
+                    return a.serial === c.id
+                })
+                const newChallenge = {
+                    name: currChallengeFromContent?.title,
+                    contract: c['transaction'],
+                    live: c['deployedUrl'],
+                    updated: new Date(),
+                    status: "Submitted"
+                }
+                displayChallenges.push(newChallenge)
+            })
+
+            setUserChallenges(displayChallenges)
         }
     }, [mateAccount])
 
@@ -139,7 +158,7 @@ const Portfolio: React.FC = () => {
                             <Badge className="lg:h-8 lg:w-8" /> Challenges
                         </CardTitle>
                         <CardContent className="text-center flex flex-col my-8 items-center gap-4" >
-                            {challenges.length === 0 && (
+                            {(userChallenges?.length) === 0 && (
                                 <>
                                     <p className="text-lg">Show off your skills. <br /> 
                                         Learn everything you need to build on Solana!</p>
@@ -151,29 +170,8 @@ const Portfolio: React.FC = () => {
                                     </Button>
                                 </>
                             )}
-                            {challenges.length !== 0 && (
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Name</TableHead>
-                                            <TableHead>Contract</TableHead>
-                                            <TableHead>Live Demo</TableHead>
-                                            <TableHead>Updated</TableHead>
-                                            <TableHead>Status</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {challenges.map(c => (
-                                            <TableRow key={c.contract} >
-                                                <TableCell>{c.name}</TableCell>
-                                                <TableCell>{c.contract}</TableCell>
-                                                <TableCell>{c.live}</TableCell>
-                                                <TableCell>{c.updated}</TableCell>
-                                                <TableCell>{c.status}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                            {userChallenges?.length !== 0 && (
+                                <ChallengeTable  challenges={userChallenges} />
                             )}
                         </CardContent>
                     </CardHeader>

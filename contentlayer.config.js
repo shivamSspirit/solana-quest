@@ -25,6 +25,10 @@ export const Challenge = defineDocumentType(() => ({
       type: "string",
       required: true,
     },
+    icon: {
+      type: "string",
+      required: true,
+    },
     description: {
       type: "string",
       required: true

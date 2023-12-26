@@ -167,8 +167,8 @@ const UpdateSocials: React.FC = () => {
                             {loading ? (<>
                                 <Loader2 className="animate-spin" /> Loading
                             </>) : (<>
-                                <Tick /> Update
-                            </>)}
+                                    <Tick /> Update
+                                </>)}
                         </Button>
                     </form>
                 </Form>
