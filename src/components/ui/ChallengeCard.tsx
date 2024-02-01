@@ -27,7 +27,7 @@ const ChallengeCard: React.FC<ChallegeCardProps> =   ({unlocked, icon, title, se
   const Icon = dynamic(() => import(`lib/icons/${icon}`), { ssr: true })
 
   return (
-    <Link href="/challenge/intro-to-cpi" className={cn(!unlocked && "pointer-events-none")}>
+    <Link href="/challenge/intro-to-spl-token" className={cn(!unlocked && "pointer-events-none")}>
     <Card className=""  >
       <CardHeader>
         <CardDescription className="text-card-foreground">Challenge #{serial}</CardDescription>
