@@ -70,9 +70,10 @@ export default function Home() {
           </div>
           <div className="lg:w-2/4 space-y-8">
             <HowItRow serial={1} >When you are ready to test your knowledge, Quest Solana!</HowItRow>
-            <HowItRow serial={2} >then use 🏗 scaffold-eth 2 to copy/paste each solidity concept and tinker: global units, primitives, mappings, structs, modifiers, events, inheritance, sending eth, and payable/fallback functions.</HowItRow>
-            <HowItRow serial={3} >Watch this getting started playlist to become a power user and eth scripter.</HowItRow>
-            <HowItRow serial={4} >When you are ready to test your knowledge, Quest Solana!</HowItRow>
+            <HowItRow serial={2} >then use sol-dapp-scaffold to copy/paste each solana concept and tinker: Accounts, Programs, Transaction, CPI, and PDA</HowItRow>
+            <HowItRow serial={3} >Watch this getting started
+            <Link className='underline' href={'https://www.youtube.com/watch?v=CsKbzsN7q1o&list=PLUBKxx7QjtVnU3hkPc8GF1Jh4DE7cf4n1'}> playlist </Link>
+            to become a power user and sol-dapper.</HowItRow>
           </div>
         </section>
 
