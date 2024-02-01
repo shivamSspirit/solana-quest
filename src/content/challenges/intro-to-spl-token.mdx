@@ -183,10 +183,12 @@ This context struct MintToken serves as a context that defines the accounts and 
 
 Signer Check
 signer is an account that must sign the transaction. It is mutable (mut) because the program may need to modify its data.
-
+```Rust
 /// CHECK: signer check
     #[account(mut, signer)]
     signer: AccountInfo<'info>,
+
+    ```
 Mint Account
 mint is an account representing the mint of the NFTs. It is initialized (init) if it doesn't exist. The payer for the initialization is the signer account. Additional attributes for the mint account are specified using the mint:: prefix, including setting the number of decimals to decimals that we got from the instruction, specifying the mint authority as the signer key, and setting the freeze authority to the signer key.
 ```Rust
@@ -198,9 +200,12 @@ mint is an account representing the mint of the NFTs. It is initialized (init) i
         mint::freeze_authority = signer.key(),
     )]
     mint: Account<'info, Mint>,
+
+    ```
 Metadata Account
 metadata_account is a mutable account info representing the metadata account associated with the mint. The address of this account is determined by calling the find_metadata_account function with the mint's key.
 
+```Rust
     /// CHECK:
     #[account(mut, address = find_metadata_account(&mint.key()).0)]
     pub metadata_account: AccountInfo<'info>,
@@ -220,9 +225,11 @@ The token_metadata_program is an unchecked account representing the token metada
     /// CHECK: account constraint checked in account trait
     #[account(address = mpl_token_metadata::id())]
     pub token_metadata_program: UncheckedAccount<'info>,
+    ```
 Additional Programs and Sysvars
 The remaining fields are programs and sysvars required for the execution of the minting process. These include the token_program for interacting with token accounts, rent for managing rent sysvar, associated_token_program for managing associated token accounts, and system_program for basic system operations.
 
+```Rust
     pub token_program: Program<'info, Token>,
     pub rent: Sysvar<'info, Rent>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -233,6 +240,7 @@ MintToken Function
 Function Signature
 The mint_token function takes a Context of type MintToken as its first parameter, along with additional parameters (_decimals, name, symbol, uri, amount). It returns a Result indicating success or failure.
 
+```Rust
 pub fn mint_token(ctx: Context<MintToken>, _decimals: u8, name: String, symbol: String, uri: String, amount: u64) -> Result<()> 
 Mint To CPI Call
 This CPI call (MintTo) mints a specified amount of tokens to the associated token account. The CpiContext is used to define the involved accounts for the CPI call. The mint_to function is called with the defined context and the specified amount.
@@ -324,10 +332,14 @@ The function invokes the token transfer using the token::transfer CPI call. This
     token::transfer(CpiContext::new(cpi_program, cpi_accounts), amount)?;
 
     Ok(())
-Step 6 - Tests
+
+    ```
+
+
+## Step 6 - Tests
 Imports
 The code starts by importing various libraries and modules necessary for interacting with the Solana blockchain, Metaplex, and related functionalities. Notable imports include anchor, umi, spl-token for token-related operations, and @solana/web3.js for interacting with the Solana blockchain.
-
+```typescript
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { publicKey } from "@metaplex-foundation/umi";
@@ -340,9 +352,11 @@ import { findMasterEditionPda, findMetadataPda, mplTokenMetadata, MPL_TOKEN_META
 import { BN } from "bn.js";
 import { Keypair } from "@solana/web3.js";
 import fs from "fs";
+
+```
 Test Suite Initialization
 A Jest test suite is initiated with the name "solana-examples." An Anchor provider is created using the environment configuration. The Solana Examples program is loaded from the workspace, and a signer is defined using the provider's wallet. UMI is created with specific configurations, including the Solana Devnet API endpoint and wallet adapter for identity. A new keypair (mint) is generated for use in the subsequent code.
-
+```ts
 describe("solana-examples", async () => {
     const provider = anchor.AnchorProvider.env();
     anchor.setProvider(provider);
@@ -353,9 +367,11 @@ describe("solana-examples", async () => {
     const mint = anchor.web3.Keypair.generate();
     // ...
 });
+```
 Associated Token Account and Metadata/Master Edition Lookup
 An associated token account address is obtained using the mint's public key and the signer's public key. Metadata and Master Edition accounts are found using functions from the Metaplex ecosystem.
 
+```ts
 const associatedTokenAccount = await getAssociatedTokenAddress(
     mint.publicKey,
     signer.publicKey
@@ -368,17 +384,22 @@ let metadataAccount = findMetadataPda(umi, {
 let masterEditionAccount = findMasterEditionPda(umi, {
     mint: publicKey(mint.publicKey),
 })[0];
+
+```
 Metadata Definition
 A metadata object is defined with properties such as name, symbol, and uri for NFT minting.
 
+```ts
 const metadata = {
     name: "Test",
     symbol: "TST",
     uri: "https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/nft.json",
 };
+```
 Mint NFT Transaction
 A Jest test case (it) is defined for minting an NFT. The mintNft method from the Solana Examples program is called with specified metadata properties. Relevant accounts, programs, and signers are provided in the accounts section. The transaction is executed using .rpc(). Transaction details and the minted NFT's address are logged.
 
+```ts
 it("Mint NFT!", async () => {
     const tx = await program.methods
         .mintNft(metadata.name, metadata.symbol, metadata.uri)
@@ -400,9 +421,12 @@ it("Mint NFT!", async () => {
     console.log(`mint nft tx: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
     console.log(`minted nft: https://explorer.solana.com/address/${mint.publicKey}?cluster=devnet`);
 });
+```
+
 Mint Token Transaction
 Another Jest test case is defined for minting a token. The mintToken method is called with specified parameters. Similar to the NFT minting, relevant accounts, programs, and signers are provided. The transaction is executed, and details are logged.
 
+```ts
 it("Mint Token!", async () => {
     const tx = await program.methods
         .mintToken(9, metadata.name, metadata.symbol, metadata.uri, new BN(10 * 1000000000))
@@ -423,9 +447,13 @@ it("Mint Token!", async () => {
     console.log(`mint token tx: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
     console.log(`minted token: https://explorer.solana.com/address/${mint.publicKey}?cluster=devnet`);
 });
+```
+
+
 Transfer NFT Transaction
 A Jest test case is defined for transferring an NFT. Associated token accounts (fromAta and toAta) are obtained using Metaplex functions. The transferTokens method is called with the specified amount. Transaction details are logged.
 
+```ts
 it("Transfer NFT!", async () => {
     // ... 
     const tx = await program.methods
@@ -441,9 +469,12 @@ it("Transfer NFT!", async () => {
 
     console.log(`transfer nft tx: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
 });
+```
+
 Transfer Token Transaction
 Another Jest test case is defined for transferring a token. Similar to the NFT transfer, associated token accounts are obtained. The transferTokens method is called with the specified amount. Transaction details are logged.
 
+```ts
 it("Transfer Token!", async () => {
     // ... 
     const tx = await program.methods
@@ -459,11 +490,15 @@ it("Transfer Token!", async () => {
 
     console.log(`transfer token tx: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
 });
+```
+
 File Loading Function
 A utility function is defined to load a keypair from a JSON file.
 
+```ts
 function loadKeypairFromFile(filename: string): Keypair {
     const secret = JSON.parse(fs.readFileSync(filename).toString()) as number[];
     const secretKey = Uint8Array.from(secret);
     return Keypair.fromSecretKey(secretKey);
 }
+```
