@@ -46,7 +46,7 @@ const SubmitChallenge: React.FC<{serial: number, title: string}> = ({serial, tit
   const [solQuest] = useAtom(solQuestAnchor)
   const [lastSubmitted] = useAtom(lastSubmittedAtom)
 
-  const {wallet} = useWallet()
+  const {wallet} = useWallet();
 
   const [loading, setLoading] = useState(false)
 

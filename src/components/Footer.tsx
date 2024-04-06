@@ -24,14 +24,14 @@ const Footer: React.FC = () => {
         <h2 className="font-title py-4 text-4xl sm:text-5xl md:text-6xl lg:text-6xl bg-gradient-to-b from-title to-title/60 bg-clip-text text-transparent">SOLANA QUEST</h2>
         <span className="flex gap-4 w-fit mx-auto">
           <Button className="flex gap-2 h-auto p-0 text-base font-normal" variant="link" >
-            <Link target="_blank" className="flex items-center gap-2" href="https://github.com/">
+            <Link target="_blank" className="flex items-center gap-2" href="https://github.com/shivamSspirit/solana-quest">
               <Github gradient /> 
               Fork me
             </Link>
           </Button>
           | 
           <span className="flex">
-            Built with <Heart className="mx-2" /> at Solana Quest
+            Built with <Link href={'https://solana.com/'} target="_blank"><Heart className="mx-2" /></Link> at Solana Quest
           </span>
         </span>
       </div>
