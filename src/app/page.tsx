@@ -19,13 +19,15 @@ import { useLayoutEffect } from 'react';
 export default function Home() {
 
   const {theme} = useTheme()
-  console.log("all challenges - ", allChallenges)
+//  console.log("all challenges - ", allChallenges)
   const sortedChallenges = allChallenges.sort((a, b) => a.serial - b.serial);
-  console.log("sorted challenges - ", sortedChallenges)
+//  console.log("sorted challenges - ", sortedChallenges)
 
   const firstThreeChallenges = sortedChallenges.slice(0,3)
-  console.log("first three - ", firstThreeChallenges)
-  const restOfChallenges = sortedChallenges.slice(3)
+ // console.log("first three - ", firstThreeChallenges)
+ const restOfChallenges = sortedChallenges.slice(3)
+
+ // console.log("restOfChallenges",restOfChallenges)
 
   const [lastSubmitted] = useAtom(lastSubmittedAtom)
 

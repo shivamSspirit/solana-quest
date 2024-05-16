@@ -42,6 +42,8 @@ const challengeInputs: ChallegeInput[] = [
 
 const SubmitChallenge: React.FC<{serial: number, title: string}> = ({serial, title}) => {
 
+  console.log("serial",serial,title)
+
   const [mateAccountPDA] = useAtom(userAccountPDA)
   const [solQuest] = useAtom(solQuestAnchor)
   const [lastSubmitted] = useAtom(lastSubmittedAtom)
@@ -54,8 +56,15 @@ const SubmitChallenge: React.FC<{serial: number, title: string}> = ({serial, tit
     resolver: zodResolver(challengeSchema),
   })
   async function onSubmit(values: z.infer<typeof challengeSchema>) {
+
+    console.log("mateAccountPDA",mateAccountPDA);
+    console.log("solQuest",solQuest);
+    console.log("wallet?.adapter.publicKey",wallet?.adapter.publicKey);
+  
+    
     setLoading(true)
     if(wallet?.adapter.publicKey && mateAccountPDA && solQuest) {
+      console.log("values",values, serial)
       const resp = await solQuest?.methods.addCompletedQuest(serial, values.deployedURL, values.transactionSignature)
         .accounts({
           signer: wallet.adapter.publicKey,

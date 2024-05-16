@@ -29,6 +29,6 @@ async function copyToClipboard(text: string): Promise<void> {
 export {
   cn,
   sleep,
-        trimKey,
-        copyToClipboard,
+  trimKey,
+  copyToClipboard,
 }
