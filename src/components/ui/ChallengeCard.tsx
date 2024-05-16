@@ -25,7 +25,7 @@ interface ChallegeCardProps {
 const ChallengeCard: React.FC<ChallegeCardProps> =   ({unlocked, icon, title, serial, link, description}) => {
 
   const Icon = dynamic(() => import(`lib/icons/${icon}`), { ssr: true })
-
+console.log("link",link)
   return (
     <Link href="/challenge/intro-to-spl-token" className={cn(!unlocked && "pointer-events-none")}>
     <Card className=""  >

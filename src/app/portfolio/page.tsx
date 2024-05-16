@@ -36,7 +36,8 @@ const Portfolio: React.FC = () => {
     const [profile, setProfile] = useState<Record<string, string>>({})
 
     useLayoutEffect(() => {
-        console.log(mateAccount)
+        console.log(mateAccount);
+        console.log("image",image)
         if(mateAccount) {
             const profile: Record<string, string> = {}
             mateAccount.socials.forEach((s: any) => {

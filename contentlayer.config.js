@@ -32,6 +32,14 @@ export const Challenge = defineDocumentType(() => ({
     description: {
       type: "string",
       required: true
+    },
+    author:{
+      type: "string",
+      required: true
+    },
+    github_link: {
+      type: "string",
+      required: true
     }
   },
   computedFields,
