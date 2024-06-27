@@ -18,6 +18,9 @@ import Link from "next/link"
 import ChallengeTable from "./ChallengeTable"
 import { allChallenges } from "contentlayer/generated"
 import BN from "bn.js"
+
+// import { userAccount } from "@lib/atoms"
+
 export interface Challenge {
         name: string,
         live: string,
@@ -29,9 +32,12 @@ const Portfolio: React.FC = () => {
     const {wallet, connecting } = useWallet()
     const [userChallenges, setUserChallenges] = useState<Challenge[]>([])
     const [image] = useAtom(pfp)
-    const {toast} = useToast()
+    const {toast} = useToast();
 
-    const [mateAccount] = useAtom(userAccount)
+
+    const [mateAccount] = useAtom(userAccount);
+
+    console.log('mateAccount',Object.keys(mateAccount.mateRole)[0])
 
     const [profile, setProfile] = useState<Record<string, string>>({})
 
@@ -141,7 +147,7 @@ const Portfolio: React.FC = () => {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p>0 challenges completed</p>
+                        <p>{`${userChallenges.length} challenges completed`}</p>
                     </CardContent>
                 </Card>
                 <Card>
@@ -151,7 +157,7 @@ const Portfolio: React.FC = () => {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p>0 Role</p>
+                        <p>{Object.keys(mateAccount.mateRole)[0]}</p>
                     </CardContent>
                 </Card>
 

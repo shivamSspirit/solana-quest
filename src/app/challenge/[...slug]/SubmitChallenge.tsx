@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { solQuestAnchor, userAccountPDA } from "@lib/atoms"
+import { solQuestAnchor, userAccountPDA, adminAccountPDA } from "@lib/atoms"
 import { Lock, Rocket } from "@lib/icons"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { useAtom } from "jotai"
@@ -15,6 +15,8 @@ import * as anchor from "@coral-xyz/anchor"
 import { toast } from "@components/ui/use-toast"
 import { Loader2 } from "lucide-react"
 import { lastSubmitted as lastSubmittedAtom } from '@lib/atoms';
+
+import { BN } from "@coral-xyz/anchor"
 
 const challengeSchema = z.object({
   deployedURL: z.string().url("Must be a valid URL"),
@@ -40,15 +42,16 @@ const challengeInputs: ChallegeInput[] = [
   }
 ]
 
-const SubmitChallenge: React.FC<{serial: number, title: string}> = ({serial, title}) => {
+const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, title }) => {
 
-  console.log("serial",serial,title)
+  console.log("userAccountPDA", userAccountPDA)
 
   const [mateAccountPDA] = useAtom(userAccountPDA)
+ // const [mainAccountPDA]= useAtom(adminAccountPDA)
   const [solQuest] = useAtom(solQuestAnchor)
   const [lastSubmitted] = useAtom(lastSubmittedAtom)
 
-  const {wallet} = useWallet();
+  const { wallet } = useWallet();
 
   const [loading, setLoading] = useState(false)
 
@@ -57,28 +60,34 @@ const SubmitChallenge: React.FC<{serial: number, title: string}> = ({serial, tit
   })
   async function onSubmit(values: z.infer<typeof challengeSchema>) {
 
-    console.log("mateAccountPDA",mateAccountPDA);
-    console.log("solQuest",solQuest);
-    console.log("wallet?.adapter.publicKey",wallet?.adapter.publicKey);
-  
-    
+  //  console.log("mateAccountPDA", mateAccountPDA!.toString());
+    console.log("solQuest", solQuest);
+    console.log("wallet?.adapter.publicKey", wallet?.adapter.publicKey!.toString());
+
+    const id = serial;
+    const deployedUrl = values.deployedURL;
+    const transaction = values.transactionSignature;
+
+
+
+
     setLoading(true)
-    if(wallet?.adapter.publicKey && mateAccountPDA && solQuest) {
-      console.log("values",values, serial)
-      const resp = await solQuest?.methods.addCompletedQuest(serial, values.deployedURL, values.transactionSignature)
+    if (wallet?.adapter.publicKey! && mateAccountPDA! && solQuest!) {
+      console.log("values", values, serial)
+      const resp = await solQuest?.methods.addCompletedQuest(id, deployedUrl, transaction)
         .accounts({
           signer: wallet.adapter.publicKey,
           user: mateAccountPDA,
           systemProgram: anchor.web3.SystemProgram.programId
         })
-        .rpc().catch(() => {
-          setLoading(false)
-          toast({
-            title: "Failed",
-            description: "Unable to submit challenge, Please try agian later"
-          })
-        })
-      if(resp) {
+        .rpc();
+      console.log(
+        "response", resp
+      )
+      if (resp) {
+        console.log(
+          "response-0", resp
+        )
         toast({
           title: "Successful",
           description: "We have received your submission"
@@ -103,11 +112,11 @@ const SubmitChallenge: React.FC<{serial: number, title: string}> = ({serial, tit
               LOCKED
             </>
           ) : (
-              <>
-                <Rocket />
-                Submit Challenge
-              </>
-            )}
+            <>
+              <Rocket />
+              Submit Challenge
+            </>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent>
@@ -116,11 +125,11 @@ const SubmitChallenge: React.FC<{serial: number, title: string}> = ({serial, tit
         <Form {...form} >
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 mt-2" >
             {challengeInputs.map(s => (
-              <FormField 
+              <FormField
                 key={s.name}
                 control={form.control}
                 name={s.name}
-                render={({field}) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>{s.label}</FormLabel>
                     <FormControl>
@@ -136,8 +145,8 @@ const SubmitChallenge: React.FC<{serial: number, title: string}> = ({serial, tit
               {loading ? (<>
                 <Loader2 className="animate-spin" /> Loading
               </>) : (<>
-                  <Rocket /> Submit
-                </>)}
+                <Rocket /> Submit
+              </>)}
             </Button>
           </form>
         </Form>

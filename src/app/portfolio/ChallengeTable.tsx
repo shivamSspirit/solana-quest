@@ -17,7 +17,7 @@ const ChallengeTable: React.FC<{challenges: Challenge[]}> = ({challenges}) => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {challenges.map(c => (
+                {challenges!.map(c => (
                     <TableRow key={c.contract} >
                         <TableCell>{c.name}</TableCell>
                         <TableCell className="max-w-[1rem] truncate"><a 

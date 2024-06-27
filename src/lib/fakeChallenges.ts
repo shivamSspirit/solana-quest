@@ -25,7 +25,7 @@ const challenges: Challenge[] = [
 </svg>
 `
   },
-{
+  {
     serial: 2,
     title: "Simple NFT Example",
     unlocked: false,
@@ -42,7 +42,7 @@ const challenges: Challenge[] = [
 </svg>
 `
   },
-{
+  {
     serial: 3,
     title: "Simple NFT Example",
     unlocked: false,

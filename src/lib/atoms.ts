@@ -11,11 +11,15 @@ const gasKeypair = atom<web3.Keypair | null>(null)
 
 const solQuestAnchor = atom<Program<SolQuest> | null>(null)
 
+const userAccount = atom<any>(null);
+
 const userAccountPDA = atom<web3.PublicKey | null>(null)
 
-const userAccount = atom<any>(null)
+const adminAccount = atom<any>(null);
 
-const lastSubmitted = atom<number>(2)
+const adminAccountPDA = atom<web3.PublicKey | null>(null);
+
+const lastSubmitted = atom<number>(2);
 
 export {
   anchor,
@@ -24,5 +28,7 @@ export {
   solQuestAnchor,
   userAccountPDA,
   userAccount,
-  lastSubmitted
+  lastSubmitted,
+  adminAccount,
+  adminAccountPDA
 }

@@ -3,6 +3,27 @@ export type SolQuest = {
   "name": "sol_quest",
   "instructions": [
     {
+      "name": "initializeAdmin",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "initializeUser",
       "accounts": [
         {
@@ -91,9 +112,58 @@ export type SolQuest = {
           }
         }
       ]
+    },
+    {
+      "name": "approveUserQuest",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "questId",
+          "type": "i8"
+        }
+      ]
     }
   ],
   "accounts": [
+    {
+      "name": "admin",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "matesSubmitted",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    },
     {
       "name": "mate",
       "type": {
@@ -139,22 +209,6 @@ export type SolQuest = {
   ],
   "types": [
     {
-      "name": "Social",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "socialName",
-            "type": "string"
-          },
-          {
-            "name": "socialLink",
-            "type": "string"
-          }
-        ]
-      }
-    },
-    {
       "name": "Quest",
       "type": {
         "kind": "struct",
@@ -180,6 +234,22 @@ export type SolQuest = {
             "type": {
               "defined": "Status"
             }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Social",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "socialName",
+            "type": "string"
+          },
+          {
+            "name": "socialLink",
+            "type": "string"
           }
         ]
       }
@@ -226,6 +296,27 @@ export const IDL: SolQuest = {
   "name": "sol_quest",
   "instructions": [
     {
+      "name": "initializeAdmin",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "initializeUser",
       "accounts": [
         {
@@ -314,9 +405,58 @@ export const IDL: SolQuest = {
           }
         }
       ]
+    },
+    {
+      "name": "approveUserQuest",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "questId",
+          "type": "i8"
+        }
+      ]
     }
   ],
   "accounts": [
+    {
+      "name": "admin",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "matesSubmitted",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    },
     {
       "name": "mate",
       "type": {
@@ -362,22 +502,6 @@ export const IDL: SolQuest = {
   ],
   "types": [
     {
-      "name": "Social",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "socialName",
-            "type": "string"
-          },
-          {
-            "name": "socialLink",
-            "type": "string"
-          }
-        ]
-      }
-    },
-    {
       "name": "Quest",
       "type": {
         "kind": "struct",
@@ -403,6 +527,22 @@ export const IDL: SolQuest = {
             "type": {
               "defined": "Status"
             }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Social",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "socialName",
+            "type": "string"
+          },
+          {
+            "name": "socialLink",
+            "type": "string"
           }
         ]
       }
