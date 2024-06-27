@@ -84,14 +84,14 @@ const UpdateSocials: React.FC = () => {
         const socials: {socialName: string, socialLink: string}[] = []
         console.log(values)
         for (const social in values) {
-            socials.push({
+            socials?.push({
                 socialName: social,
                 // @ts-ignore
                 socialLink: (values[social] as string) ?? ""
             })
         }
-        console.table({old: mateAccount.socials, new: socials})
-        if(mateAccount.socials === socials) {
+        console.table({old: mateAccount.socials!, new: socials!})
+        if(mateAccount.socials === socials!) {
             toast({
                 title: "No Updates",
                 description: "All values are same"
@@ -112,6 +112,7 @@ const UpdateSocials: React.FC = () => {
                     })
                 })
             if(signature) {
+                console.log("signature", signature)
                 setMateAccount({
                     ...mateAccount,
                     socials
