@@ -19,8 +19,6 @@ import ChallengeTable from "./ChallengeTable"
 import { allChallenges } from "contentlayer/generated"
 import BN from "bn.js"
 
-// import { userAccount } from "@lib/atoms"
-
 export interface Challenge {
         name: string,
         live: string,
@@ -34,10 +32,7 @@ const Portfolio: React.FC = () => {
     const [image] = useAtom(pfp)
     const {toast} = useToast();
 
-
     const [mateAccount] = useAtom(userAccount);
-
-    console.log('mateAccount',Object.keys(mateAccount.mateRole)[0])
 
     const [profile, setProfile] = useState<Record<string, string>>({})
 
@@ -54,7 +49,7 @@ const Portfolio: React.FC = () => {
             const challenges = mateAccount['questCompletedByMate'] as any[]
             const displayChallenges: any[] = []
             challenges.map(c => {
-                const currChallengeFromContent = allChallenges.find((a) => {
+                const currChallengeFromContent = allChallenges?.find((a) => {
                     return a.serial === c.id
                 })
                 console.log(Object.keys(c['status'])[0])
@@ -70,7 +65,7 @@ const Portfolio: React.FC = () => {
 
             setUserChallenges(displayChallenges)
         }
-    }, [mateAccount])
+    }, [mateAccount!])
 
     if(!wallet) return (
         <div className="text-center text-4xl h-[60vh] flex items-center justify-center text-muted-foreground">
