@@ -50,34 +50,13 @@ const CustomConnect: React.FC = () => {
 
   useLayoutEffect( () => {
     if(connected && wallet && wallet.adapter.publicKey) {
-      // setLabel(trimKey(wallet.adapter.publicKey?.toString() || "") || "no public key")
-
       const solQuest = anchorProgram(anchorWallet as any)
       setSolQuest(solQuest)
       const [mateAccountPDA] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("Mate"), wallet.adapter.publicKey!.toBuffer()], new anchor.web3.PublicKey(publicEnv.NEXT_PUBLIC_PROGRAM_ID));
-    //  const [adminAccountPDA] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("Admin"), wallet.adapter.publicKey!.toBuffer()], new anchor.web3.PublicKey(publicEnv.NEXT_PUBLIC_PROGRAM_ID));
-
-
-
-     // console.log("adminAccountPDA", adminAccountPDA.toString());
-
-      
 
       setUserAccount(mateAccountPDA)
-      console.log("start get")
       const initSolQuest = async () => {
-
-        /** creation of admin account */
-   //     const [adminAcc, adminAccError] = await promiser(solQuest.account.admin.fetch(adminAccountPDA))
         const [mateAcc, mateAccError] = await promiser(solQuest.account.mate.fetch(mateAccountPDA))
-
-
-
-     //   console.log("adminAcc",adminAcc);
-
-
-
-
 
         let nft: Awaited<ReturnType<typeof getNft>> = null
         try {
@@ -102,26 +81,7 @@ const CustomConnect: React.FC = () => {
               if(mintkey === ""){
                 throw new Error("mint key was not found")
               }
-
-              // const [confirmAdmintx,confirmAdmintxErr] = await promiser(solQuest.methods
-              //   .initializeAdmin().accounts({
-              //     signer: wallet.adapter.publicKey,
-              //     admin: adminAccountPDA,
-              //     systemProgram: anchor.web3.SystemProgram.programId,
-              //   })
-              //   .rpc())
-
-
-
-              //   if(confirmAdmintxErr) {
-              //     console.error(`InitialzeAccount - error while sending transaction - ${JSON.stringify(confirmAdmintxErr)}`)
-              //     throw new Error(`InitialzeAccount - error while sending transaction - ${JSON.stringify(confirmAdmintxErr)}`)
-              //   }
-
-              //   if(confirmAdmintx){
-              //     console.log("confirmAdmintx",confirmAdmintx);
-              //   }
-
+              
               const [confirmTx, confirmErr] = await promiser(solQuest.methods
                 .initializeUser(new anchor.web3.PublicKey(mintkey)).accounts({
                   signer: wallet.adapter.publicKey,
@@ -129,8 +89,6 @@ const CustomConnect: React.FC = () => {
                   systemProgram: anchor.web3.SystemProgram.programId,
                 })
                 .rpc())
-
-
 
 
               if(confirmErr) {

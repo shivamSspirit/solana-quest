@@ -58,11 +58,8 @@ const UpdateSocials: React.FC = () => {
     const [mateAccountPDA] = useAtom(userAccountPDA)
     const [solQuest] = useAtom(solQuestAnchor)
     const [mateAccount, setMateAccount] = useAtom(userAccount)
-
     const {wallet} = useWallet()
-
     const [loading, setLoading] = useState(false)
-
     const form = useForm<z.infer<typeof socialsSchema>>({
         resolver: zodResolver(socialsSchema),
     })

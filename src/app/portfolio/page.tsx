@@ -31,14 +31,11 @@ const Portfolio: React.FC = () => {
     const [userChallenges, setUserChallenges] = useState<Challenge[]>([])
     const [image] = useAtom(pfp)
     const {toast} = useToast();
-
     const [mateAccount] = useAtom(userAccount);
-
     const [profile, setProfile] = useState<Record<string, string>>({})
 
     useLayoutEffect(() => {
         console.log(mateAccount);
-        console.log("image",image)
         if(mateAccount) {
             const profile: Record<string, string> = {}
             mateAccount.socials.forEach((s: any) => {

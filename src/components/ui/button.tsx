@@ -13,13 +13,13 @@ text-sm font-medium ring-offset-background transition-colors focus-visible:outli
         default: `bg-border-gradient from-border-stop-start
 via-border-stop-mid/0 to-border-stop-end `,
         destructive:
-        `bg-border-gradient from-destructive-stop-start
+          `bg-border-gradient from-destructive-stop-start
 via-border-stop-mid/0 to-destructive-stop-end`,
         outline:
-        `bg-border-gradient from-border-stop-start
+          `bg-border-gradient from-border-stop-start
 via-border-stop-mid/0 to-border-stop-end `,
         secondary:
-        `bg-border-gradient from-border-stop-start
+          `bg-border-gradient from-border-stop-start
 via-border-stop-mid/0 to-border-stop-end `,
         ghost: `bg-transparent`,
         link: `bg-transparent `,
@@ -39,11 +39,11 @@ from-[-4.59%] to-[100%] `,
       variant: {
         default: "bg-button-gradient from-primary-stop-start/90 to-primary-stop-end text-primary-foreground hover:from-primary-stop-start hover:to-primary-stop-end",
         destructive:
-        "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-        "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
-        "bg-secondary hover:bg-secondary/90",
+          "bg-secondary hover:bg-secondary/90",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-foreground underline-offset-4 hover:underline",
       },
@@ -64,16 +64,16 @@ from-[-4.59%] to-[100%] `,
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
   VariantProps<typeof buttonVariants> {
-    asChild?: boolean,
-    outerClass?: string
-  }
+  asChild?: boolean,
+  outerClass?: string
+}
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, disabled, variant, size, asChild = false, children, outerClass, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <span
-        className={cn(buttonBorderVariants({ variant }), disabled && "opacity-50 pointer-events-none" ,outerClass)}
+        className={cn(buttonBorderVariants({ variant }), disabled && "opacity-50 pointer-events-none", outerClass)}
         {...props}
       >
         <Comp

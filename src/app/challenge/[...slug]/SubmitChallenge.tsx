@@ -16,8 +16,6 @@ import { toast } from "@components/ui/use-toast"
 import { Loader2 } from "lucide-react"
 import { lastSubmitted as lastSubmittedAtom } from '@lib/atoms';
 
-import { BN } from "@coral-xyz/anchor"
-
 const challengeSchema = z.object({
   deployedURL: z.string().url("Must be a valid URL"),
   transactionSignature: z.string()
@@ -44,15 +42,11 @@ const challengeInputs: ChallegeInput[] = [
 
 const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, title }) => {
 
-  console.log("userAccountPDA", userAccountPDA)
-
   const [mateAccountPDA] = useAtom(userAccountPDA)
- // const [mainAccountPDA]= useAtom(adminAccountPDA)
   const [solQuest] = useAtom(solQuestAnchor)
   const [lastSubmitted] = useAtom(lastSubmittedAtom)
 
   const { wallet } = useWallet();
-
   const [loading, setLoading] = useState(false)
 
   const form = useForm<z.infer<typeof challengeSchema>>({
@@ -60,16 +54,9 @@ const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, 
   })
   async function onSubmit(values: z.infer<typeof challengeSchema>) {
 
-  //  console.log("mateAccountPDA", mateAccountPDA!.toString());
-    console.log("solQuest", solQuest);
-    console.log("wallet?.adapter.publicKey", wallet?.adapter.publicKey!.toString());
-
     const id = serial;
     const deployedUrl = values.deployedURL;
     const transaction = values.transactionSignature;
-
-
-
 
     setLoading(true)
     if (wallet?.adapter.publicKey! && mateAccountPDA! && solQuest!) {
@@ -81,9 +68,6 @@ const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, 
           systemProgram: anchor.web3.SystemProgram.programId
         })
         .rpc();
-      console.log(
-        "response", resp
-      )
       if (resp) {
         console.log(
           "response-0", resp

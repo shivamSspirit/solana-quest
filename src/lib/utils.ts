@@ -1,20 +1,19 @@
-import { utils, web3 } from "@coral-xyz/anchor";
 import type { ClassValue } from "clsx";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 
 function cn(...inputs: ClassValue[]) {
-        return twMerge(clsx(inputs));
+    return twMerge(clsx(inputs));
 }
 
 function sleep(millisec = 0) {
-        return new Promise((resolve) => {
-                setTimeout(() => resolve(""), millisec);
-        });
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(""), millisec);
+    });
 };
 
 function trimKey(key: string) {
-   return key.slice(0, 5) + "...." + key.slice(-5, -1);
+    return key.slice(0, 5) + "...." + key.slice(-5, -1);
 }
 
 async function copyToClipboard(text: string): Promise<void> {
@@ -27,8 +26,8 @@ async function copyToClipboard(text: string): Promise<void> {
 }
 
 export {
-  cn,
-  sleep,
-  trimKey,
-  copyToClipboard,
+    cn,
+    sleep,
+    trimKey,
+    copyToClipboard,
 }
