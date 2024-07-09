@@ -27,11 +27,17 @@ export const getProvider = (wallet: anchor.Wallet) => {
 export const anchorProgram = (wallet: anchor.Wallet) => { 
   const provider = getProvider(wallet); 
   const idl = IDL as anchor.Idl; 
+
+  console.log("PROGRAM_ID", PROGRAM_ID)
+
+
   const program = new anchor.Program( 
     idl, 
     PROGRAM_ID, 
     provider 
   ) as unknown as anchor.Program<SolQuest>; 
+
+  console.log("program", program)
 
   return program; 
 };

@@ -62,7 +62,7 @@ const Portfolio: React.FC = () => {
 
             setUserChallenges(displayChallenges)
         }
-    }, [mateAccount!])
+    }, [mateAccount])
 
     if(!wallet) return (
         <div className="text-center text-4xl h-[60vh] flex items-center justify-center text-muted-foreground">

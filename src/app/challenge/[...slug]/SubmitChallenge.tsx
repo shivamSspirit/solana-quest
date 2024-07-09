@@ -59,9 +59,10 @@ const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, 
     const transaction = values.transactionSignature;
 
     setLoading(true)
-    if (wallet?.adapter.publicKey! && mateAccountPDA! && solQuest!) {
+    if (wallet && wallet.adapter.publicKey! && mateAccountPDA! && solQuest!) {
       console.log("values", values, serial)
-      const resp = await solQuest?.methods.addCompletedQuest(id, deployedUrl, transaction)
+      console.log("matess", mateAccountPDA);
+      const resp = await solQuest.methods.addCompletedQuest(id, deployedUrl, transaction)
         .accounts({
           signer: wallet.adapter.publicKey,
           user: mateAccountPDA,
