@@ -26,7 +26,7 @@ function NewClient({ post }: { post: any }) {
 
     return (
         <div>
-            <article className="py-6 prose max-w-[65%] px-4 dark:prose-invert mx-auto">
+            <article className="py-6 prose dark:prose-invert mx-auto">
                 <p>Challenge #{post.serial}</p>
                 <h1 className="mb-2">{post.title}</h1>
 
