@@ -19,16 +19,15 @@ interface ChallegeCardProps {
   icon: string,
   title: string,
   description: string,
-  unlocked: boolean,
   link: string
 }
-const ChallengeCard: React.FC<ChallegeCardProps> =   ({unlocked, icon, title, serial, link, description}) => {
+const ChallengeCard: React.FC<ChallegeCardProps> =   ({ icon, title, serial, link, description}) => {
 
   const Icon = dynamic(() => import(`lib/icons/${icon}`), { ssr: true })
 console.log("link",link)
   return (
-    <Link href="/challenge/intro-to-spl-token" className={cn(!unlocked && "pointer-events-none")}>
-    <Card className=""  >
+    <Link href={link} className="pointer">
+    <Card className="">
       <CardHeader>
         <CardDescription className="text-card-foreground">Challenge #{serial}</CardDescription>
           <Icon />
@@ -38,18 +37,13 @@ console.log("link",link)
         <p className="leading-6" >{description}  </p>
       </CardContent>
       <CardFooter className="w-full" >
-        <Button disabled={!unlocked} className={"tracking-wide gap-2 w-full"} outerClass="w-full" >
-            {unlocked ? (
+        <Button disabled={false} className={"tracking-wide gap-2 w-full"} outerClass="w-full" >
+        
               <>
                 <Rocket />
                 START QUEST
               </>
-            ) : (
-                <>
-                  <Lock />
-                  LOCKED
-                </>
-              ) }
+          
         </Button>
       </CardFooter>
     </Card>

@@ -1,0 +1,692 @@
+---
+title: Build CRUD D-App on solana
+serial: 3
+author: shivam
+description: In this Quest, you'll explore how to Build a CRUD d-app on solana using PDA Accounts. learn how to create, Read, Delete and Update PDA Accounts.
+icon: 'OneChallenge'
+github_link: 'https://github.com/shivamSspirit/solana-phonebook'
+---
+
+# Solana PhoneBook
+
+[![artwork1-01.png](https://i.postimg.cc/vBrFS4hg/artwork1-01.png)](https://postimg.cc/MMpFnKhq)
+
+# Introduction
+
+This guide will teach you how to create and deploy the Solana program and connect to UI for a basic on-chain phonebook dApp. This d-App will allow you to CRUD operation on Solana utilizing [PDAs](https://solana.com/docs/core/pda).
+
+# What you will learn
+
+- Setting up your environment
+- Using **npx create-solana-dapp**
+- Anchor program development
+- How to create and store data in PDA
+- How to update data in PDA
+- How to close a PDA Account
+- Deploying a Solana program
+- Testing an on-chain program
+- Connecting an on-chain program to a React UI
+
+# Prerequisites
+
+For this guide, you will need to have your local development environment setup with a few tools:
+
+- [Rust](https://www.rust-lang.org/tools/install)
+- [Node JS](https://nodejs.org/en/download)
+- [Solana CLI & Anchor](https://solana.com/developers/guides/getstarted/setup-local-development)
+
+# What we are building
+
+We are developing a phonebook program.  
+In this d-App, Solana’s Program Derived Address (PDA) accounts will be utilized to 
+
+- Create phonebook Account
+- Update phonebook Account
+- Delete phonebook Account
+
+A basic phonebook contains the following information:
+
+- **User Name**
+- **User MobileNumber**
+- **User Description**
+
+In this program, you will learn how to store data in a Program Derived Address (PDA) account(phone book) on Solana. Additionally, you will learn how to create a [hashmap-like](https://solanacookbook.com/guides/account-maps.html#deriving-pdas) structure using PDAs.
+
+This program demonstrates a one-to-many mapping between a wallet and PDAs. Each wallet can have multiple accounts mapped as PDAs.
+
+![phonebooklandingpage](/ChallangeViews/quiz-2/phoneland.jpeg)
+
+Live At : [solanaphonebook_live](https://solana-phonebook.vercel.app/phonebook)
+
+# Setting up the project
+
+You can set up a new project by using:
+
+```bash
+npx create-solana-dapp
+```
+
+This CLI command enables quick Solana dApp creation. You can find the source code [here](https://github.com/solana-developers/create-solana-dapp).
+
+Now respond to the prompts as follows:
+
+- Enter a project name: **phone-book**
+- Select a preset: **Next.js**
+- Select a UI library: **Tailwind**
+- Select an Anchor template: **counter** program
+
+By selecting a **counter** for the Anchor template, a simple counter [program](https://solana.com/docs/terminology#program), written in Rust using the Anchor framework, will be generated for you. Before we start editing this generated template program, let's make sure everything is working as expected:
+
+```bash
+cd phone-book 
+```
+
+```bash
+npm install 
+```
+
+```bash
+npm run dev
+```
+
+Or you can directly clone this repo and set it up locally
+
+```bash
+git clone git@github.com:shivamSspirit/solana-phonebook.git
+```
+
+# The Dapp accounts overview
+
+![phonebookaccounts](/ChallangeViews/quiz-2/phonebookdia.jpeg)
+
+In the above diagram, the user's [wallet](https://github.com/anza-xyz/wallet-adapter) is responsible for creating a phonebook account. The phonebook account includes the wallet's public key, username, user mobile number, and content. The system program facilitates the creation of the user's phonebook account.
+
+# Anchor program development
+
+If you're new to Anchor, [The Anchor Book](https://book.anchor-lang.com/introduction/introduction.html) and [Anchor Examples](https://examples.anchor-lang.com/) are great references to help you learn.
+
+In **phone-book**, navigate to **anchor/programs/phonebook/src/lib.rs**. There will already be template code generated in this folder. Let's delete it and start from scratch to walk through each step.
+
+```rust
+// use this import to gain access to common anchor features
+use anchor_lang::prelude::*;
+
+// declare_id! **set ID field that store address for this program**
+declare_id!("5XRwMzzgnQcHa3mi7p1gUdCVw8ed4LEnBVExMeFcq1wv");
+
+// write your business logic here
+#[program]
+pub mod phonebook {
+    use super::*;
+    pub fn initialize(_ctx: Context<Initialize>) -> Result<()> {
+        Ok(())
+    }
+}
+```
+
+# Define states
+
+# PhoneBook account state
+
+The state is a data structure utilized for storing information. In the Solana blockchain, since programs are stateless, the state is stored in accounts. in Solana, you can create a hashmap-like structure to organize and manage data using PDA accounts.  
+In Anchor, you can create an account by applying the `#[account]` attribute macro to the rust struct.
+
+```Rust
+// use this import to gain access to common anchor features
+use anchor_lang::prelude::*;
+
+// declare an id for your program
+declare_id!("5XRwMzzgnQcHa3mi7p1gUdCVw8ed4LEnBVExMeFcq1wv");
+
+// write your business logic here
+#[program]
+pub mod phonebook {
+    use super::*;
+   ... 
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct PhoneBookState {
+    pub user: Pubkey,
+    #[max_len(100)]
+    pub user_name: String,
+    #[max_len(100)]
+    pub user_number: String,
+    #[max_len(100)]
+    pub content: String,
+}
+```
+
+In the code above, **PhoneBookState** is a struct similar to a hashmap.  
+It stores:
+
+- user is a public key type
+- user_name is a string type
+- user_number is a string
+- content is a string type
+
+In Solana, we must define the space for an account at the time of its creation because this required to pay [rent](https://solana.com/docs/terminology#rent) for the storage used by the account.
+
+- **#[account]** is An attribute for the **PhoneBookState** data structure representing a Solana account.
+- **#[derive(InitSpace)]**  Implements a [Space](https://docs.rs/anchor-lang/latest/anchor_lang/trait.Space.html) trait on the PhoneBookState struct.
+- **#[max_len(100)]**  attribute for this derive represents the length of the structure.
+
+let’s create the mapping between the user wallet and PhoneBookState
+
+# Create phonebook Account
+
+```Rust
+use anchor_lang::prelude::*;
+
+declare_id!("5XRwMzzgnQcHa3mi7p1gUdCVw8ed4LEnBVExMeFcq1wv");
+
+#[program]
+pub mod phonebook {
+    use super::*;
+    
+    /// Add data into the phonebook
+    
+     pub fn create_phone_book_entry(ctx: Context<CreatePhoneBookEntry>, content: String, user_name: String, user_number: String) -> Result<()> {
+        let phone_book = &mut ctx.accounts.phone_book;
+
+        phone_book.content = content;
+        phone_book.user_name = user_name;
+        phone_book.user_number = user_number;
+        phone_book.user = ctx.accounts.user.key();
+
+        Ok(())
+    }
+}
+
+/// validate accounts here
+
+#[derive(Accounts)]
+#[instruction(content: String, user_name: String, user_number: String)]
+pub struct CreatePhoneBookEntry<'info> {
+    #[account(
+        init_if_needed,
+        seeds = [user_name.as_bytes(), user.key().as_ref()],
+        bump,
+        payer = user,
+        space =  8 + std::mem::size_of::<PhoneBookState>(),
+    )]
+    pub phone_book: Account<'info, PhoneBookState>,
+
+    #[account(mut)]
+    pub user: Signer<'info>,
+
+    pub system_program: Program<'info, System>,
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct PhoneBookState {
+    pub user: Pubkey,
+    #[max_len(100)]
+    pub user_name: String,
+    #[max_len(100)]
+    pub user_number: String,
+    #[max_len(100)]
+    pub content: String,
+}
+```
+
+let’s break down to see what is happening here.  
+In the above code,
+
+**Instruction handler logic**-
+
+In the **create_phone_book_entry** function
+
+- It takes the account context as its first and content, user_name, and user_number as the following arguments.
+- It retrieves the phonebook account from the context and stores data in it
+- It stores the user's public key, user_name, user_number and content in phone_book Account.
+- lastly fn returns **Ok(())** for successful operation and through error if any process fails.
+
+**Account creation and validation**-
+
+In the **CreatePhoneBookEntry** struct, you can access the instruction’s arguments with the **#[instruction(..)]** attribute.
+
+Different types of constraints can be applied with the **#[account(..)]** attribute.
+
+The **init_if_needed** constraint has the same functionality as **init**. However, it only runs if the account does not exist yet.
+
+The **init** constraints Create the account via a CPI to the system program and initialize it (sets its account discriminator).
+
+For this account, we use seeds **user_name** and **user public key** as hashmap keys in this PDA Account. These seeds can be user-defined or dynamically generated `byte` values.
+
+This mechanism checks whether the given account is a PDA derived from the executing program, the specified seeds, and, if provided, the bump. If the bump is not provided, Anchor defaults to the canonical bump.
+
+- The **bumps** field, of type [Bump](https://docs.rs/anchor-lang/latest/anchor_lang/trait.Bumps.html#), is generated by the **#[derive(Accounts)]** macro. It represents the bump seeds identified during constraint validation.
+- The **bump** is an **u8** type that helps generate a PDA by modifying the key pair from the usual elliptic curve.
+- The **payer** account, which in our case is of type `Signer`, covers the cost of creating the account.
+- In the last system program is used for account creation.
+
+At this stage, we are done with 
+
+- PhoneBook PDA account creation
+- Storing the user’s phonebook data in the phonebook PDA account
+
+# Update phonebook Account
+
+```rust
+use anchor_lang::prelude::*;
+
+declare_id!("5XRwMzzgnQcHa3mi7p1gUdCVw8ed4LEnBVExMeFcq1wv");
+
+#[program]
+pub mod phonebook {
+    use super::*;
+    
+    ...
+    
+    /// update data in the phonebook
+    
+     pub fn update_phone_book_entry(
+        ctx: Context<UpdatePhoneBookEntry>,
+        content: String
+    ) -> Result<()> {
+        msg!("PhoneBook Entry Updated");
+        msg!("content: {}", content);
+ 
+        let phone_book = &mut ctx.accounts.phone_book;
+        phone_book.content = content;
+ 
+        Ok(())
+    }
+}
+
+/// validate accounts here
+
+...
+
+#[derive(Accounts)]
+#[instruction(content: String, user_name: String)]
+pub struct UpdatePhoneBookEntry<'info> {
+    #[account(
+        mut,
+        seeds = [user_name.as_bytes(), user.key().as_ref()],
+        bump,
+        realloc = 8 + 32 + 1 + 4 + content.len() + 100 + 100,
+        realloc::payer = user,
+        realloc::zero = true,
+    )]
+    pub phone_book: Account<'info, PhoneBookState>,
+    #[account(mut)]
+    pub user: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct PhoneBookState {
+    pub user: Pubkey,
+    #[max_len(100)]
+    pub user_name: String,
+    #[max_len(100)]
+    pub user_number: String,
+    #[max_len(100)]
+    pub content: String,
+}
+```
+
+In the above code,
+
+**Instruction logic**-
+
+In the **update_phone_book_entry** function
+
+- It takes the context as its first argument and the **content** as its second.
+- It prints the content that we want to update.
+- It retrieves the user's phonebook account from the context and stores it in phone_book.
+- It Stores the **content** in the **phone_book** state.
+- After storing the information, the function returns **Ok(())** to finalize the result or an error if the operation fails.
+
+**Account creation and validation**-
+
+The **content** string is stored in the **phone_book** Account. Additionally, the size of the phonebook account is updated to accommodate the new data.
+
+Resizing data of PDA -:
+
+The **realloc** constraint is used to adjust the space of a program account at the beginning of an instruction. It is specified as 
+
+`#[account(realloc = <space>, realloc::payer = <target>, realloc::zero = <bool>)]`.
+
+Here's how it works:
+
+- When increasing the account's data length, lamports are transferred from the **realloc::payer** to the program account to ensure it remains **rent-exempt**.
+- The **realloc::zero** constraint determines whether the newly allocated memory should be zero-initialized. Zero-initialization is important as it ensures that the new memory is clean and free from any residual or unwanted data.
+
+# Close phonebook Account
+
+```Rust
+
+use anchor_lang::prelude::*;
+
+declare_id!("5XRwMzzgnQcHa3mi7p1gUdCVw8ed4LEnBVExMeFcq1wv");
+
+#[program]
+pub mod phonebook {
+   use super::*;
+    
+    ...
+    
+     pub fn delete_phone_book_entry(_ctx: Context<DeleteEntry>, user_name: String) -> Result<()> {
+        msg!("PhoneBook entry from {} deleted", user_name);
+        Ok(())
+    }
+}
+
+// validate accounts
+... 
+
+#[derive(Accounts)]
+#[instruction(user_name: String)]
+pub struct DeleteEntry<'info> {
+    #[account(
+        mut,
+        seeds = [user_name.as_bytes(), user.key().as_ref()],
+        bump,
+        close = user,
+    )]
+    pub phone_book: Account<'info, PhoneBookState>,
+    #[account(mut)]
+    pub user: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct PhoneBookState {
+    pub user: Pubkey,
+    #[max_len(100)]
+    pub user_name: String,
+    #[max_len(100)]
+    pub user_number: String,
+    #[max_len(100)]
+    pub content: String,
+}
+```
+
+You can close your phonebook account by passing **user_name** and **close** constraint on **#[account(close=user)]**
+
+This will Close the Phonebook Account and:
+
+- Send the lamports to the user account
+- Assign the owner to the System Program
+- Reset data of the account
+
+# Build and deploy Anchor program
+
+From dapp’s root run 
+
+```bash
+npm run anchor build
+```
+
+This will build your anchor program and generate a **target** folder(we will use generated IDL and types for the Solana program to connect our UI to this program).
+
+To deploy this program run
+
+```bash
+npm run anchor deploy
+```
+
+After this, the program will deployed to an address. Pick this **program address** and update this address to the following files.
+
+- phonebook/anchor/src/phonebook-export.ts
+- phonebook/anchor/Anchor.toml
+- phonebook/anchor/programs/phonebook/src/lib.rs
+
+At this stage, we are done with the Phonebook Solana program development.
+
+# Connecting Solana program to UI
+
+**create-solana-dapp** already sets up a UI with data access and a wallet connector for you. All you need to do is simply modify it to fit your newly created program.
+
+Since this phonebook program has three instructions, we will need components in the UI that will be able to call each of these instructions:
+
+- Create Phonebook Account
+- Update Phonebook Account
+- Close Phonebook Account
+
+In your project folder open **phonebook/anchor/src/phonebook-export.ts**
+
+```Typescript
+// Here we export some useful types and functions for interacting with the Anchor program.
+
+import { AnchorProvider, Program } from '@coral-xyz/anchor';
+import { Cluster, PublicKey } from '@solana/web3.js';
+import idl from '../target/idl/phonebook.json';
+import type { Phonebook, IDL } from '../target/types/phonebook';
+
+// Re-export the generated IDL and type
+export { Phonebook, idl, IDL };
+
+// The programId is imported from the program IDL.
+export const PHONEBOOK_PROGRAM_ID = new PublicKey(idl.address);
+
+export function getPhoneBookProgram(provider: AnchorProvider) {
+  return new Program(idl as Phonebook, provider);
+}
+
+// This is a helper function to get the program ID for the phonebook program depending on the cluster.
+export function getPhoneBookProgramId(cluster: Cluster) {
+  switch (cluster) {
+    case 'devnet':
+    case 'testnet':
+      // This is the program ID for the phonebook program on devnet and testnet.
+      return new PublicKey('5XRwMzzgnQcHa3mi7p1gUdCVw8ed4LEnBVExMeFcq1wv');
+    case 'mainnet-beta':
+    default:
+      return PHONEBOOK_PROGRAM_ID;
+  }
+}
+```
+
+In the above code,  
+we are importing IDL and Program types from the generated **target** folder. and re-exporting IDL, types, program ID and Program API.
+
+After this setup let’s move to **phonebook/web/components/phonebook/phonebook-data-access.tsx** And update **usePhoneBookProgram()** to create a user’s Phonebook Account:
+
+```Typescript
+ const createPhoneBookEntry = useMutation({
+    mutationKey: ['phonebook', 'createPhoneBookEntry', { cluster }], 
+    mutationFn: async ({content,userName,userNumber, user}:{content:string; userName:string; userNumber:string; user:PublicKey}) => {
+      const [PhonebookPda] = PublicKey.findProgramAddressSync(
+        [Buffer.from(userName), user.toBuffer()],
+        program.programId,
+      );
+
+      return program.methods
+        .createPhoneBookEntry(content, userName, userNumber)
+        .accounts({ user: user })
+        .rpc()
+    },
+
+    onSuccess: (signature) => {
+      console.log('helooooooo')
+      transactionToast(signature);
+      return accounts.refetch();
+    },
+
+    onError: () => {
+      toast.error('Failed to create entry')
+    }
+
+  });
+```
+
+in the above code,  
+we call our first instruction **createPhoneBookEntry()** to create a user’s Phonebook PDA account.
+
+Next, update the **usePhoneBookProgramAccount()** function to be able to **update** and **delete** Phonebook entries:
+
+```Typescript
+const updatePhoneBookEntry = useMutation({
+    mutationKey: ['phonebook', 'updatePhoneBookEntry', { cluster }], 
+    mutationFn: async ({content,userName,userNumber, user}:{content:string; userName:string; userNumber:string; user:PublicKey}) => {
+      const [PhonebookPda] = PublicKey.findProgramAddressSync(
+        [Buffer.from(userName), user.toBuffer()],
+        program.programId,
+      );
+      return program.methods
+        .updatePhoneBookEntry(content, userName, userNumber)
+        .accounts({  user: user })
+        .rpc()
+    },
+
+    onSuccess: (signature) => {
+      console.log('helooooooo update')
+      transactionToast(signature);
+      return accounts.refetch();
+    },
+
+    onError: () => {
+      toast.error('Failed to update entry')
+    }
+
+  });
+
+  const deletePhoneBookEntry = useMutation({
+    mutationKey: ['phonebook', 'deletePhoneBookEntry', { cluster, account }],
+    mutationFn: async({userName}:{userName:string}) => {
+      return program.methods.deletePhoneBookEntry(userName).rpc()
+    },
+      onSuccess: (tx) => {
+      transactionToast(tx);
+      return accounts.refetch();
+    },
+  });
+```
+
+Next update UI,  
+for this, go into **phonebook/web/components/phonebook/phonebook-ui.tsx** and create a UI for the **Create PhoneBook** button 
+
+```Typescript
+export function PhoneBookCreate() {
+  const { createPhoneBookEntry } = usePhoneBookProgram();
+  const { publicKey } = useWallet();
+  const [userName, setUserName] = useState("");
+  const [userNumber, setuserNumber] = useState("");
+  const [content, setcontent] = useState("");
+
+  const isDataValid = userName.trim() !== "" && userNumber.trim() !== "" && content.trim() !== "";
+
+  const handleSubmit = () => {
+    if (isDataValid && publicKey) {
+      createPhoneBookEntry.mutateAsync({ content, userName, userNumber, user: publicKey });
+    }
+  }
+
+  return (
+    <div>
+      <input className='input input-borderd rounded-lg border border-gray-300 ml-3' type='string' value={userName} onChange={(e) => setUserName(e.target.value)} placeholder='add user name' />
+      <input className='input input-borderd rounded-lg border border-gray-300 ml-3' type='string' value={userNumber} onChange={(e) => setuserNumber(e.target.value)} placeholder='add user mobile number' />
+      <input className='textarea textarea-borderd rounded-lg border border-gray-300 ml-3' type='string' value={content} onChange={(e) => setcontent(e.target.value)} placeholder='add user content' />
+
+      <button
+        className="btn btn-xs lg:btn-md btn-primary mt-3"
+        onClick={handleSubmit}
+        disabled={createPhoneBookEntry.isPending || !isDataValid}
+      >
+        Create PhoneBook {createPhoneBookEntry.isPending && '...'}
+      </button>
+    </div>
+  );
+  }
+```
+
+Finally, create UI for PhoneBook’s inputs and handlers
+
+```Typescript
+function PhoneBookCard({ account }: { account: PublicKey }) {
+  const {
+    accountQuery,
+    updatePhoneBookEntry,
+    deletePhoneBookEntry,
+  } = usePhoneBookProgramAccount({ account });
+
+  const { publicKey } = useWallet();
+  const [content, setContent] = useState("");
+
+  const userName = accountQuery.data?.userName;
+  const userNumber = accountQuery.data?.userNumber;
+
+  const isDataValid = userName?.trim() !== "" && userNumber?.trim() !== "" && content.trim() !== "";
+
+  const handleSubmit = () => {
+    if (isDataValid && publicKey && userName && userNumber) {
+      updatePhoneBookEntry.mutateAsync({ content, userName, userNumber, user: publicKey });
+    }
+  }
+
+  return accountQuery.isLoading ? (
+    <span className="loading loading-spinner loading-lg"></span>
+  ) : (
+    <div className="card card-bordered border-base-300 border-4 text-neutral-content">
+      <div className="card-body items-center text-center">
+        <div className="space-y-6">
+          <h2
+            className="card-title justify-center text-3xl cursor-pointer"
+            onClick={() => accountQuery.refetch()}
+          >
+           UserName: {accountQuery.data?.userName}
+          </h2>
+          <p>User Mobile Number: {accountQuery.data?.userNumber}</p>
+          <p>PhoneBook Content: {accountQuery.data?.content}</p>
+
+          <div className="card-actions justify-around">
+
+            <textarea className='textarea textarea-bordered' value={content} onChange={(e) => setContent(e.target.value)} placeholder='update user content' />
+
+            <button
+              className="btn btn-xs lg:btn-md btn-primary"
+              onClick={handleSubmit}
+              disabled={updatePhoneBookEntry.isPending || !isDataValid}
+            >
+              update {updatePhoneBookEntry.isPending && '...'}
+            </button>
+
+          </div>
+
+          <div className="text-center space-y-4">
+            <p>
+              <ExplorerLink
+                path={`account/${account}`}
+                label={ellipsify(account.toString())}
+              />
+            </p>
+            <button
+              className="btn btn-xs btn-secondary btn-outline"
+              onClick={() => {
+                if (
+                  !window.confirm(
+                    'Are you sure you want to close this account?'
+                  )
+                ) {
+                  return;
+                }
+                if(userName){
+                  return deletePhoneBookEntry.mutateAsync({userName});
+                }    
+              }}
+              disabled={deletePhoneBookEntry.isPending}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+Resources-:  
+github : [solanaphonebook_github](https://github.com/shivamSspirit/solana-phonebook)  
+vercel : [solanaphonebook_vercel](https://solana-phonebook.vercel.app/phonebook)
+
+
+

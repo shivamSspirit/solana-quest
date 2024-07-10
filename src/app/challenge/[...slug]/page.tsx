@@ -63,8 +63,8 @@ export default async function PostPage({ params }: ChallengeProps) {
         </div>
 
         {/* Main Content */}
-        <div className="md:w-3/4 lg:w-4/5 p-4 md:p-6 lg:p-8">
-          <article className="py-6 prose px-4 dark:prose-invert mx-auto">
+        <div className="md:w-4/5 lg:w-4/5 p-4 md:p-2 lg:p-4">
+          <article className="py-6 prose px-2 dark:prose-invert mx-auto">
             <p>Challenge #{post.serial}</p>
             <h1 className="mb-2">{post.title}</h1>
 

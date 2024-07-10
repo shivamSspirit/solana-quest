@@ -7,374 +7,85 @@ icon: 'OneChallenge'
 github_link: 'https://github.com/shivamSspirit/S-Sol-tokens'
 ---
 
-# SPL TOKEN
-
 [![artwork1-01.png](https://i.postimg.cc/vBrFS4hg/artwork1-01.png)](https://postimg.cc/MMpFnKhq)
 
 # Introduction
 
-This quest is designed to introduce you to building on Solana. We provide complete code samples that you can modify, copy, and run directly on your machine. 
+This guide will teach you how to build and deploy the Solana program and connect to the UI for a basic SPl token mint and transfer dApp. This d-App will allow you to mint and transfer SPL tokens on Solana.
 
-**Purpose** :- This program is designed to help you understand and work with Solana's SPL Token program.
+# What you will learn
 
-Dapp-state → The current state of the decentralized application (DApp) includes four transactions.
+- Setting up your environment
+- Anchor program development
+- How to build CPI to spl token Program
+- Building a solana program
+- Deploying a Solana program
+- Connecting an on-chain program to UI
 
-> Now what is solana tx you will learn here more about it [here](https://medium.com/@asmiller1989/solana-transactions-in-depth-1f7f7fe06ac2).
-> 
+# Prerequisites
 
-1. ***First two for nft mint and transfer***
-- NFTs (Non-Fungible Tokens): They are unique digital items like artwork or game items. When           you "mint" an NFT, you create it, and when you transfer it, you change its ownership.
-2. ***Second two for fungible token mint and transfer*** 
-- Fungible Tokens: These tokens work like digital coins. When you "mint" them, you create new ones, and when you transfer them, you can send or receive them.
+For this guide, you will need to have your local development environment setup with a few tools:
 
-### Prerequisites for this are suitable for:
+- [Rust](https://www.rust-lang.org/tools/install)
+- [Node JS](https://nodejs.org/en/download)
+- [Solana CLI & Anchor](https://solana.com/developers/guides/getstarted/setup-local-development)
 
-- Web developers familiar with JavaScript/TypeScript.
-- Individuals enthusiastic about learning new things within the solana ecosystem.
-- Those who already understand basic Solana programming models.
+# What we are building
 
-## Code repositories for this quest
+We are developing an SPL token mint and Transfer program that creates spl token mint and transfers tokens to another user. In this dapp, we will utilize both types of tokens fungible and NFT on the Solana [DevNet](https://solana.com/docs/core/clusters#devnet) network.
 
-1. [full-stake](https://github.com/shivamSspirit/S-Sol-tokens)
+![spllandingpage](/ChallangeViews/quiz-0/spldapp.jpeg)
+Live At: [spldapp_live](https://solana-tokens-frontend.vercel.app/)
 
-This is backend plus client code
+# Setting up the project
 
-2. [backend-specific](https://github.com/shivamSspirit/Solana-tokens-backend)
-
-This is rust solana token program code 
-
-3. [client-specific](https://github.com/shivamSspirit/solana-tokens-frontend)
-
-this is solana tokens frontend code
-
-## Technological Requirements for This Quest
-
-**FullStake Dapp**→
-(frontend + backend)
-
-**Backend:-** Rust, typescript, anchor, solana(clusters and cli and frameworks, wallet accounts, rust packages and crates),metaplex ,cpi,pda,anchor spl token program
-
-**Frontend:-** Nextjs ,npm, yarn, solana dapp-scaffold, IDL (interface description language), typescript, jsx, tailwind
-
-## Motivation
-
-[Spl token program and token 2022 + compresssed nfts]
-
-The current state of example is contain repos, example-d-app and content about spl token-mint and transfer to another wallet  
-
-Deployed link on vercel of this quest 
-
-[spl_quest](https://solana-tokens-frontend.vercel.app/)
-
-## SPl Library
-
-- A collection of on-chain programs that target the Solana Sealevel runtime.
-- These programs are tested against Solana's implementation of Sealevel.
-
-## Eth Contracts
-
-In Ethereum, for ERC-20 tokens, each fungible token has its smart contract. For ERC-721 (or ERC-1155), each non-fungible token collection has its own contract.
-
-## Solana program
-
-Just like Ethereum contracts, Solana has [programs](https://solana.com/docs/core/programs). These programs contain executable codes that interpret instructions and send them to each transaction on the chain.
-
-## Acc/ Blocks
-
-- The program account owns the state storage account, and programs themselves are stateless.
-- Accounts collect [rent](https://solana.com/docs/core/rent), which is a term used by validators. Behind the scenes, it involves mathematical calculations.
-
-## Some things about solana program
-
-- Programs are executable accounts.
-- Programs can only change the data and debit accounts they own.
-- Programs have two types: native and executable. Native programs are built into the core system, while executable programs are custom-made by other devs. Both types run in parallel 
-  in the [Sealevel](https://medium.com/solana-labs/sealevel-parallel-processing-thousands-of-smart-contracts-d814b378192) runtime.
-- Stateless programs are compiled by SBF and BPF code.
-- There are native and on-chain programs.
-- Data accounts are used for state storage.
-- Program accounts are stateless.
-- Executable programs are loaded by the [BPF loader](https://docs.rs/solana-program/latest/solana_program/bpf_loader_upgradeable/index.html) program and are also upgradable after deployment to the network.
-
-## Spl Token program
-
-A Rust crate(crab) acts as an interface for SPL tokens, working like an ERC-20 token interface.
-
-The crab(rust) crate type is a library, which means it's reusable functionality. Think of it like Lego bricks that fit together to build a package, and we store these in modules.
-
-The [Solana Token Program](https://spl.solana.com/token) is your go-to solution! It's like a magic toolkit that equips you with all the tools necessary to create your own customized tokens and release them on the Solana blockchain.
-
-Here's the exciting part: you don't have to be a coding expert. The Token Program offers both the fundamental code (like a [blueprint](https://github.com/solana-labs/solana-program-library/tree/master/token/program)) and a user-friendly interface. Picture it as a Lego set with easy-to-follow instructions – you can utilize it to craft your own special solana tokens.
-
-This program defines a common implementation for Fungible and Non Fungible tokens.
-
-The Solana Token Program is like a Lego set for making tokens. To  build Solana tokens, you'll need [JS helpers](https://github.com/solana-labs/solana-program-library/tree/master/token/js) or js binding methods and APIs etc...
-
-## How to work with SPL token program
-
-**JS helpers**: These are like time-saving mini-tools that handle common tasks for you.
-
-**Binding methods**: They connect your JavaScript code with the Solana Token Program, making it easy to interact with your tokens.
-
-**APIs**: These are instructions for telling the program what to do, like creating tokens or transferring ownership.
-
-By engaging with these tools you will level up your token-building skills and let you create even cooler Solana tokens.
-
-
-## Solana ATA
-
-Solana provides an [ATA](https://spl.solana.com/associated-token-account) ([Associated Token Account](https://solidityonsolana.one/CourseContent/module-4/module-4-a/transferspltokens#:~:text=Associated%20Token%20Account.-,Associated%20Token%20Accounts,-ATAs%20offer%20an)) structure for mapping(or can be tracking) token(crypto tokens) accounts(solana lego block), similar to Ethereum's solidity(mapping) structure.
-
-User Wallet address + specific token mint === generate a pda (mapped acc) for a specific token
-
-![ataTopda](/ChallangeViews/quiz-0/ataTopda.jpeg)
-
-## SPL Rust Crates
-
-The spl token program crab crates provides functionalities like this 
-
-- It imports modules.
-- It has a constant ID for the token program.
-- It operating like creating token mints and sending tokens to other wallets etc…. by crates types methods.
-
-Here you can learn more about [[spl crates](https://docs.rs/spl-token/latest/spl_token/)]
-
-## For Working With Spl token program 
-
-[[SPl tokens](https://spl.solana.com/token)]
-
-SPl token program provides features like Token mint , transfer and burn
-To work with this, we just need to send instructions to the spl token program.
-
-To do this, we interact with the Solana token program using tools like SPL Token CLI, JS client, and CPI(cross-program invocation) to Crab program(cpi for composability of programs).
-
-We'll use JS client([Dapp-scaffold](https://github.com/solana-labs/dapp-scaffold)) for the frontend and CPI to [crab](https://docs.rs/spl-token/latest/spl_token/) for the backend to work with SPL tokens.
-
-## How to configure systems
-
-Blockchain systems run on cryptographically secure numbers.
-
-The solana-anchor-rust backend [[The repo for backend is here](https://github.com/shivamSspirit/S-Sol-tokens/tree/main/spltokens-sol-program)] 
-solana d-app-scaffold[[The repo for frontend is here](https://github.com/shivamSspirit/S-Sol-tokens/tree/main/solana-client)] provide us frontend utilities, like how user interact with on chain program (by sending transaction to solana blockchain)
-
-The blockchain program runs on hardware operating systems compiled using Rust language. For client interaction we just use javascript,so, providing browser UI and UX, with helpers-tools across the solana ecosystem.
-
-**Now how to connect with frontend**→
-
-[Idl](https://en.wikipedia.org/wiki/Interface_description_language) (interface description language) is used for connecting deployed on chain solana program with client side Code(UI+UX).
-
-Generally we did not need to manage all configuration
-
-solana’s anchor frameworks provide us set of tools and features to building around solana’s d-apps
-
-you can learn about anchor setup and installation [here](https://www.anchor-lang.com/docs/installation).
-
-## The composability of d-app architecture
-
-We use [Solana Web3.js](https://solana.com/docs/clients/javascript) to interact with user interfaces and enhance user experience.
-
-Solana web3 provides us Js helpers methods and Connection object(JS like Object) to interact with solana native deployed smart contract on Solana blockchain
-
-We need a blockchain cluster(block state replication on internet(can be Devnet,Mainnet, Testnet))
-you can learn more about Solana cluster’s [here](https://docs.solanalabs.com/clusters).
-
-we will use Devnet.
-
-Or a wallet(user public key(web3 native passport) (can be general keypair , wallet adapter, or filesystem wallet etc…)).
-
-This Create an environment where user(public) can interact with blockchain system  using a new, secure identity in Web3(web3 wallets or public key of user(public)). This involves using wallets and key pairs based on the [ed2115 elliptic curve](https://twitter.com/Tristan0x/status/1614671092815368193), which provide strong security. It lets you interact on-chain with others securely.
-
-These all are build a cohesive environment for public(let user) to interact with blockchain 
-ecosystem.
-
-Now Enough theory , let’s move to d-app
-
-## *Checkpoint For Dependencies*
-
-***First Setup your local system requirement*** 
-
-[solana-local-setup](https://solana.com/hi/developers/guides/getstarted/setup-local-development)
-
-Now let’s move to…. the tech repo(dapp working)
-
-## Clone repositories
-
-(Code Processing and Visualization)
-
-## Prerequisites For running program
-
-- Ensure you have Node.js installed, which you can download from [here](https://nodejs.org/en/download/).
-- solana tools for local development environment [here](https://solana.com/developers/guides/getstarted/setup-local-development).
-- anchor framework [here](https://www.anchor-lang.com/docs/installation).
-
-## Installation
-
-Clone the repository and install the dependencies:
+Clone this repository into your local system
 
 ```bash
-git clone git@github.com:shivamSspirit/S-Sol-tokens.git
-cd spltokens-sol-program
-npm i update
+git clone git@github.com:solana-based-quests/S-Sol-tokens.git
+```
+
+Now change the directory to 
+
+```bash
+cd s-sol-tokens
+```
+
+Then head over to the client folder to run this d-app
+
+```bash
+cd solana-client
+```
+
+Update project dependencies
+
+```bash
 npm install
 ```
 
-## Usage
-
-Build the project:
+And Run
 
 ```bash
-anchor build
+npm run dev
 ```
 
-Anchor will build the project and update it with the target to deploy the program on chain, providing a feature to connect with two systems together backend and a client, then giving a web3 simulation to the user. This will be utilized later.
+# Dapp accounts overview
 
-First, deploy the program. For this, run:
+![splAccounts](/ChallangeViews/quiz-0/spl.jpeg)
 
-```bash
-solana-test-validator
-```
+In the above diagram, the user's [wallet](https://solana.com/docs/terminology#wallet) is a signer that will pay for all account creations. The mint account includes the decimal, mint authority and freezes authority over tokens. The [system](https://solana.com/docs/core/accounts#system-program) program facilitates the creation of the Mint account. The token account is used for creating an [Associated token account](https://solana.com/docs/core/tokens#associated-token-account) for holding SPL tokens. All other Solana ecosystem accounts facilitate the minting and transferring operation of SPL Token.
 
-In a parallel terminal, if you have enough SOL on devnet (clusters) to deploy this program on chain, run:
+# Anchor program development
 
-```bash
-anchor deploy
-```
+If you're new to Anchor, [The Anchor Book](https://book.anchor-lang.com/introduction/introduction.html) and [Anchor Examples](https://examples.anchor-lang.com/) are great references to help you learn.
 
-You will receive an ID, which is the program ID:
-
-```bash
-C2eEY8eeediwD2YXvZZGQ74G9kPB5PeRNFGUzSiFadcW
-```
-
-This is the metadata address in our IDL. Copy this ID, then paste it into two files:
-
-1. [anchor.toml](https://vscode.dev/github/shivamSspirit/S-Sol-tokens/blob/main/spltokens-sol-program/Anchor.toml)
-2. Paste it in our Solana program [lib.rs](https://vscode.dev/github/shivamSspirit/S-Sol-tokens/blob/main/spltokens-sol-program/programs/spltokens/src/lib.rs) file.
-
-Then rebuild and deploy the program to on chain (these Solana programs are upgradable after deployment).
-
-## Transaction from client view
-
-From the frontend code, we only need to send four transactions to our deployed Solana program for SPL token minting and transfer.
-
-We will understand those transactions and related concepts together for frontend and backend code.
-
-1. **Fungible token transactions:**
-    - Create token mint and mint tokens to minter wallet.
-    - Transfer some tokens to another user’s wallet.
-2. **NFT token transactions:**
-    - Create NFT token mint and mint NFT to minter wallet.
-    - Transfer NFT to another user’s wallet.
-
-For a better understanding of the client-side, refer to the section below.
-
-## File Architecture Overview
-
-Fullstack 
-(backend+client) 
-
-[Spl-sol-tokens](https://vscode.dev/github/shivamSspirit/S-Sol-tokens)
-
-***Two directories***
-
-- [solana-client](https://vscode.dev/github/shivamSspirit/S-Sol-tokens/tree/main/solana-client)
-- [spltokens-sol-program](https://vscode.dev/github/shivamSspirit/S-Sol-tokens/tree/main/spltokens-sol-program)
-
-## Proccess of codes and files
-
-The parent repository which contains the full-stack code.
-
-First, we are moving to the processes and roles of backend-related tasks.
-
-**Go to backend repo**:
-
-You will see an anchor project structure. Yes, this is an anchor template to build Solana DApps easily.
-
-## Here is the process about codes and visuals
-
- - Starting full-stack.
- - First, take a look.
- - After deployment from the backend, go to the Solana client.
- - These are the current dependency states for a runnable Solana program.
- - Resolve dependencies as task and setup before running any thing.
-
-```bash
-solana --version
-solana-cli 1.17.13 
-anchor -V
-anchor-cli 0.29.0
-rustc --version
-rustc 1.77.1 (7cf61ebde 2024-03-27)
-node --version
-v18.18.0
-yarn --version
-1.22.19
-```
-
-## *Anchor backend runner dependencies*
-
-open this file
-
-[anchor-setup](https://github.com/shivamSspirit/S-Sol-tokens/blob/main/spltokens-sol-program/Anchor.toml)
-
-From this anchor.toml
-
-you can learn more about [[anchor.toml](https://www.anchor-lang.com/docs/manifest)] here
-
-- This is our deployed Solana program ID on Devnet.
-
-```toml
-[programs.devnet]
-spltokens = "C2eEY8eeediwD2YXvZZGQ74G9kPB5PeRNFGUzSiFadcW"
-```
-
-- Anchor Provider
-
-Anchor Programs utilize a blockchain cluster and a Web3 wallet provider, alongside Solana programs (which manage and facilitate transactions). They can create various Solana program types and establish an API (Dapp Programming Interface) for sending Rpc requests to a cluster (block node) by utilizing defined wallets or multiple wallets.
-
-```toml
-[provider]
-cluster = "Devnet"
-wallet = "~/.config/solana/id.json"
-```
-
-- In these scripts, we can provide test and other configurations to run test scripts.
-
-```toml
-[scripts]
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
-```
-
-Next, move to the Solana program source directory:
-In the **program/spl-tokens** directory, we have Rust native configurations, such as Cargo package manager dependencies, and xargo for third-party package handling to deal with Solana Rust programs.
-Then, the src directory contains the Solana program. The lib file within it contains our Solana program's entry point.
-
-[lib-rs](https://github.com/shivamSspirit/S-Sol-tokens/blob/main/spltokens-sol-program/programs/spltokens/src/lib.rs)
-
-- This anchor program contains 3 parts:
-    - First, program ID
-    - Second, validating accounts
-    - Third, program business logic
-
-Importing predefined imports for the Anchor language and building instructions for our Solana program that we will send with each transaction. We will discuss transactions further later.
+In **s-sol-tokens**, navigate to **spltokens-sol-program/programs/src/lib.rs**. 
 
 ```rust
-
 use anchor_lang::prelude::*;
 pub mod instructions;
 pub use instructions::*;
-```
-
-This is our program id 
-
-```rust
-
 declare_id!("C2eEY8eeediwD2YXvZZGQ74G9kPB5PeRNFGUzSiFadcW");
-```
-
-This attribute defines all entry-level instructions for Solana transactions through program modules.
-
-```rust
 
 #[program]
 pub mod spltokens {
@@ -397,42 +108,22 @@ pub mod spltokens {
 }
 ```
 
-Now we need to delve deeper into the instructions to understand how to build and manage accounts.
+In the code above:
 
-**First to mint_nft instructions**
+- We import all instruction and state modules.
+- This file serves as a registry module for the Solana program.
+- Within this file, we invoke each instruction handler separately, providing context and other arguments for each instruction call.
 
-```rust
+# Create Mint NFT instruction
 
-pub fn mint_nft(ctx: Context<MintNFT>, name: String, symbol: String, uri: String) -> Result<()> 
-    {
-        mint_nft::mint_nft(ctx, name, symbol, uri)
-    }
-```
-
-This is the parent wrapper function which takes Account Context (validates accounts in an object-like structure) and general parameters.
-In the function body, we are calling our first instruction by providing parameters to the `mint_nft` instruction. 
-We are minting a non fungible token
-
-> GO to Instruction folder and pull out [mint-instruction](https://vscode.dev/github/shivamSspirit/S-Sol-tokens/blob/main/spltokens-sol-program/programs/spltokens/src/instructions/mint_nft.rs)
-
-Here, we import some configurations to handle the NFT minting process.
+In **s-sol-tokens**, navigate to **spltokens-sol-program/programs/src/instrcutions/mint_nft.rs**. 
 
 ```rust
-
 use anchor_lang::prelude::*;
 use anchor_spl::{ associated_token::AssociatedToken, metadata::
     {create_master_edition_v3, create_metadata_accounts_v3, CreateMasterEditionV3, CreateMetadataAccountsV3, Metadata}, token::{mint_to, Mint, MintTo, Token, TokenAccount }};
 use mpl_token_metadata::{ pda::{ find_master_edition_account, find_metadata_account}, state::DataV2 };
 
-```
-
-Anchor lang is a general Anchor language provider.
-Anchor_spl is a general reference for SPL program library methods.
-MPL token metadata follows the Metaplex token metadata standards.
-
-The main business logic of the Solana program.
-
-```rust
 pub fn mint_nft(ctx: Context<MintNFT>, name: String, symbol: String, uri: String) -> Result<()> 
 {
     let cpi_context = CpiContext::new(
@@ -490,90 +181,7 @@ pub fn mint_nft(ctx: Context<MintNFT>, name: String, symbol: String, uri: String
 
     Ok(())
 }
-```
 
-First, we are creating a CPI context to call the `mint_to` method of the SPL Token program and provide the required accounts and authority to mint tokens.
-
-```rust
-let cpi_context = CpiContext::new(
-        ctx.accounts.token_program.to_account_info(),
-        MintTo {
-            mint: ctx.accounts.mint.to_account_info(),
-            to: ctx.accounts.associated_token_account.to_account_info(),
-            authority: ctx.accounts.signer.to_account_info(),
-        },
-    );
-```
-
-Calling the `mint_to` method from the SPL Token program and providing the CPI context and a token amount (one in the case of NFT).
-
-```rust
-mint_to(cpi_context, 1)?;
-```
-
-Then we move to build a context around CPI and provide account/reference for the creation of metadata account.
-
-This is a Metaplex standard to store token references in token mint accounts.
-
-```rust
-let cpi_context = CpiContext::new(
-        ctx.accounts.token_metadata_program.to_account_info(),
-        CreateMetadataAccountsV3 {
-            metadata: ctx.accounts.metadata_account.to_account_info(),
-            mint: ctx.accounts.mint.to_account_info(),
-            mint_authority: ctx.accounts.signer.to_account_info(),
-            update_authority: ctx.accounts.signer.to_account_info(),
-            payer: ctx.accounts.signer.to_account_info(),
-            system_program: ctx.accounts.system_program.to_account_info(),
-            rent: ctx.accounts.rent.to_account_info(),
-        },
-    );
-```
-
-Next, we set custom data-provided data structure and call CPI.
-
-```rust
-let data_v2 = DataV2 {
-        name,
-        symbol,
-        uri,
-        seller_fee_basis_points: 0,
-        creators: None,
-        collection: None,
-        uses: None,
-    };
-
-    create_metadata_accounts_v3(cpi_context, data_v2, false, true, None)?;
-```
-
-Next, we create a CPI for NFT Metaplex master addition account and call CPI to Metaplex program. and return the function result.
-
-```rust
-let cpi_context = CpiContext::new(
-        ctx.accounts.token_metadata_program.to_account_info(),
-        CreateMasterEditionV3 {
-            edition: ctx.accounts.master_edition_account.to_account_info(),
-            mint: ctx.accounts.mint.to_account_info(),
-            update_authority: ctx.accounts.signer.to_account_info(),
-            mint_authority: ctx.accounts.signer.to_account_info(),
-            payer: ctx.accounts.signer.to_account_info(),
-            metadata: ctx.accounts.metadata_account.to_account_info(),
-            token_program: ctx.accounts.token_program.to_account_info(),
-            system_program: ctx.accounts.system_program.to_account_info(),
-            rent: ctx.accounts.rent.to_account_info(),
-        },
-    );
-
-    create_master_edition_v3(cpi_context, None)?;
-
-    Ok(())
-```
-
-Now, the main goal of the program is to handle the accounts. We need to understand how to build accounts for an instruction and consider how accounts are used in this program.
-
-Here, we are constructing and validating accounts that we will use for the mint_nft instruction.
-
-```rust
 #[derive(Accounts)]
 pub struct MintNFT<'info> 
 {
@@ -614,412 +222,396 @@ pub struct MintNFT<'info>
 }
 ```
 
-That’s all about creating and building the Anchor Solana program. Now, we are moving on to the test script for the mint_nft instruction.
+let’s break down to see what is happening here  
+In the above code,
 
-This test script can also be used in the frontend when we make transactions from there.
+**Imports**-
 
-## The test process looks as follows
+We imports **anchor_lang**, **anchor_spl**and  **mpl_token_metadata**.
 
-Go to the test directory and click on the TypeScript file.
+- **anchor_lang** imports all things from the anchor framework.
+- **anchor_spl** imports all related things from spl tokens.
+- **AssociatedToken** type used for creating an associated token account
+- **metadata** module provides functionalities to handle operations related to token metadata like **create_master_edition_v3**, **create_metadata_accounts_v3**, **CreateMasterEditionV3**, **CreateMetadataAccountsV3**
+- **token** module provides functionalities to handle operations related to tokens like **mint_to**, **Mint**, **MintTo**, **Token**, and **TokenAccount**.
+- **mpl_token_metadata** provides functionalities to handle operations related to Metaplex like **find_master_edition_account**, and **find_metadata_account**.
+- In last, we import **state::DataV2** for creating metadata arguments.
 
-[spl-tests](https://vscode.dev/github/shivamSspirit/S-Sol-tokens/tree/main/spltokens-sol-program/tests)
+**Instruction logic**-
 
-```ts
+In The **mint_nft** function
 
-import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+- First, it takes the account context as its first and name, symbol and URI as other arguments.
+- It creates a new CPI context for the CPI to `SPL token program` to mint the token into the signer’s associated token account. that’s how you can do cpi to spl token library.
+- It calls SPL's token mint_to() function by providing cpi context and the amount of token to mint into the signer’s ATA. this fn call mints one NFT into the signer’s associated token account.
+- Next, it creates a new CPI context for the CPI to `token_metadata_program` and sets data into the `CreateMetadataAccountsV3` struct.
 
-import { publicKey } from "@metaplex-foundation/umi";
-import { getOrCreateAssociatedTokenAccount, getAssociatedTokenAddress } from "@solana/spl-token";
-
-import { loadKeypairFromFile } from "../utils/loadPair";
-
-import { Spltokens } from "../target/types/spltokens";
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
-import { findMasterEditionPda, findMetadataPda, mplTokenMetadata, MPL_TOKEN_METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata";
-import { BN } from "bn.js";
-import { Keypair } from "@solana/web3.js";
-import fs from "fs";
-
+```rust
+    CreateMetadataAccountsV3 {
+            metadata: ctx.accounts.metadata_account.to_account_info(),
+            mint: ctx.accounts.mint.to_account_info(),
+            mint_authority: ctx.accounts.signer.to_account_info(),
+            update_authority: ctx.accounts.signer.to_account_info(),
+            payer: ctx.accounts.signer.to_account_info(),
+            system_program: ctx.accounts.system_program.to_account_info(),
+            rent: ctx.accounts.rent.to_account_info(),
+        },
 ```
 
-- This will import our built and deployed program.
-- Anchor provider from the framework or JS client.
-- Some RPC configurations from Solana Web3.js and clusters.
-- Metaplex JS client to interact with Metaplex programs.
-- Some third-party configurations to initialize the program for testing.
+- By utilizing **Datav2** struct it sets token metadata information
 
-This test file run from this script 
-from anchor.toml file 
-
-```tsx
-[scripts]
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+```rust
+ let data_v2 = DataV2 {
+        name,
+        symbol,
+        uri,
+        seller_fee_basis_points: 0,
+        creators: None,
+        collection: None,
+        uses: None,
+    };
 ```
 
-Now describe our test
+- It calls the **create_metadata_accounts_v3()** function by providing the cpi context and the metadata information. this fn call updates the metadata of the minted token.
+- Next, it creates a new CPI context for the CPI to **token_metadata_program** and sets data into the **CreateMasterEditionV3** struct.
 
-```ts
-
-describe("spltokens",async () => {
-// overall configuration setup for this spl token program.
-
-// Configure the client to use the local cluster.
-  const provider = anchor.AnchorProvider.env();
-	anchor.setProvider(provider);
-
-  // fetch program and refrence as anchor types to build (API like structure)
-  const program = anchor.workspace.Spltokens as Program<Spltokens>;
-
-  it("Is initialized!", async () => {
-    // Add your test here.
-    console.log("Your test are starting");
-  });
-
-// signer for transactions
-// Create umi instance for a devnet cluster (using singer and mpl token metadata program for building transaction instrctions).
-  const signer = provider.wallet;
-	const umi = createUmi("https://api.devnet.solana.com").use(walletAdapterIdentity(signer)).use(mplTokenMetadata());
-	const mint = anchor.web3.Keypair.generate();
-
-// building or fetching ata for signer
-	const associatedTokenAccount = await getAssociatedTokenAddress(
-		mint.publicKey,
-		signer.publicKey
-	);
-
-// fetching metadata account pda using mint key
-	let metadataAccount = findMetadataPda(umi, {
-		mint: publicKey(mint.publicKey),
-	})[0];
-
-// fetching masterEditionAccount pda using mint key 
-	let masterEditionAccount = findMasterEditionPda(umi, {
-		mint: publicKey(mint.publicKey),
-	})[0];
-
-// creating custom metdata (you can create also for your token)
-	const metadata = {
-		name: "Nft or Crypto",
-		symbol: "yolo",
-		uri: "https://arweave.net/ISef3HUc9oSsOHfOudiDIPl7X3zD48Gw32K4JJUo_DE",
-	};
-	
-	// tests are here
-	
-	// it can mint nft 
-	
-	 it("Mint NFT!", async () =>
-	 {
-	 // calling the anchor Program API Methods
-	 	const tx = await program.methods
-	 			.mintNft(metadata.name, metadata.symbol, metadata.uri)
-	 			.accounts({
-	 				signer: provider.publicKey,
-	 				mint: mint.publicKey,
-	 				associatedTokenAccount,
-					metadataAccount,
-	 				masterEditionAccount,
- 				    tokenProgram: TOKEN_PROGRAM_ID,
-	 				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-	 				tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
-					systemProgram: anchor.web3.SystemProgram.programId,
- 				  rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-	 			})
-				.signers([mint])
-				.rpc();
-
-		console.log(`mint nft tx: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
-		console.log(`minted nft: https://explorer.solana.com/address/${mint.publicKey}?cluster=devnet`);
- });
-	
-	});
+```rust
+    CreateMasterEditionV3 {
+            edition: ctx.accounts.master_edition_account.to_account_info(),
+            mint: ctx.accounts.mint.to_account_info(),
+            update_authority: ctx.accounts.signer.to_account_info(),
+            mint_authority: ctx.accounts.signer.to_account_info(),
+            payer: ctx.accounts.signer.to_account_info(),
+            metadata: ctx.accounts.metadata_account.to_account_info(),
+            token_program: ctx.accounts.token_program.to_account_info(),
+            system_program: ctx.accounts.system_program.to_account_info(),
+            rent: ctx.accounts.rent.to_account_info(),
+        },
 ```
 
-In this case, we are describing our test and other configuration setup, like the wallet and Anchor provider, and a transaction-sending interface from Anchor Program types.
+- It calls the **create_master_edition_v3()** function by providing the cpi context and max supply in our case **None**. This fn call creates a master edition account of the NFT so that you can use it to print multiple [editions](https://developers.metaplex.com/core-candy-machine/guards/edition#overview) (e.g., a limited supply of 10) of your NFT later.
+- finally, the instruction handler returns OK(()) for successful operation and through an error if any process fails.
 
-Now, in this mint NFT transaction, we need to build our transaction instruction using the contract program methods `MintNFT`. We discussed building and validating accounts.
+**Account creation and validation**-
 
-In this transaction, we need to set up all accounts in a step-by-step (ordered) way, just as we do in Rust Anchor Solana programs.
+In Anchor Various types of constraints can be applied using the **#[account(..)]** attribute.
 
-Providing data from the client side to the Anchor Program involves serializing or deserializing data of accounts (accounts are data blocks, i.e., buffered data).
+In the **signer** Account
 
-Next we put acccounts 
+- **#[account(mut, signer)]** In this attribute macro mut keyword defines this account as mutable and the signer keyword defines this account as a signer.
 
-```ts
-                    signer: provider.publicKey,
-	 				mint: mint.publicKey,
-	 				associatedTokenAccount,
-					metadataAccount,
-	 				masterEditionAccount,
- 				    tokenProgram: TOKEN_PROGRAM_ID,
-	 				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-	 				tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
-					systemProgram: anchor.web3.SystemProgram.programId,
- 				    rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-```
+In the **Mint** account, The **init** constraint creates the account through a Cross-Program Invocation (CPI) to the system program and initializes it by setting its account discriminator. Additionally, it applies specific constraints:
 
-We need these accounts to build the NFT minting process.
+- **payer = signer** the account responsible for covering the account creation costs.
+- **mint::decimals = 0** specifies a decimal value of 0, which is standard for NFTs.
+- **mint::authority = signer.key()** and **mint::freeze_authority = signer.key()** assigns the signer as both the mint authority and freeze authority, for control over minting and freezing the mint account.
 
-```ts
+In the **associated_token_account**, The **init_if_needed** has the same functionality as the **init**. However, it only runs if the account does not exist yet. Additionally, it applies specific constraints:
 
-                    signer: provider.publicKey,(signer for tx)
-	 				mint: mint.publicKey,(token mint acocunt pub key)
-	 				associatedTokenAccount,(ata mapping for tracking tokens)
-					metadataAccount,(token metadata account)
-	 				masterEditionAccount,(token master editdion account)
-```
+- **associated_token::mint = mint** sets mint for this associated token account.
+- **associated_token::authority = signer** sets authority as a signer for this associated token account.
 
-These accounts are helper accounts used to compose and make this instruction functional.
+Other ecosystem accounts for handling this instruction logic:
 
-```ts
-                    tokenProgram: TOKEN_PROGRAM_ID,
-	 				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-	 				tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
-					systemProgram: anchor.web3.SystemProgram.programId,
- 				    rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-```
+**metadata_account**: is responsible for setting up metadata for the token.
+**master_edition_account**: is responsible for setting up an edition for the NFT.
+**token_program**: is a type of Token  
+**rent**: is a type of Rent  
+**associated_token_program**: is a type of AssociatedToken  
+**token_metadata_program**: is a type of Metadata    
+**system_program**: is a type of System
 
-Next, we provide a signer for this mint and make an RPC call from this transaction.
+Now, At this stage, we created three cpi calls for:
 
-```ts
+- Mint NFT into signer’s Ata
+- Set up NFT metadata
+- Set up NFT master edition.
 
-.signers([mint])
-.rpc();
+# Create Fungible Mint instruction
 
-```
+In **s-sol-tokens**, navigate to **spltokens-sol-program/programs/src/instrcutions/mint_token.rs**. 
 
-That is all about anchor solana programs
+```rust
+use anchor_lang::prelude::*;
+use anchor_spl::{ associated_token::AssociatedToken, metadata::{ create_metadata_accounts_v3, CreateMetadataAccountsV3 }, token::{mint_to, Mint, MintTo, Token, TokenAccount }};
+use mpl_token_metadata::{ pda::find_metadata_account, state::DataV2 };
 
-## Now we are moving to front(end) and client side of solana program 
+pub fn mint_token(ctx: Context<MintToken>, _decimals: u8, name: String, symbol: String, uri: String, amount: u64) -> Result<()> 
+{
+    let cpi_context = CpiContext::new(
+        ctx.accounts.token_program.to_account_info(),
+        MintTo {
+            mint: ctx.accounts.mint.to_account_info(),
+            to: ctx.accounts.associated_token_account.to_account_info(),
+            authority: ctx.accounts.signer.to_account_info(),
+        },
+    );
 
-like how to send tx from client side to solana program
+    mint_to(cpi_context, amount)?;
 
-How this same tx looks like on front end 
+    let cpi_context = CpiContext::new(
+        ctx.accounts.token_metadata_program.to_account_info(),
+        CreateMetadataAccountsV3 {
+            metadata: ctx.accounts.metadata_account.to_account_info(),
+            mint: ctx.accounts.mint.to_account_info(),
+            mint_authority: ctx.accounts.signer.to_account_info(),
+            update_authority: ctx.accounts.signer.to_account_info(),
+            payer: ctx.accounts.signer.to_account_info(),
+            system_program: ctx.accounts.system_program.to_account_info(),
+            rent: ctx.accounts.rent.to_account_info(),
+        },
+    );
 
-```tsx
-
- const mintNft = async (e) => {
-        setLoading(true);
-        try {
-            e.preventDefault();
-
-            const metaplex = Metaplex.make(connection);
-           // const metadataAddress = await metaplex.nfts().pdas().metadata({ mint: mintKeypair.publicKey });
-
-            const tx = await program.methods
-            .mintNft(MetaData.name, MetaData.symbol, MetaData.uri)
-            .accounts({
-                signer: wallet.publicKey,
-                mint: mintKeypair.publicKey,
-                associatedTokenAccount,
-                metadataAccount,
-                masterEditionAccount,
-                tokenProgram: TOKEN_PROGRAM_ID,
-                associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-                tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
-                systemProgram: anchor.web3.SystemProgram.programId,
-                rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-            })
-            .signers([mintKeypair])
-            .rpc();
-
-          console.log(`mint nft tx: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
-          console.log(`minted nft: https://explorer.solana.com/address/${mintKeypair.publicKey}?cluster=devnet`)
-
-            setTxSig(tx);
-            
-            let metadata = await metaplex
-                .nfts()
-                .findByMint({ mintAddress: mintKeypair.publicKey, tokenOwner: wallet.publicKey });
-            setNftDetails(metadata);
-            notify({ message: "NFT Minted" });
-
-            const userNfts = await metaplex.nfts().findAllByOwner({
-                owner: wallet.publicKey
-            });
-
-            console.log("myNfts:",userNfts);
-
-            setAllNftByWallet(userNfts)
-        } catch (err) {
-            console.log(err);
-            notify({ message: err.message });
-        }
-        setLoading(false);
+    let data_v2 = DataV2 {
+        name,
+        symbol,
+        uri,
+        seller_fee_basis_points: 0,
+        creators: None,
+        collection: None,
+        uses: None,
     };
 
+    create_metadata_accounts_v3(cpi_context, data_v2, false, true, None)?;
+
+    Ok(())
+}
+
+#[derive(Accounts)]
+#[instruction(decimals: u8)]
+pub struct MintToken<'info> 
+{
+    /// CHECK: signer check
+    #[account(mut, signer)]
+    signer: AccountInfo<'info>,
+
+    #[account(
+        init,
+        payer = signer,
+        mint::decimals = decimals,
+        mint::authority = signer.key(),
+        mint::freeze_authority = signer.key(),
+    )]
+    mint: Account<'info, Mint>,
+
+    /// CHECK:
+    #[account(mut, address = find_metadata_account(&mint.key()).0)]
+    pub metadata_account: AccountInfo<'info>,
+
+    #[account(
+        init_if_needed,
+        payer = signer,
+        associated_token::mint = mint,
+        associated_token::authority = signer,
+    )]
+    pub associated_token_account: Account<'info, TokenAccount>,
+
+    /// CHECK: account constraint checked in account trait
+    #[account(address = mpl_token_metadata::id())]
+    pub token_metadata_program: UncheckedAccount<'info>,
+
+    pub token_program: Program<'info, Token>,
+    pub rent: Sysvar<'info, Rent>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>
+}
 ```
 
-The same methods call from idl (solana-client root)
+let’s break down to see what is happening here  
+In the above code,
 
-The difference lies in wallets and public keys of signers(anchor or other wallet adapters)
+**Imports**-
 
-```tsx
- const tx = await program.methods
-            .mintNft(MetaData.name, MetaData.symbol, MetaData.uri)
-            .accounts({
-                signer: wallet.publicKey,
-                mint: mintKeypair.publicKey,
-                associatedTokenAccount,
-                metadataAccount,
-                masterEditionAccount,
-                tokenProgram: TOKEN_PROGRAM_ID,
-                associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-                tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
-                systemProgram: anchor.web3.SystemProgram.programId,
-                rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-            })
-            .signers([mintKeypair])
-            .rpc();
+we imports **anchor_lang**, **anchor_spl**and  **mpl_token_metadata**.
 
+- **anchor_lang** imports all things from the anchor framework.
+- **anchor_spl** imports all related things from spl tokens.
+- **AssociatedToken** type used for creating an associated token account
+- **metadata** module provides functionalities to handle operations related to token metadata like **create_metadata_accounts_v3** and **CreateMetadataAccountsV3**.
+- **token** module provides functionalities to handle operations related to tokens like **mint_to**, **Mint**, **MintTo**, **Token**, and **TokenAccount**.
+- **mpl_token_metadata** provides functionalities to handle operations related to Metaplex like  **find_metadata_account**.
+- In last, we import **state::DataV2** for creating metadata arguments.
+
+**Instruction logic**-
+
+The **mint_token** function
+
+- First, it takes the account context as its first and _decimals, name, symbol and URI as other arguments.
+- It creates a new CPI context for the CPI to **SPL token program** to mint the token into the signer’s associated token account.
+- It calls SPL's token **mint_to()** function by providing cpi context and the amount of token to mint into the signer’s ATA. this fn call mints a specified amount of tokens into the signer’s associated token account.
+- Next, it creates a new CPI context for the CPI to **token_metadata_program** and sets data into the **CreateMetadataAccountsV3** struct.
+
+```rust
+     CreateMetadataAccountsV3 {
+            metadata: ctx.accounts.metadata_account.to_account_info(),
+            mint: ctx.accounts.mint.to_account_info(),
+            mint_authority: ctx.accounts.signer.to_account_info(),
+            update_authority: ctx.accounts.signer.to_account_info(),
+            payer: ctx.accounts.signer.to_account_info(),
+            system_program: ctx.accounts.system_program.to_account_info(),
+            rent: ctx.accounts.rent.to_account_info(),
+        },
 ```
 
-## Now understand the analogy of frontend client side
-***and walkthrough the dapp tx’s.***
+- By utilizing the **Datav2** struct it sets token metadata information
 
-This is nextjs repo 
+```rust
+ let data_v2 = DataV2 {
+        name,
+        symbol,
+        uri,
+        seller_fee_basis_points: 0,
+        creators: None,
+        collection: None,
+        uses: None,
+    };
+```
 
-[solana-client](https://github.com/shivamSspirit/S-Sol-tokens/tree/main/solana-client)
+- It calls the **create_metadata_accounts_v3()** function by providing the cpi context and the metadata information. this fn call updates the metadata of the minted tokens.
+- finally, the instruction handler returns OK(()) for successful operation and through an error if any process fails.
 
-This contain idl and frontend config with solana-dapp-scaffold
+**Account creation and validation**-
 
-[solana-dapp-scaffold](https://github.com/solana-labs/dapp-scaffold)
+- In **MintToken** struct, we can access the instruction’s arguments with the **#[instruction(..)]** attribute.
 
-This idl contains deployed program methods and accounts and address of program
+  In the **signer** Account
 
-[idl](https://github.com/shivamSspirit/S-Sol-tokens/blob/main/solana-client/idl.json)
+- **#[account(mut, signer)]** In this attribute macro mut keyword defines this account as mutable and the signer keyword defines this account as a signer.
 
-This is the src dir
+In the **Mint** account, The **`init`** constraint creates the account through a [Cross-Program Invocation](https://solana.com/docs/core/cpi)(CPI) to the system program and initializes it by setting its account discriminator. Additionally, it applies specific constraints:
 
-[client-src](https://github.com/shivamSspirit/S-Sol-tokens/tree/main/solana-client/src)
+- **payer = signer** the account responsible for covering the account creation costs.
+- **mint::decimals = decimal** specifies a decimal value for tokens.
+- **mint::authority = signer.key()** and **mint::freeze_authority = signer.key()** assigns the signer as both the mint authority and freeze authority, for control over minting and freezing the mint account.
 
-this contains 
+In the **associated_token_account**, The **init_if_needed** has the same functionality as the **init**. However, it only runs if the account does not exist yet. Additionally, it applies specific constraints:
 
-filling ui ux(through , state **orchestrate** form context level to components (treee bricks))
+- **associated_token::mint = mint** sets mint for this associated token account.
+- **associated_token::authority = signer** sets authority as a signer for this associated token account.
 
-some process about filling ui and ux:
+Other ecosystem accounts for handling this instruction logic:
 
-All things about how data and ui process
+**token_metadata_program**: is responsible for setting up metadata for the token.  
+**token_program**: is a type of Token  
+**rent**: is a type of Rent  
+**associated_token_program**: is a type of AssociatedToken    
+**system_program**: is a type of System 
 
-- **From contexts  (network(cluster) provider to web3 wallet adapters)**
-- **From views to pages to components(bricks)**
-- **routes management**
-- **state management at components tx’s levels**
-- **tailwind classes for styles**
-- **public assets for content visuals**
+Now, At this stage, we created two cpi calls for:
 
-Now you have understanding about how to build a program interface and send transaction to program from our tests scripts**
+- Mint tokens into signer’s Ata
+- Set up token metadata.
 
-**Now we will make our four tx’s**
+# Create SPL Token Transfer instruction
 
-**Now run the frontend locally change dir to solana client and run** 
+```rust
+use anchor_lang::prelude::*;
+use anchor_spl::{ token::{self, Transfer}, token::{ Token, TokenAccount }};
+
+pub fn transfer_tokens(ctx: Context<TransferToken>, amount: u64) -> Result<()> 
+{
+    let cpi_accounts = Transfer 
+    {
+        from: ctx.accounts.from_ata.to_account_info(),
+        to: ctx.accounts.to_ata.to_account_info(),
+        authority: ctx.accounts.from.to_account_info(),
+    };
+    let cpi_program = ctx.accounts.token_program.to_account_info();
+    
+    token::transfer(CpiContext::new(cpi_program, cpi_accounts), amount)?;
+
+    Ok(())
+}
+
+#[derive(Accounts)]
+pub struct TransferToken<'info> 
+{
+    pub from: Signer<'info>,
+
+    #[account(mut)]
+    pub from_ata: Account<'info, TokenAccount>,
+
+    #[account(mut)]
+    pub to_ata: Account<'info, TokenAccount>,
+
+    pub token_program: Program<'info, Token>
+}
+```
+
+**Imports**-
+
+we imports **anchor_lang**, **anchor_spl**.
+
+**Instruction logic**-
+
+In The **transfer_tokens** function
+
+- First, it takes the account context as its first and token amount as its second argument.
+- Then it creates a new Cpi context to do Cpi on the SPL token program. for this first, it sets cpi accounts and fetches the **token program** from the account context in **cpi_program**.
+- finally, it calls **token::transfer()** fn to transfer spl tokens to another user’s ATA **to_ata**.
+- Lastly, fn returns **ok(())** for completion otherwise it through an error if any process fails.
+
+**Account creation and validation**-
+
+- **from** is the signer account itself.
+- **from_ata** account is the signer’s associated token account.
+- **to_ata** account can be another user’s associated token account.
+- **token_program** account is the type of **Token Program** to create a cpi.
+
+At this stage, we created one cpi call to transfer spl tokens into the user’s associated token accounts.
+
+# Build and deploy Anchor program
+
+In **s-sol-tokens**, navigate to **spltokens-sol-program** and run
 
 ```bash
-npm install
+anchor build
 ```
 
-**Then run** 
+This will build your anchor program and generate a target folder(we will use generated IDL and types for the Solana program to connect our UI to this program).
+
+To deploy this program run
 
 ```bash
-npm run dev
+anchor deploy
 ```
 
-Go to local host in browser
-you will see something like this
+After this, the program will deployed to an address. Pick this program address and update this address to the following files.
 
-**Front-end interaction and process**
+- **spltokens-sol-program/Anchor.toml**
+- **spltokens-sol-program/programs/src/lib.rs**
 
-![landpage](/ChallangeViews/quiz-0/landpage.jpeg)
+At this stage, we are done with the SPL token Mint and Transfer Solana program development.
 
-Connect to solana-native web3 wallet and change network to devnet 
+# Connecting Solana program to UI
 
-airdrop some sol 
+[Solana-app-scaffold](https://github.com/solana-labs/dapp-scaffold) already sets up a UI with prebuilt Hooks and a wallet connector for you. All you need to do is simply modify it to fit your newly created program.
 
-then click on mint-nft button
+Since our SPl token mint and transfer has four instructions, we will need components in the UI that will be able to call each of these instructions:
 
-here you will create your first tx for mint a nft in your connected wallet
+- Create NFT Mint
+- Transfer NFT to another user
+- Create a Fungible Token Mint
+- Transfer Fungible Token to another user
 
-![nftmint](/ChallangeViews/quiz-0/nftmint.jpeg)
+In your project folder open **s-sol-tokens/solana-client** and add the **generated IDL file** at the root level from **s-sol-tokens/spltokens-sol-program/target/idl/spltokens.json**
 
-How this tx works
+let’s head over to call your instructions from the client side.
 
-Process:
+# Create NFT Mint
 
-[Mint-Nft-Button](https://github.com/shivamSspirit/S-Sol-tokens/blob/main/solana-client/src/components/MintNFTButton.tsx)
+In your project folder open **s-sol-tokens/solana-client/src/components/MintNFTButton.tsx**
 
-go to this component
+Here is how you get your programID from IDL.
 
-understand code processs
-
-importing required tools and dependenices for mint nft
-
-```tsx
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { useState,useEffect } from "react";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
-
-import * as anchor from "@coral-xyz/anchor";
-import { Program, Idl, AnchorProvider, BN, utils, web3 } from "@coral-xyz/anchor";
-import { Metaplex, Nft, Sft, Metadata } from "@metaplex-foundation/js";
-
-import idl from "../../idl.json";
-import { Commitment, Keypair, PublicKey, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
-
-import { notify } from "utils/notifications";
-import { LinkIcon, Loader } from "./Icons";
-import { NFTCard } from "./nft/NFTCard";
-
-import { publicKey } from "@metaplex-foundation/umi";
-import { getOrCreateAssociatedTokenAccount, getAssociatedTokenAddress } from "@solana/spl-token";
-
-import { loadKeypairFromFile } from "../utils/loadPair";
-
-import { Spltokens } from "../../contracttypes";
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
-import { findMasterEditionPda, findMetadataPda, mplTokenMetadata, MPL_TOKEN_METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata";
-
-```
-
-fetching metadata address of program from IDL
-
-```tsx
-
+```Typescript
 const programId = new PublicKey(idl.metadata.address);
-
 ```
 
-Setup Component structure
+you can generate a program API to call each instruction in the program 
 
-> React component structure(react level tools and functions which export as compoents , raw javascript to manage and handle state and data of compoents, jsx style ui views)
-> 
-
-First we setup our program API and some usefull states to store nft data 
-
-```tsx
-
-    export const MintNFTButton = ({ mint: mintKeypair , ifNftTransfered:ifNftTransfered, setifNftTransfered:setifNftTransfered } : { mint: Keypair ,ifNftTransfered: boolean; setifNftTransfered: any;  }) => {
-    const [txSig, setTxSig] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [nftDetails, setNftDetails] = useState<Sft | Nft | null>(null);
-    // new stats
-    const [allNftByWallet, setAllNftByWallet] = useState<any>();
-
-    const { connection } = useConnection();
-    const wallet = useWallet();
-
-    console.log("mint:", mintKeypair);
-
-    const link = () => {
-        return txSig ? `https://explorer.solana.com/tx/${txSig}?cluster=devnet` : "";
-    };
-  
-
-    const getProgram = () => {
+```Typescript
+ const getProgram = () => {
         /* create the provider and return it to the caller */
 
         const provider = new AnchorProvider(connection, wallet as any, opts);
@@ -1028,71 +620,64 @@ First we setup our program API and some usefull states to store nft data
         return program;
     };
 
-    const program = getProgram();
+  const program = getProgram();
+```
 
-	const umi = createUmi("https://api.devnet.solana.com").use(walletAdapterIdentity(wallet)).use(mplTokenMetadata());
-	
-	const associatedTokenAccount = wallet.publicKey !== null &&  getAssociatedTokenAddressSync(
-		mintKeypair.publicKey,
-		wallet.publicKey
-	);
+Set up the umi client and fetch metadata and master edition PDA account using the mint account.
 
-	let metadataAccount = findMetadataPda(umi, {
-		mint: publicKey(mintKeypair.publicKey),
-	})[0];
+```Typescript
+ const umi = createUmi("https://api.devnet.solana.com").use(walletAdapterIdentity(wallet)).use(mplTokenMetadata());
+    //const mint = anchor.web3.Keypair.generate();
 
-	let masterEditionAccount = findMasterEditionPda(umi, {
-		mint: publicKey(mintKeypair.publicKey),
-	})[0];
+    const associatedTokenAccount = wallet.publicKey !== null && getAssociatedTokenAddressSync(
+        mintKeypair.publicKey,
+        wallet.publicKey
+    );
 
-	const MetaData = {
-		name: "oggggg",
-		symbol: "Oggy",
-		uri: "https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/nft.json",
-	};
+    let metadataAccount = findMetadataPda(umi, {
+        mint: publicKey(mintKeypair.publicKey),
+    })[0];
 
-};
+    let masterEditionAccount = findMasterEditionPda(umi, {
+        mint: publicKey(mintKeypair.publicKey),
+    })[0];
+
+    const MetaData = {
+        name: "oggggg",
+        symbol: "Oggy",
+        uri: "https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/nft.json",
+    };
 
 ```
 
-- Here setting usefull states to preserve tx and data states
-- fetching collection and wallets
-- getting a program api from anchor provider(coral)
-- creating an umi instance to use mpl token metadata
-- fetching and creating an ata for minter to store nft in minter’s associated token account
-- creating metdata and masteredition account for nft token
-- last setup metadata name, symbol and uri(stored somewhere)
+Call **mintNft** fn to mint NFT into Minter’s wallet.
 
-Next we just writing nft minting process
-
-```tsx
-
+```Typescript
  const mintNft = async (e) => {
         setLoading(true);
         try {
             e.preventDefault();
-
             const metaplex = Metaplex.make(connection);
-          
-            const tx = await program.methods
-            .mintNft(MetaData.name, MetaData.symbol, MetaData.uri)
-            .accounts({
-                signer: wallet.publicKey,
-                mint: mintKeypair.publicKey,
-                associatedTokenAccount,
-                metadataAccount,
-                masterEditionAccount,
-                tokenProgram: TOKEN_PROGRAM_ID,
-                associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-                tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
-                systemProgram: anchor.web3.SystemProgram.programId,
-                rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-            })
-            .signers([mintKeypair])
-            .rpc();
 
-          console.log(`mint nft tx: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
-          console.log(`minted nft: https://explorer.solana.com/address/${mintKeypair.publicKey}?cluster=devnet`);
+            const tx = await program.methods
+                .mintNft(MetaData.name, MetaData.symbol, MetaData.uri)
+                .accounts({
+                    signer: wallet.publicKey,
+                    mint: mintKeypair.publicKey,
+                    associatedTokenAccount,
+                    metadataAccount,
+                    masterEditionAccount,
+                    tokenProgram: TOKEN_PROGRAM_ID,
+                    associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+                    tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
+                    systemProgram: anchor.web3.SystemProgram.programId,
+                    rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+                })
+                .signers([mintKeypair])
+                .rpc();
+
+            console.log(`mint nft tx: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
+            console.log(`minted nft: https://explorer.solana.com/address/${mintKeypair.publicKey}?cluster=devnet`);
 
             setTxSig(tx);
 
@@ -1101,53 +686,20 @@ Next we just writing nft minting process
                 .findByMint({ mintAddress: mintKeypair.publicKey, tokenOwner: wallet.publicKey });
             setNftDetails(metadata);
             notify({ message: "NFT Minted" });
-
-            const userNfts = await metaplex.nfts().findAllByOwner({
-                owner: wallet.publicKey
-            });
-
-            console.log("myNfts:",userNfts);
-
-            setAllNftByWallet(userNfts)
         } catch (err) {
             console.log(err);
             notify({ message: err.message });
         }
         setLoading(false);
     };
-
 ```
 
-The minting process
+# Transfer NFT to another user
 
-- This tx we discusssed before in rust, typescript(wallet adapters and file systems wallets)
-- in this function we are creating a nft mint , mint nft to minter wallet(the signer/author or connected wallet’s ata).
-- creating a connection with metaplex and sending a tx to program’s mint nft method
-- fetching metadata for minted nft
+In your project folder open **s-sol-tokens/solana-client/src/components/nft/NFTCard.tsx** and call the **transferNFT** fn to transfer NFT to buyer’s associated token account.
 
-In last of component we return jsx to show(UI) tx and values of wallets.
-
-in next transaction 
-
-we can transfer our minted nft to other user
-
-![nftsender](/ChallangeViews/quiz-0/nftsender.jpeg)
-
-for this just only paste user wallet pub key and send nft to user wallets address
-
-how it is does→
-
-code process
-
-## The frontend tx
-
-Go to this file
-
-[Nft-card](https://github.com/shivamSspirit/S-Sol-tokens/blob/main/solana-client/src/components/nft/NFTCard.tsx)
-
-```tsx
-
-  const transferNFT = async () => {
+```Typescript
+ const transferNFT = async () => {
         setLoading(true);
         try {
             const transaction = new Transaction();
@@ -1185,24 +737,21 @@ Go to this file
                     )
                 );
                 transaction.feePayer = wallet.publicKey;
-
                 const tx1 = await sendTransaction(transaction, connection);
+                console.log("tx1", tx1)
             }
 
             const tx = await program.methods
                 .transferTokens(new BN(1))
                 .accounts({
                     from: publicKey,
-					          fromAta: sellerTokenAccount,
-					          toAta: buyerTokenAccount,
-					          tokenProgram: TOKEN_PROGRAM_ID
+                    fromAta: sellerTokenAccount,
+                    toAta: buyerTokenAccount,
+                    tokenProgram: TOKEN_PROGRAM_ID
                 })
                 .rpc({ skipPreflight: true });
 
             setTxSig(tx);
-
-            const buyerTokenAccountAmount = (await getAccount(connection, buyerTokenAccount)).amount;
-
             notify({ message: "NFT Transferred" });
         } catch (err) {
             console.log(err);
@@ -1212,144 +761,33 @@ Go to this file
     };
 ```
 
-process-:
+# Create Fungible Token Mint
 
-- imports tools and third party libraries
-- Setting program to compose a transaction
-- Next, in transferNFT call..
-- creating new tx instance
-- create and fetch seller token ata (sender’s(minter) walllet)
-- fetch buyer public key from form(UI forms) and create an ata for buyer to hold this nft.
-- then create a tx for creating an ata for buyer
+In your project folder open **s-sol-tokens/solana-client/src/components/fungible/FungibleTokenMint.tsx** and call the **createMint** fn to create a fungible token mint and mint tokens into minter’s wallet.
 
-```tsx
+```Typescript
+  const createMint = async (event) => {
+        event.preventDefault();
 
-          try {
-                await getAccount(connection, buyerTokenAccount);
-            } catch (e) {
-                transaction.add(
-                    createAssociatedTokenAccountInstruction(
-                        publicKey,
-                        buyerTokenAccount,
-                        buyerPublicKey,
-                        mint.publicKey,
-                        TOKEN_PROGRAM_ID,
-                        ASSOCIATED_TOKEN_PROGRAM_ID
-                    )
-                );
-                // transaction.add(instruction);
-                transaction.feePayer = wallet.publicKey;
+        setLoading(true);
 
-                const tx1 = await sendTransaction(transaction, connection);
-            }
+        if (!publicKey) {
+            notify({ type: "error", message: `Wallet not connected!` });
+            console.log("error", `Send Transaction: Wallet not connected!`);
+            return;
+        }
+        // creating metadata address
+        const metaplex = Metaplex.make(connection);
+        const metadataAddress = await metaplex.nfts().pdas().metadata({ mint: mintKeypair.publicKey });
 
-```
+        const associatedTokenAccount = wallet.publicKey !== null && getAssociatedTokenAddressSync(
+            mintKeypair.publicKey,
+            wallet.publicKey
+        );
 
-- then call transferTokens on rpc or send one token to buyer
-
-```tsx
-
-               const tx = await program.methods
-                .transferTokens(new BN(1))
-                .accounts({
-                    from: publicKey,
-					          fromAta: sellerTokenAccount,
-					          toAta: buyerTokenAccount,
-					          tokenProgram: TOKEN_PROGRAM_ID
-                })
-                .rpc({ skipPreflight: true });
-
-```
-
-You will see wallet screen like this when you are sending in transfer nft tx 
-
-![nftsend](/ChallangeViews/quiz-0/nftsend.png)
-
-## The solana program accounts validation
-
-Goto this file 
-
-[transfertokens](https://github.com/shivamSspirit/S-Sol-tokens/blob/main/spltokens-sol-program/programs/spltokens/src/instructions/transfer_token.rs)
-
-you will see (what solana program looks like)
-
-- This transfer_tokens methods is take transfer token account context and token amount.
-- Create a program ix for token program’s transfer method (for this create a cpi context and make a cpi to to token program)
-
-```rust
-
-pub fn transfer_tokens(ctx: Context<TransferToken>, amount: u64) -> Result<()> 
-{
-    let cpi_accounts = Transfer 
-    {
-        from: ctx.accounts.from_ata.to_account_info(),
-        to: ctx.accounts.to_ata.to_account_info(),
-        authority: ctx.accounts.from.to_account_info(),
-    };
-    let cpi_program = ctx.accounts.token_program.to_account_info();
-    
-    token::transfer(CpiContext::new(cpi_program, cpi_accounts), amount)?;
-
-    Ok(())
-}
-
-```
-
-- Account structures (that we are sending from frontend tx)
-
-```rust
-
-#[derive(Accounts)]
-pub struct TransferToken<'info> 
-{
-    pub from: Signer<'info>,
-
-    #[account(mut)]
-    pub from_ata: Account<'info, TokenAccount>,
-
-    #[account(mut)]
-    pub to_ata: Account<'info, TokenAccount>,
-
-    pub token_program: Program<'info, Token>
-}
-
-```
-
-## Now we move to third transaction
-
- 
-That is mint fungible token transaction
-
-land to home page again
-
-![landpage](/ChallangeViews/quiz-0/landpage.jpeg)
-
-Click on mint fungilble token button 
-
-you will land here ,when you land 
-you will need
-to click on create mint to initaite mint tx and and this will mint 10B tokens to minter’s wallet
-
-![minttinginwallet](/ChallangeViews/quiz-0/minttinginwallet.png)
-
-after token mint the mint address is shows on screen like this 
-
-![createfungmint](/ChallangeViews/quiz-0/createfungmint.jpeg)
-
-client view of transaction
-
-goto this file 
-
-[fungible-token-mint](https://github.com/shivamSspirit/S-Sol-tokens/blob/main/solana-client/src/components/fungible/FungibleTokenMint.tsx)
-
-Some difference from nft tx:
-
-- decimal values
-- supply of tokens
-
-```tsx
-
- const createMintTransaction = await program.methods
+        // create mint transaction
+        try {
+            const createMintTransaction = await program.methods
                 .mintToken(
                     3, // 0 decimals for NFT
                     tokenTitle, // NFT name
@@ -1370,41 +808,96 @@ Some difference from nft tx:
                 })
                 .signers([mintKeypair])
                 .rpc();
+            console.log("Your transaction signature", createMintTransaction);
+            let mintAccount = await getMint(connection, mintKeypair.publicKey);
+            console.info("mintAccount", mintAccount.address.toString());
 
+            setMint(mintAccount.address.toString());
+            setTxSig(createMintTransaction);
+        } catch (error) {
+            notify({ type: "error", message: `Transaction failed!`, description: error?.message });
+            console.log("error", `Transaction failed! ${error?.message}`);
+            return;
+        }
+
+        setLoading(false);
+    };
 ```
 
-backend view of tx:
+# Transfer Fungible Token to another user
 
-Go to this file 
+In your project folder open **s-sol-tokens/solana-client/src/components/fungible/TransfertoOtherWallet.tsx** and call the **transferfungible** fn to transfer fungible tokens to the receiver’s Associated token account.
 
-[mint-token-ix](https://github.com/shivamSspirit/S-Sol-tokens/blob/main/spltokens-sol-program/programs/spltokens/src/instructions/mint_token.rs)
+```Typescript
+const transferfungible = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        if (!connection || !publicKey) {
+            return;
+        }
+        const transaction = new web3.Transaction();
 
-This is instruction to fungible token mint
+        const mintPubKey = new web3.PublicKey(event.target.mint.value);
+        const recipientPubKey = new web3.PublicKey(event.target.recipient.value);
+        let amount = event.target.amount.value;
+        amount = amount * 10 ** 9;
 
-Now we are moving to our fourth transaction in a raw
+        const senderAta = await getAssociatedTokenAddress(
+            mintPubKey,
+            publicKey,
+            false,
+            TOKEN_PROGRAM_ID,
+            ASSOCIATED_TOKEN_PROGRAM_ID
+        );
 
-Transfer fungible tokens to another user, the process is same we saw in nft 
+        const receiverAta = await getAssociatedTokenAddress(
+            mintPubKey,
+            recipientPubKey,
+            false,
+            TOKEN_PROGRAM_ID,
+            ASSOCIATED_TOKEN_PROGRAM_ID
+        );
 
-so..  
+        try {
+            await getAccount(connection, receiverAta);
+        } catch (e) {
+            transaction.add(
+                createAssociatedTokenAccountInstruction(
+                    publicKey,
+                    receiverAta,
+                    recipientPubKey,
+                    mintPubKey,
+                    TOKEN_PROGRAM_ID,
+                    ASSOCIATED_TOKEN_PROGRAM_ID
+                )
+            );
+        }
 
-after you will get fungible token address on screen 
+        amount = new anchor.BN(amount);
 
-scroll under to this 
+        const transferTx = await program.methods
+            .transferTokens(amount)
+            .accounts({
+                from: publicKey,
+                fromAta: senderAta,
+                toAta: receiverAta,
+                tokenProgram: TOKEN_PROGRAM_ID
+            })
+            .instruction();
 
-This is token sender form 
+        transaction.add(transferTx);
+        const signature = await sendTransaction(transaction, connection);
+        await connection.confirmTransaction(signature, "confirmed");
 
-in this -: 
+        setTxSig(signature);
+        setTokenAccount(receiverAta.toString());
 
-- add your fungible token mint
-- add recipient public key
-- amount of tokens you want to send
+        const account = await getAccount(connection, receiverAta);
+        setBalance(account.amount.toString());
+        setLoading(false);
+    };
+```
 
-![tokensender](/ChallangeViews/quiz-0/tokensender.jpeg)
-
-Then click on transfer tokens button 
-
-you will see wallet screen like this 
-
-![sendingtokens](/ChallangeViews/quiz-0/sendingtokens.png)
-
-That’s it how you create, manage and send transaction to solana blockchain
+Resources-:  
+github : [spldapp_github](https://github.com/solana-based-quests/S-Sol-tokens)  
+vercel : [spldapp_vercel](https://solana-tokens-frontend.vercel.app/)

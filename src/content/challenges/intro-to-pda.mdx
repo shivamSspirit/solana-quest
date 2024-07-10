@@ -1,0 +1,895 @@
+---
+title: Introduction to PDA
+serial: 2
+author: shivam
+description: In this Quest, you'll discover PDA Accounts and how they operate in Solana. You'll also grasp how to create features related to PDA Accounts.
+icon: 'OneChallenge'
+github_link: 'https://github.com/shivamSspirit/lendborrowdapp'
+---
+
+# Solana borrow lend
+
+[![art-2-1-01.png](https://i.postimg.cc/5NjZvS49/art-2-1-01.png)](https://postimg.cc/JGV6CJHS)
+
+# Introduction
+
+This guide will teach you how to create and deploy the Solana program and connect to UI for a basic on-chain borrow-lend dApp. This d-App will allow you to lend and borrow predefined assets.
+
+# What you will learn
+
+- Setting up your environment
+- Using **npx create-solana-dapp**
+- Anchor program development
+- How to create and store data in PDA
+- Deploying a Solana program
+- Testing an on-chain program
+- Connecting an on-chain program to a React UI
+
+# Prerequisites
+
+For this guide, you will need to have your local development environment setup with a few tools:
+
+- [Rust](https://www.rust-lang.org/tools/install)
+- [Node JS](https://nodejs.org/en/download)
+- [Solana CLI & Anchor](https://solana.com/developers/guides/getstarted/setup-local-development)
+
+# What we are building
+
+We are developing a lending and borrowing program that simulates and mimics a real-world borrow-lend program. In this dapp, we will utilize two tokens on the DevNet: [SOL](https://explorer.solana.com/address/So11111111111111111111111111111111111111112?cluster=devnet) and [USD](https://explorer.solana.com/address/4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU?cluster=devnet). Fellow developers can create portfolio accounts, and perform lend and borrow operations.
+
+![borrowlandingpage](/ChallangeViews/quiz-1/borrowland.jpeg)
+
+Live At: [borrowlend_live](https://lendborrowdapp.vercel.app/borrowlend)
+
+# Setting up the project
+
+You can set up a new project by using:
+
+```bash
+npx create-solana-dapp
+```
+
+This CLI command enables quick Solana dApp creation. You can find the source code [here](https://github.com/solana-developers/create-solana-dapp).
+
+Now respond to the prompts as follows:
+
+- Enter a project name: **borrow-lend**
+- Select a preset: **Next.js**
+- Select a UI library: **Tailwind**
+- Select an Anchor template: **counter** program
+
+By selecting **counter** for the Anchor template, a simple counter [program](https://solana.com/docs/terminology#program), written in Rust using the Anchor framework, will be generated for you. Before we start editing this generated template program, let's make sure everything is working as expected:
+
+```bash
+cd borrow-lend 
+```
+
+```bash
+npm install 
+```
+
+```bash
+npm run dev
+```
+
+Or you can directly clone this repo and set it up locally
+
+```bash
+git clone git@github.com:shivamSspirit/lendborrowdapp.git
+```
+
+# Dapp accounts overview
+
+![useracc.png](/ChallangeViews/quiz-1/useracc.jpeg)
+
+In the above diagram, the user's wallet creates their portfolio account. The portfolio account includes the wallet's public key, a vector of lent tokens, and a vector (array) of borrowed tokens. and The system program facilitates the creation of the user's portfolio account.
+
+# Anchor program development
+
+If you're new to Anchor, [The Anchor Book](https://book.anchor-lang.com/introduction/introduction.html) and [Anchor Examples](https://examples.anchor-lang.com/) are great references to help you learn.
+
+In **borrow-lend**, navigate to **anchor/programs/borrow-lend/src/lib.rs**. There will already be template code generated in this folder. Let's delete it and start from scratch to walk through each step.
+
+# Define your Anchor program
+
+```Rust
+use anchor_lang::prelude::*; 
+// This is your program's public key and it will update automatically when you build the project.
+declare_id!("FqfKDfzgDaf4JsEaP5eDX9qEedUPdfdv8uCcQDv4LszL");
+
+ #[program]
+ pub mod borrow_lend {  
+   use super::*;
+ }
+```
+
+# Define states
+
+## Portfolio account state
+
+The state is a data structure utilized for storing information. In the Solana blockchain, since programs are stateless, the state is stored in accounts. in Solana, you can create a hashmap-like structure to organize and manage data using PDA accounts.
+
+Using the Anchor framework, you can create an account by applying the **#[account]** attribute macro to the rust struct.
+
+```Rust
+use anchor_lang::prelude::*;
+use crate::state::{borrowed_tokens::BorrowedToken, lended_tokens::LendedToken};
+
+#[account]
+pub struct UserAcc
+{
+    pub authority: Pubkey,
+    pub lended_tokens: Vec<LendedToken>,
+    pub borrowed_tokens: Vec<BorrowedToken>,
+}
+
+impl UserAcc
+{
+    pub const LEN: usize = 32 + 4 + 4;
+}
+```
+
+In the code above, **UserAcc** is a struct similar to a hashmap.
+
+It stores:
+
+- The account's authority
+- A vector of **LendedToken** struct
+- A vector of **BorrowedToken** struct
+
+In Solana, we must define the space for an account at the time of its creation because this required to pay rent for the storage used by the account.
+
+## Lended Token state
+
+```Rust
+use anchor_lang::prelude::*;
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+pub struct LendedToken
+{
+    pub token: Pubkey,
+    pub amount: u64
+}
+
+impl LendedToken
+{
+    pub const LEN: usize = 32 + 8;
+}
+```
+
+In the above code, the **derive** macro attribute automatically generates additional items for data structures.
+
+For the **LendedToken** data structure, the traits **AnchorSerialize**, **AnchorDeserialize**, and **Clone** are automatically applied. these traits are used to Serialize and deserialize struct data.
+
+## Borrowed Token state
+
+```Rust
+use anchor_lang::prelude::*;
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
+pub struct BorrowedToken
+{
+    pub token: Pubkey,
+    pub amount: u64
+}
+
+impl BorrowedToken
+{
+    pub const LEN: usize = 32 + 8;
+}
+```
+
+Both LendedToken and BorrowedToken data structures include a token public key(that we want to lend and borrow) and a token amount type of u64.
+
+## Define constants
+
+```Rust
+pub const USER_SEED: &[u8] = b"USER";
+pub const BORROW_PERCENTAGE: u64 = 50;
+pub const TOKENS: &[(&str, u64)] = &[
+    ("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU", 100),
+    ("So11111111111111111111111111111111111111112", 150),
+];
+```
+
+- In this program, the **USER_SEED** is used as the hashmap key for the Program Derived Address (PDA) within the hashmap.
+- The program utilizes **BORROW_PERCENTAGE** to determine the collateral requirements.
+- The **TOKENS** slice contains the DevNet token keys and the initial amount for both USD and SOL.
+
+# Build program instructions
+
+First Open **lib.rs** file and Add these three instruction handlers in it
+
+```Rust
+mod error;
+mod constants;
+pub mod state;
+pub use state::*;
+pub mod instructions;
+pub use instructions::*;
+use anchor_lang::prelude::*;
+
+declare_id!("FqfKDfzgDaf4JsEaP5eDX9qEedUPdfdv8uCcQDv4LszL");
+
+#[program]
+pub mod borrow_lend {
+    use super::*;
+
+    // Create a user portfolio account
+    pub fn init_user_main(ctx: Context<UserInit>) -> Result<()> 
+    {
+        user::init_user(ctx)
+    }
+    
+    // lend tokens
+    pub fn lend_main(ctx: Context<Lend>, lend: LendedToken) -> Result<()> 
+    {
+        lend::lend(ctx, lend)
+    }
+    
+    // borrow tokens
+    pub fn borrow_main(ctx: Context<Borrow>, lend: BorrowedToken) -> Result<()> 
+    {
+        borrow::borrow(ctx, lend)
+    }
+}
+```
+
+In the code above:
+
+- We import all instruction and state modules.
+- This file serves as a registry module for the Solana program.
+- Within this file, we invoke each instruction handler separately, providing context and states for each instruction call.
+
+# Create portfolio account instruction
+
+let’s create an **instructions** folder at the **lib** file level and create a file named **user** in the **instructions** folder.
+
+In **user** file add this code
+
+```Rust
+use anchor_lang::prelude::*;
+use crate::state::UserAcc;
+use crate::constants::USER_SEED;
+
+pub fn init_user(ctx: Context<UserInit>) -> Result<()> 
+{
+    let user = &mut ctx.accounts.user;
+
+    user.authority = ctx.accounts.signer.key();
+    user.borrowed_tokens = Vec::new();
+    user.lended_tokens = Vec::new();
+
+    Ok(())
+}
+
+#[derive(Accounts)]
+pub struct UserInit<'info>
+{
+    #[account(mut)]
+    pub signer: Signer<'info>,
+
+    #[account(init, payer = signer, seeds=[USER_SEED, signer.key().as_ref()], bump, space = 8 + UserAcc::LEN)]
+    pub user: Account<'info, UserAcc>,
+
+    pub system_program: Program<'info, System>
+}
+```
+
+let’s break down to see what is happening here  
+In the above code,
+
+**Imports**-
+
+we import the **anchor_lang**, **userAcc**  and  **USER_SEED**.
+
+**Instruction logic**-
+
+In the **init_user** function
+
+- It takes the account context as its first parameter.
+- It retrieves the user portfolio account from the context and stores data in it
+- Stores the public key (Pubkey) of the signer in the **authority** field.
+- Initializes an empty vector for the **borrowed_tokens** field.
+- Initializes an empty vector for the **lended_tokens** field.
+
+After storing the information, the function returns **Ok(())** to finalize the result or an error if the operation fails.
+
+**Account creation and validation**-
+
+  In Anchor Various types of constraints can be applied using the **#[account(..)]** attribute.
+
+- **#[account(mut)]** in this attribute macro mut keyword defines this account as mutable
+- The **init** constraint creates the account through a Cross-Program Invocation (CPI) to the system program and initializes it by setting its account discriminator.
+
+For this account, we use seeds as keys in a hashmap-like structure. These seeds can be user-defined or dynamically generated **byte** values.
+
+In this case, we use the **USER** and the **signer** for the seeds to locate this Program Derived Address (PDA) account.
+
+This mechanism checks whether the given account is a PDA derived from the executing program, the specified seeds, and, if provided, the bump. If the bump is not provided, Anchor defaults to the canonical bump.
+
+- The **bumps** field, of type [Bumps](https://docs.rs/anchor-lang/latest/anchor_lang/trait.Bumps.html#), is generated by the **#[derive(Accounts)]** macro. It represents the bump seeds identified during constraint validation.
+- The **bump** is an `u8` type that helps generate a PDA by modifying the key pair from the usual elliptic curve.
+- The **payer** account, which in our case is of type **Signer**, covers the cost of creating the account.
+- In the last system program is used for account creation.
+
+At this stage, we are done with 
+
+- PDA account creation
+- Storing the user’s portfolio data in the portfolio PDA account
+
+# Create lend instruction
+
+let’s create a file named **lend** in the **instructions** folder.  
+In the **lend** file add this code
+
+```Rust
+use anchor_lang::prelude::*;
+use crate::state::UserAcc;
+use crate::state::{BorrowedToken, LendedToken};
+use crate::constants::USER_SEED;
+
+pub fn lend(ctx: Context<Lend>, lend: LendedToken) -> Result<()> 
+{
+    let user = &mut ctx.accounts.user;
+
+    user.lended_tokens.push(lend);
+
+    Ok(())
+}
+
+#[derive(Accounts)]
+pub struct Lend<'info>
+{
+    #[account(mut)]
+    pub signer: Signer<'info>,
+
+    #[account(
+        mut,
+        seeds=[USER_SEED, signer.key().as_ref()],
+        bump,
+        realloc = 8 + UserAcc::LEN + ((user.borrowed_tokens.len() + 1) * BorrowedToken::LEN) + ((user.lended_tokens.len() + 1) * LendedToken::LEN),
+        realloc::payer = signer,
+        realloc::zero = true)
+    ]
+    pub user: Account<'info, UserAcc>,
+
+    pub system_program: Program<'info, System>
+}
+```
+
+In the above code,
+
+**Imports**-
+
+We imports the **anchor_lang**, **userAcc**,**BorrowedToken**, **LendedToken**  and  **USER_SEED**.
+
+**Instruction logic**-
+
+In the **lend** function
+
+- It takes the account context as its first argument and the **LendedToken** state struct as the second argument.
+- It retrieves the user portfolio account from the context.
+- Stores the **LendedToken** (struct)  in the **lended_tokens** vector.
+- After storing the information, the function returns **Ok(())** to finalize the result or an error if the operation fails.
+
+**Account creation and validation**-
+
+The **LendedToken** struct is stored in the **lended_tokens** vector. Additionally, the size of the portfolio account is updated to accommodate the new data.
+
+Resizing data of PDA -:
+
+The **realloc** constraint is used to adjust the space of a program account at the beginning of an instruction. It is specified as 
+
+`#[account(realloc = <space>, realloc::payer = <target>, realloc::zero = <bool>)]`.
+
+Here's how it works:
+
+- When increasing the account's data length, lamports are transferred from the **realloc::payer** to the program account to ensure it remains **rent-exempt**.
+- The **realloc::zero** constraint determines whether the newly allocated memory should be zero-initialized. Zero-initialization is important as it ensures that the new memory is clean and free from any residual or unwanted data.
+
+# Create borrow instruction
+
+let’s  create a file named **borrow** in the **instructions** folder  
+In the **borrow** file add this code
+
+```Rust
+use anchor_lang::prelude::*;
+use crate::state::UserAcc;
+use crate::state::{BorrowedToken, LendedToken};
+use crate::error::BLErrorCode;
+use crate::constants::{USER_SEED, BORROW_PERCENTAGE, TOKENS};
+
+pub fn borrow(ctx: Context<Borrow>, borrow: BorrowedToken) -> Result<()> 
+{
+    let user = &mut ctx.accounts.user;
+
+    //Get the amount of the total lended tokens in USD
+    let mut total_lended_amount_in_usd = 0;
+    for n in &user.lended_tokens
+    {
+        total_lended_amount_in_usd += n.amount * TOKENS.binary_search_by(|(k, _)| k.cmp(&n.token.to_string().as_str())).map(|x| TOKENS[x].1).ok().unwrap();  
+    }
+
+    //Get the amount of the total borrowed tokens in USD
+    let mut total_borrow_amount_in_usd = 0;
+    
+    for n in &user.borrowed_tokens
+    {
+        total_borrow_amount_in_usd += n.amount * TOKENS.binary_search_by(|(k, _)| k.cmp(&n.token.to_string().as_str())).map(|x| TOKENS[x].1).ok().unwrap();
+    }
+
+    total_borrow_amount_in_usd += borrow.amount * TOKENS.binary_search_by(|(k, _)| k.cmp(&borrow.token.to_string().as_str())).map(|x| TOKENS[x].1).ok().unwrap(); //Add current borrow amount
+
+    require!(total_borrow_amount_in_usd <= (total_lended_amount_in_usd / 100) * BORROW_PERCENTAGE, BLErrorCode::BorrowHigherThanLend);
+
+    user.borrowed_tokens.push(borrow);
+
+    Ok(())
+}
+
+#[derive(Accounts)]
+pub struct Borrow<'info>
+{
+    #[account(mut)]
+    pub signer: Signer<'info>,
+
+    #[account(
+        mut,
+        seeds=[USER_SEED, signer.key().as_ref()],
+        bump,
+        realloc = 8 + UserAcc::LEN + ((user.borrowed_tokens.len() + 1) * BorrowedToken::LEN) + ((user.lended_tokens.len() + 1) * LendedToken::LEN),
+        realloc::payer = signer,
+        realloc::zero = true)
+    ]
+    pub user: Account<'info, UserAcc>,
+
+    pub system_program: Program<'info, System>
+}
+```
+
+In the above code,
+
+**Imports**-
+
+We import the **anchor_lang**, **BLErrorCode**, **userAcc**, **BorrowedToken**, and **LendedToken**. Then, import the constants for **USER_SEED**, **BORROW_PERCENTAGE**, and **TOKENS**.
+
+**Instruction logic**-
+
+In the **borrow** function
+
+- It takes the account context as its first argument and the **BorrowedToken** state struct as the second argument.
+- It retrieves the user’s portfolio account from the context.
+- It calculates the total amount of lent tokens.
+- Then, it calculates the total amount of borrowed tokens.
+- The current borrow amount is added to the total borrowed amount.
+- After updating the borrowed token amount, it verifies if the collateral from lent tokens is greater than the total borrowed amount.
+- If the collateral requirement is met, the function adds the **BorrowedToken** struct to the **borrowed_tokens** vector otherwise through **BLErrorCode**.
+- Once the information is stored, the function returns **Ok(())** to finalize the operation or an error if the process fails.
+
+**Account creation and validation**-
+
+The **BorrowedToken** struct is stored in the **borrowed_tokens** vector. Additionally, the size of the portfolio account is updated to accommodate the new data.
+
+# Build and deploy Anchor program
+
+From dapp’s root run 
+
+```bash
+npm run anchor build
+```
+
+This will build your anchor program and generate a **target** folder(we will use generated IDL and types for the Solana program to connect our UI to this program).
+
+To deploy this program run
+
+```bash
+npm run anchor deploy
+```
+
+After this, the program will deployed to an address. Pick this program address and update this address in the following files.
+
+- lendborrow/anchor/src/lendborrow-export.ts
+- lendborrow/anchor/Anchor.toml
+- lendborrow/anchor/programs/lend_borrow/src/lib.rs
+
+At this stage, we are done with Lend Borrow Solana program development.
+
+# Connecting Solana program to a UI
+
+**create-solana-dapp** already sets up a UI with data access and a wallet connector for you. All you need to do is simply modify it to fit your newly created program.
+
+Since this lend-borrow program has three instructions, we will need components in the UI that will be able to call each of these instructions:
+
+- Create portfolio
+- Lend token
+- Borrow token
+
+In your project folder open **lendborrow/anchor/src/lendborrow-export.ts**
+
+```typescript
+// Here we export some useful types and functions for interacting with the Anchor program.
+import { AnchorProvider, Program } from '@coral-xyz/anchor';
+import { Cluster, PublicKey } from '@solana/web3.js';
+import borrowLendIDL from '../target/idl/borrow_lend.json';
+import type { BorrowLend } from '../target/types/borrow_lend';
+
+// Re-export the generated IDL and type
+export { BorrowLend, borrowLendIDL };
+
+// The programId is imported from the program IDL.
+export const BorrowLend_PROGRAM_ID = new PublicKey(borrowLendIDL.address);
+
+// This is a helper function to get the Borrow Lend Anchor program.
+export function getBorrowLendProgram(provider: AnchorProvider) {
+  return new Program(borrowLendIDL as BorrowLend, provider);
+}
+
+// This is a helper function to get the program ID for the Borrow Lend program depending on the cluster.
+export function getBorrowLendProgramId(cluster: Cluster) {
+  switch (cluster) {
+    case 'devnet':
+    case 'testnet':
+      // This is the program ID for the Lend program on devnet and testnet.
+      return new PublicKey('FqfKDfzgDaf4JsEaP5eDX9qEedUPdfdv8uCcQDv4LszL');
+    case 'mainnet-beta':
+    default:
+      return BorrowLend_PROGRAM_ID;
+  }
+}
+```
+
+In the above code, we are importing IDL and Program types from the generated **target** folder. and re-exporting IDL, types, program ID and Program API.
+After this setup let’s move to 
+**lendborrow/web/components/borrowlend/borrowlend-data-access.tsx**
+And update **useBorrowLendProgram()** to create a user’s portfolio:
+
+```typescript
+  const initializeUserPort = useMutation({
+    mutationKey: ['borrow_lend', 'initialize_user', { cluster }],
+    mutationFn: async ({ user }: { user: PublicKey }) => {
+      return program.methods
+        .initUserMain()
+        .rpc()
+    },
+    onSuccess: (signature) => {
+      transactionToast(signature);
+      return accounts.refetch();
+    },
+    onError: () => toast.error('Failed to initialize account'),
+  });
+```
+
+In the above code,
+we call our first instruction **initUserMain()** to create a user Portfolio PDA account.
+Next, update the **useBorrowLendProgramAccount()** function to be able to **lend** and **borrow** tokens:
+
+```typescript
+  const LendTokens = useMutation({
+    mutationKey: ["borrow_lend", 'lend', { cluster, account }],
+    mutationFn: async ({ user, tokenKey, tokenAmount }: { user: PublicKey; tokenKey: PublicKey; tokenAmount: number }) => {
+
+      const userPDa = PublicKey.findProgramAddressSync([Buffer.from("USER"), user.toBuffer()], program.programId);
+
+      return program.methods.lendMain({ token: tokenKey, amount: new BN(tokenAmount) }).accounts({
+        signer: user
+      }).rpc();
+
+    },
+    onSuccess: (tx) => {
+      transactionToast(tx);
+      return accounts.refetch();
+    },
+
+    onError: () => {
+      toast.error('Failed to create entry')
+    }
+  })
+
+  const BorrowTokens = useMutation({
+    mutationKey: ["borrow_lend", 'borrow', { cluster, account }],
+    mutationFn: async ({ user, tokenKey, tokenAmount }: { user: PublicKey; tokenKey: PublicKey; tokenAmount: number }) => {
+
+      const userPDa = PublicKey.findProgramAddressSync([Buffer.from("USER"), user.toBuffer()], program.programId);
+
+      return program.methods.borrowMain({ token: tokenKey, amount: new BN(tokenAmount) }).accounts({
+        signer: user
+      }).rpc();
+
+    },
+    onSuccess: (tx) => {
+      transactionToast(tx);
+      return accounts.refetch();
+    },
+
+    onError: () => {
+      toast.error('Failed to create entry')
+    }
+  })
+```
+
+Next update UI, for this, go into **lendborrow/web/components/borrowlend/borrowlend-ui.tsx**
+and create a UI for the **createPortfolio** button 
+
+```typescript
+export function BorrowLendCreate() {
+  const { initializeUserPort } = useBorrowLendProgram();
+  const { publicKey } = useWallet();
+  const { accounts } = useBorrowLendProgram();
+
+  const currentAcc = accounts.data?.find(account => account.account.authority.toString() === publicKey!.toString());
+
+  return (
+    <>
+      {
+        (publicKey! && !currentAcc) && <button
+        className="btn btn-xs lg:btn-md btn-primary mb-3"
+        onClick={() => initializeUserPort.mutateAsync({ user: publicKey })}
+        disabled={initializeUserPort.isPending}
+      >
+        Create Portfolio {initializeUserPort.isPending && '...'}
+      </button>
+      }
+    </>
+  );
+}
+```
+
+Next, create UI for Borrow-lend inputs and handlers
+
+```tsx
+export function BorrowLendTokenUI() {
+  const { publicKey } = useWallet();
+  const { accounts } = useBorrowLendProgram();
+
+  const currentAcc = accounts.data?.find(account => account.account.authority.toString() === publicKey!.toString())?.publicKey;
+  const { LendTokens, BorrowTokens } = useBorrowLendProgramAccount({ account: currentAcc! });
+
+  const tokens = [
+    { tokenName: "Solana", tokenSymbol: "SOL", tokenKey: new PublicKey("So11111111111111111111111111111111111111112") },
+    { tokenName: "USDC", tokenSymbol: "USD", tokenKey: new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU") }
+  ];
+
+  const [tokenValues, setTokenValues] = useState(
+    tokens.reduce((acc, token) => {
+      const keyAsString = String(token.tokenKey); // Explicitly convert to string
+      acc[keyAsString] = { lendValue: '', borrowValue: '' };
+      return acc;
+    }, {} as Record<string, { lendValue: string; borrowValue: string }>)
+  );
+
+  const handleLend = (tokenKey: any) => {
+    console.log("tokenKey", tokenKey)
+    const { lendValue } = tokenValues[tokenKey];
+    LendTokens.mutateAsync({ user: publicKey!, tokenKey: tokenKey, tokenAmount: Number(lendValue) });
+    setTokenValues(prevState => ({
+      ...prevState,
+      [tokenKey]: { ...prevState[tokenKey], lendValue: '' }
+    }))
+  };
+  const handleBorrow = (tokenKey: any) => {
+    const { borrowValue } = tokenValues[tokenKey];
+    BorrowTokens.mutateAsync({ user: publicKey!, tokenKey: tokenKey, tokenAmount: Number(borrowValue) });
+    setTokenValues(prevState => ({
+      ...prevState,
+      [tokenKey]: { ...prevState[tokenKey], borrowValue: '' }
+    }))
+  };
+
+  const handleChangeLend = (tokenKey: string, value: string) => {
+    setTokenValues(prevState => ({
+      ...prevState,
+      [tokenKey]: { ...prevState[tokenKey], lendValue: value }
+    }));
+  };
+
+  const handleChangeBorrow = (tokenKey: string, value: string) => {
+    setTokenValues(prevState => ({
+      ...prevState,
+      [tokenKey]: { ...prevState[tokenKey], borrowValue: value }
+    }));
+  };
+
+  return (
+    <>
+      {currentAcc! && <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+        <ul className="space-y-6">
+          {tokens.map((token) => (
+            <li
+              key={token.tokenSymbol}
+              className="flex flex-col md:flex-row items-center justify-between p-6 bg-gray-100 rounded-lg shadow-md space-y-4 md:space-y-0 md:space-x-4"
+            >
+              <span className="text-lg font-semibold">{token.tokenName}</span>
+
+              <div className="flex flex-col md:flex-row items-center w-full md:w-auto space-y-4 md:space-y-0 md:space-x-4">
+                <input
+                  type="text"
+                  value={tokenValues[String(token.tokenKey)].lendValue}
+                  onChange={(e) => handleChangeLend(String(token.tokenKey), e.target.value)}
+                  placeholder="Enter Lend amount"
+                  className="p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center w-full md:w-1/3"
+                />
+                <button
+                  onClick={() => handleLend(token.tokenKey)}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 w-full md:w-auto"
+                >
+                  Lend
+                </button>
+                <input
+                  type="text"
+                  value={tokenValues[String(token.tokenKey)].borrowValue}
+                  onChange={(e) => handleChangeBorrow(String(token.tokenKey), e.target.value)}
+                  placeholder="Enter Borrow amount"
+                  className="p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center w-full md:w-1/3"
+                />
+                <button
+                  onClick={() => handleBorrow(token.tokenKey)}
+                  className={"px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 w-full md:w-auto"}
+                >
+                  Borrow
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      }
+    </>
+  );
+}
+```
+
+Next, create a UI for the user portfolio 
+
+```typescript
+export function BorrowLendList() {
+  const { accounts, getProgramAccount } = useBorrowLendProgram();
+  const { publicKey } = useWallet();
+
+  if (getProgramAccount.isLoading) {
+    return <span className="loading loading-spinner loading-lg"></span>;
+  }
+  if (!getProgramAccount.data?.value) {
+    return (
+      <div className="alert alert-info flex justify-center">
+        <span>
+          Program account not found. Make sure you have deployed the program and
+          are on the correct cluster.
+        </span>
+      </div>
+    );
+  }
+  const currentAcc = accounts.data?.find(account => account.account.authority.toString() === publicKey!.toString());
+
+  return (
+    <div className={'space-y-6'}>
+      {accounts.isLoading ? (
+        <span className="loading loading-spinner loading-lg"></span>
+      ) : accounts.data?.length ? (
+        <div className="grid md:grid-cols-2 gap-4">
+          {currentAcc! && <BorrowLendUserPortfolio
+            key={currentAcc?.publicKey.toString()}
+            account={currentAcc?.publicKey}
+            borrowed={currentAcc?.account.borrowedTokens}
+            lended={currentAcc?.account.lendedTokens}
+            portfolioKey={currentAcc?.account.authority.toString()}
+          />}
+        </div>
+      ) : (
+        <div className="text-center">
+          <h2 className={'text-2xl'}>No accounts</h2>
+          No accounts found. Create one above to get started.
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+In last Create **BorrowLendUserPortfolio** components at **lendborrow/web/components/borrowlend/borrowlend-portfolio.tsx** 
+
+```Typescript
+'use client';
+
+import {
+  useBorrowLendProgramAccount,
+} from './borrowlend-data-access';
+
+const cellStyle = {
+  padding: '10px',
+  borderBottom: '1px solid #ddd'
+};
+
+const rowStyle = {
+  backgroundColor: '#fff'
+};
+
+const alternateRowStyle = {
+  backgroundColor: '#f9f9f9'
+};
+
+export function BorrowLendUserPortfolio({ account, borrowed, lended, portfolioKey }: { account: any; borrowed: any; lended: any; portfolioKey: string }) {
+
+  // Slice the first 6 characters
+  const start = portfolioKey?.slice(0, 8);
+
+  // Slice the last 6 characters
+  const end = portfolioKey?.slice(-8);
+
+  // Combine with ellipsis in between
+  const slices = `${start}...${end}`;
+
+  const {
+    accountQuery,
+  } = useBorrowLendProgramAccount({ account });
+
+  return (
+    <div className="space-y-6">
+      <h2
+        className={"card-title justify-center text-3xl cursor-pointer"}
+        onClick={() => accountQuery.refetch()}
+      >
+        {'User Portfolio'}
+      </h2>
+      <div>
+        <span>{`User portfolioKey: ${slices}`}</span>
+        <div style={{ padding: '20px', margin: '20px', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <h2 style={{ textAlign: 'center' }}>Borrowed and Lended Tokens</h2>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th style={{
+                  backgroundColor: '#f2f2f2',
+                  borderBottom: '2px solid #ddd',
+                  padding: '10px',
+                  textAlign: 'left',
+                  fontWeight: 'bold'
+                }}>Type</th>
+                <th style={{
+                  backgroundColor: '#f2f2f2',
+                  borderBottom: '2px solid #ddd',
+                  padding: '10px',
+                  textAlign: 'left',
+                  fontWeight: 'bold'
+                }}>Token</th>
+                <th style={{
+                  backgroundColor: '#f2f2f2',
+                  borderBottom: '2px solid #ddd',
+                  padding: '10px',
+                  textAlign: 'left',
+                  fontWeight: 'bold'
+                }}>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {borrowed?.map((token: any, index: number) => (
+                <tr key={`borrowed-${index}`} style={index % 2 ? rowStyle : alternateRowStyle}>
+                  <td style={cellStyle}>Borrowed</td>
+                  <td style={cellStyle}>{token.token.toString() === "So11111111111111111111111111111111111111112" ? "SOL" :
+                    token.token.toString() === "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU" ? "USD" : "SPL"}</td>
+                  <td style={cellStyle}>{token.amount.toString()}</td>
+                </tr>
+              ))}
+              {lended?.map((token: any, index: number) => (
+                <tr key={`lended-${index}`} style={index % 2 ? rowStyle : alternateRowStyle}>
+                  <td style={cellStyle}>Lended</td>
+                  <td style={cellStyle}>
+                    {token.token.toString() === "So11111111111111111111111111111111111111112" ? "SOL" :
+                      token.token.toString() === "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU" ? "USD" : "SPL"}
+                  </td>
+                  <td style={cellStyle}>{token.amount.toString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+```
+
+Resources-:   
+github : [borrowlend_github](https://github.com/shivamSspirit/lendborrowdapp)  
+vercel : [borrowlend_vercel](https://lendborrowdapp.vercel.app/borrowlend)

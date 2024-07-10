@@ -22,7 +22,9 @@ export default function Home() {
 
   const firstThreeChallenges = sortedChallenges.slice(0, 3)
   const restOfChallenges = sortedChallenges.slice(3)
-  const [lastSubmitted] = useAtom(lastSubmittedAtom)
+  const [lastSubmitted] = useAtom(lastSubmittedAtom);
+
+  console.log("last", firstThreeChallenges)
 
   return (
     <>
@@ -81,10 +83,10 @@ export default function Home() {
             {firstThreeChallenges.map(c => (
               <ChallengeCard key={c.serial}
                 serial={c.serial}
-                link={`/challenge/${c.title}`}
+                link={`/challenge/${c.slugAsParams}`}
                 title={c.title}
                 description={c.description}
-                unlocked={c.serial <= lastSubmitted}
+              //  unlocked={c.serial <= lastSubmitted}
                 icon={c.icon}
               />
             ))}
@@ -126,7 +128,7 @@ export default function Home() {
                 link={`/challenge/${c.title}`}
                 title={c.title}
                 description={c.description}
-                unlocked={c.serial <= lastSubmitted}
+              //  unlocked={c.serial <= lastSubmitted}
                 icon={c.icon}
               />
             ))}

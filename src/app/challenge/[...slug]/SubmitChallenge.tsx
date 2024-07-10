@@ -90,18 +90,13 @@ const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="gap-2" disabled={serial > lastSubmitted} >
-          {serial > lastSubmitted ? (
-            <>
-              <Lock />
-              LOCKED
-            </>
-          ) : (
+        <Button className="gap-2" disabled={false} >
+        
             <>
               <Rocket />
               Submit Challenge
             </>
-          )}
+        
         </Button>
       </PopoverTrigger>
       <PopoverContent>
