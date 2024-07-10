@@ -69,7 +69,7 @@ export default function Home() {
             <HowItRow serial={1} >When you are ready to test your knowledge, Quest Solana!</HowItRow>
             <HowItRow serial={2} >then use sol-dapp-scaffold to copy/paste each solana concept and tinker: Accounts, Programs, Transaction, CPI, and PDA</HowItRow>
             <HowItRow serial={3} >Watch this getting started
-              <Link className='underline' href={'https://www.youtube.com/watch?v=CsKbzsN7q1o&list=PLUBKxx7QjtVnU3hkPc8GF1Jh4DE7cf4n1'}> playlist </Link>
+              <Link className='underline' href={'https://www.youtube.com/watch?v=0P8JeL3TURU&list=PLilwLeBwGuK6NsYMPP_BlVkeQgff0NwvU'}> playlist </Link>
               to become a power user and sol-dapper.</HowItRow>
           </div>
         </section>
