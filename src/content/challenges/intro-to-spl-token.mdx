@@ -225,7 +225,7 @@ pub struct MintNFT<'info>
 let’s break down to see what is happening here  
 In the above code,
 
-**Imports**-
+### **Imports**-
 
 We imports **anchor_lang**, **anchor_spl**and  **mpl_token_metadata**.
 
@@ -237,7 +237,7 @@ We imports **anchor_lang**, **anchor_spl**and  **mpl_token_metadata**.
 - **mpl_token_metadata** provides functionalities to handle operations related to Metaplex like **find_master_edition_account**, and **find_metadata_account**.
 - In last, we import **state::DataV2** for creating metadata arguments.
 
-**Instruction logic**-
+### **Instruction handler logic**-
 
 In The **mint_nft** function
 
@@ -292,7 +292,7 @@ In The **mint_nft** function
 - It calls the **create_master_edition_v3()** function by providing the cpi context and max supply in our case **None**. This fn call creates a master edition account of the NFT so that you can use it to print multiple [editions](https://developers.metaplex.com/core-candy-machine/guards/edition#overview) (e.g., a limited supply of 10) of your NFT later.
 - finally, the instruction handler returns OK(()) for successful operation and through an error if any process fails.
 
-**Account creation and validation**-
+### **Account creation and validation**-
 
 In Anchor Various types of constraints can be applied using the **#[account(..)]** attribute.
 
@@ -420,7 +420,7 @@ pub struct MintToken<'info>
 let’s break down to see what is happening here  
 In the above code,
 
-**Imports**-
+### **Imports**-
 
 we imports **anchor_lang**, **anchor_spl**and  **mpl_token_metadata**.
 
@@ -432,7 +432,7 @@ we imports **anchor_lang**, **anchor_spl**and  **mpl_token_metadata**.
 - **mpl_token_metadata** provides functionalities to handle operations related to Metaplex like  **find_metadata_account**.
 - In last, we import **state::DataV2** for creating metadata arguments.
 
-**Instruction logic**-
+### **Instruction handler logic**-
 
 The **mint_token** function
 
@@ -470,7 +470,7 @@ The **mint_token** function
 - It calls the **create_metadata_accounts_v3()** function by providing the cpi context and the metadata information. this fn call updates the metadata of the minted tokens.
 - finally, the instruction handler returns OK(()) for successful operation and through an error if any process fails.
 
-**Account creation and validation**-
+### **Account creation and validation**-
 
 - In **MintToken** struct, we can access the instruction’s arguments with the **#[instruction(..)]** attribute.
 
@@ -538,11 +538,11 @@ pub struct TransferToken<'info>
 }
 ```
 
-**Imports**-
+### **Imports**-
 
 we imports **anchor_lang**, **anchor_spl**.
 
-**Instruction logic**-
+### **Instruction handler logic**-
 
 In The **transfer_tokens** function
 
@@ -551,7 +551,7 @@ In The **transfer_tokens** function
 - finally, it calls **token::transfer()** fn to transfer spl tokens to another user’s ATA **to_ata**.
 - Lastly, fn returns **ok(())** for completion otherwise it through an error if any process fails.
 
-**Account creation and validation**-
+### **Account creation and validation**-
 
 - **from** is the signer account itself.
 - **from_ata** account is the signer’s associated token account.

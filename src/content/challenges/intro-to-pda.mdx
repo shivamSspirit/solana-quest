@@ -279,11 +279,11 @@ pub struct UserInit<'info>
 let’s break down to see what is happening here  
 In the above code,
 
-**Imports**-
+### **Imports**-
 
 we import the **anchor_lang**, **userAcc**  and  **USER_SEED**.
 
-**Instruction logic**-
+### **Instruction handler logic**-
 
 In the **init_user** function
 
@@ -295,7 +295,7 @@ In the **init_user** function
 
 After storing the information, the function returns **Ok(())** to finalize the result or an error if the operation fails.
 
-**Account creation and validation**-
+### **Account creation and validation**-
 
   In Anchor Various types of constraints can be applied using the **#[account(..)]** attribute.
 
@@ -360,11 +360,11 @@ pub struct Lend<'info>
 
 In the above code,
 
-**Imports**-
+### **Imports**-
 
 We imports the **anchor_lang**, **userAcc**,**BorrowedToken**, **LendedToken**  and  **USER_SEED**.
 
-**Instruction logic**-
+### **Instruction handler logic**-
 
 In the **lend** function
 
@@ -373,7 +373,7 @@ In the **lend** function
 - Stores the **LendedToken** (struct)  in the **lended_tokens** vector.
 - After storing the information, the function returns **Ok(())** to finalize the result or an error if the operation fails.
 
-**Account creation and validation**-
+### **Account creation and validation**-
 
 The **LendedToken** struct is stored in the **lended_tokens** vector. Additionally, the size of the portfolio account is updated to accommodate the new data.
 
@@ -450,11 +450,11 @@ pub struct Borrow<'info>
 
 In the above code,
 
-**Imports**-
+### **Imports**-
 
 We import the **anchor_lang**, **BLErrorCode**, **userAcc**, **BorrowedToken**, and **LendedToken**. Then, import the constants for **USER_SEED**, **BORROW_PERCENTAGE**, and **TOKENS**.
 
-**Instruction logic**-
+### **Instruction handler logic**-
 
 In the **borrow** function
 
@@ -467,7 +467,7 @@ In the **borrow** function
 - If the collateral requirement is met, the function adds the **BorrowedToken** struct to the **borrowed_tokens** vector otherwise through **BLErrorCode**.
 - Once the information is stored, the function returns **Ok(())** to finalize the operation or an error if the process fails.
 
-**Account creation and validation**-
+### **Account creation and validation**-
 
 The **BorrowedToken** struct is stored in the **borrowed_tokens** vector. Additionally, the size of the portfolio account is updated to accommodate the new data.
 

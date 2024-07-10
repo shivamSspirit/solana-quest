@@ -235,7 +235,7 @@ pub struct PhoneBookState {
 let’s break down to see what is happening here.  
 In the above code,
 
-**Instruction handler logic**-
+### **Instruction handler logic**-
 
 In the **create_phone_book_entry** function
 
@@ -244,7 +244,7 @@ In the **create_phone_book_entry** function
 - It stores the user's public key, user_name, user_number and content in phone_book Account.
 - lastly fn returns **Ok(())** for successful operation and through error if any process fails.
 
-**Account creation and validation**-
+### **Account creation and validation**-
 
 In the **CreatePhoneBookEntry** struct, you can access the instruction’s arguments with the **#[instruction(..)]** attribute.
 
@@ -333,7 +333,7 @@ pub struct PhoneBookState {
 
 In the above code,
 
-**Instruction logic**-
+### **Instruction handler logic**-
 
 In the **update_phone_book_entry** function
 
@@ -343,7 +343,7 @@ In the **update_phone_book_entry** function
 - It Stores the **content** in the **phone_book** state.
 - After storing the information, the function returns **Ok(())** to finalize the result or an error if the operation fails.
 
-**Account creation and validation**-
+### **Account creation and validation**-
 
 The **content** string is stored in the **phone_book** Account. Additionally, the size of the phonebook account is updated to accommodate the new data.
 
