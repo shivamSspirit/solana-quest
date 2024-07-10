@@ -4,6 +4,8 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 /// import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
+import rehypePrism from 'rehype-prism-plus';
+import rehypeCodeTitles from 'rehype-code-titles';
 
 
 /** @type {import('contentlayer/source-files').ComputedFields} */
@@ -58,6 +60,8 @@ export default makeSource({
   md: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [
+      rehypeCodeTitles,
+      rehypePrism,
       rehypeSlug,
       [
         rehypeAutolinkHeadings,
