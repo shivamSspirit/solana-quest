@@ -1,12 +1,7 @@
 import { notFound } from "next/navigation"
 import { allChallenges } from "contentlayer/generated"
 import { Metadata } from "next"
-import { Mdx } from "components/mdx-components"
-import { Button } from "@components/ui/button"
-import { Github } from "@lib/icons"
-import SubmitChallenge from "./SubmitChallenge"
-import Link from 'next/link'
-import NewClient from "./NewClient"
+import ClientPage from "./ClientPage"
 
 interface ChallengeProps {
   params: {
@@ -54,7 +49,9 @@ export default async function PostPage({ params }: ChallengeProps) {
     notFound()
   }
 
+
+
   return (
-     <NewClient post={post}/>
+     <ClientPage post={post}/>
   )
 }

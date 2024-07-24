@@ -20,11 +20,14 @@ export default function Home() {
   const { theme } = useTheme()
   const sortedChallenges = allChallenges.sort((a, b) => a.serial - b.serial);
 
-  const firstThreeChallenges = sortedChallenges.slice(0, 3)
+  const firstThreeChallenges = sortedChallenges.slice(0, 4)
   const restOfChallenges = sortedChallenges.slice(3)
   const [lastSubmitted] = useAtom(lastSubmittedAtom);
 
-  console.log("last", firstThreeChallenges)
+  console.log("last", firstThreeChallenges);
+
+
+
 
   return (
     <>
@@ -121,7 +124,7 @@ export default function Home() {
         </section>
 
         <section className="w-5/6 mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+          {/* <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
             {restOfChallenges.map(c => (
               <ChallengeCard key={c.serial}
                 serial={c.serial}
@@ -132,7 +135,7 @@ export default function Home() {
                 icon={c.icon}
               />
             ))}
-          </div>
+          </div> */}
         </section>
       </main>
     </>

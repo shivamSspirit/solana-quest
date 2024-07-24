@@ -8,9 +8,10 @@ import Header from '@components/Header'
 import Footer from '@components/Footer'
 import { Toaster } from '@components/ui/toaster'
 
-const spaceGrotesk = Space_Grotesk({ 
-  subsets: ['latin'], display: "swap", variable: "--text-font", weight: ['400', '500', '600'] })
-const RammettoOne = Rammetto_One({ weight: '400',display: "swap", variable: "--title-font", subsets: ['latin']})
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'], display: "swap", variable: "--text-font", weight: ['400', '500', '600']
+})
+const RammettoOne = Rammetto_One({ weight: '400', display: "swap", variable: "--title-font", subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Solana Quest',
@@ -20,8 +21,10 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-    children: React.ReactNode
-  }) {
+  children: React.ReactNode
+}) {
+
+  
 
   return (
     <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable}  ${RammettoOne.variable} 
@@ -38,10 +41,12 @@ export default function RootLayout({
       </head>
       <body className="" >
         <JotaiProvider>
-          <ThemeProvider 
+          <ThemeProvider
             attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange >
             <SolanaProvider>
-              <div className="w-[100vw] relative overflow-x-hidden h-[100vh]">
+              <div className="w-[100vw] relative overflow-x-hidden h-[100vh]" style={{
+                overflowY: 'auto',
+              }}>
                 <Header />
                 {children}
                 <Footer />
