@@ -26,9 +26,6 @@ export default function Home() {
 
   console.log("last", firstThreeChallenges);
 
-
-
-
   return (
     <>
       <section>
