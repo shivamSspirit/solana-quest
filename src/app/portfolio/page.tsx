@@ -31,7 +31,9 @@ const Portfolio: React.FC = () => {
     const [userChallenges, setUserChallenges] = useState<Challenge[]>([])
     const [image] = useAtom(pfp)
     const {toast} = useToast();
+
     const [mateAccount] = useAtom(userAccount);
+
     const [profile, setProfile] = useState<Record<string, string>>({})
 
     useLayoutEffect(() => {
@@ -62,7 +64,7 @@ const Portfolio: React.FC = () => {
 
             setUserChallenges(displayChallenges)
         }
-    }, [mateAccount])
+    }, [mateAccount!])
 
     if(!wallet) return (
         <div className="text-center text-4xl h-[60vh] flex items-center justify-center text-muted-foreground">
