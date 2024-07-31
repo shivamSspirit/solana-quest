@@ -14,6 +14,7 @@ import { Lock, Rocket } from '@lib/icons';
 import { allChallenges } from 'contentlayer/generated';
 import { useAtom } from 'jotai';
 import { lastSubmitted as lastSubmittedAtom } from '@lib/atoms';
+import { userAccount } from "@lib/atoms"
 
 export default function Home() {
 
@@ -24,7 +25,9 @@ export default function Home() {
   const restOfChallenges = sortedChallenges.slice(3)
   const [lastSubmitted] = useAtom(lastSubmittedAtom);
 
-  console.log("last", firstThreeChallenges);
+  const [userMate] = useAtom(userAccount);
+
+  console.log("userMate", userMate);
 
   return (
     <>

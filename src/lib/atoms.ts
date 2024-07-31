@@ -21,6 +21,8 @@ const adminAccountPDA = atom<web3.PublicKey | null>(null);
 
 const lastSubmitted = atom<number>(2);
 
+const aftersubmit = atom<boolean>(false);
+
 export {
   anchor,
   pfp,
@@ -30,5 +32,6 @@ export {
   userAccount,
   lastSubmitted,
   adminAccount,
-  adminAccountPDA
+  adminAccountPDA,
+  aftersubmit
 }

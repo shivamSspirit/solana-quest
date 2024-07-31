@@ -14,7 +14,8 @@ import { z } from "zod"
 import * as anchor from "@coral-xyz/anchor"
 import { toast } from "@components/ui/use-toast"
 import { Loader2 } from "lucide-react"
-import { lastSubmitted as lastSubmittedAtom } from '@lib/atoms';
+import { aftersubmit,lastSubmitted as lastSubmittedAtom } from '@lib/atoms';
+import { useRouter } from 'next/navigation'
 
 const challengeSchema = z.object({
   deployedURL: z.string().url("Must be a valid URL"),
@@ -45,9 +46,11 @@ const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, 
   const [mateAccountPDA] = useAtom(userAccountPDA)
   const [solQuest] = useAtom(solQuestAnchor)
   const [lastSubmitted] = useAtom(lastSubmittedAtom)
+  const [challangeSubmit, setChallangeSubmit] = useAtom(aftersubmit);
 
   const { wallet } = useWallet();
   const [loading, setLoading] = useState(false)
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof challengeSchema>>({
     resolver: zodResolver(challengeSchema),
@@ -84,7 +87,9 @@ const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, 
         })
       }
     }
-    setLoading(false)
+    setLoading(false);
+    setChallangeSubmit(!challangeSubmit);
+    router.push('/portfolio')
   }
 
   return (

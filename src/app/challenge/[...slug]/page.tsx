@@ -49,8 +49,6 @@ export default async function PostPage({ params }: ChallengeProps) {
     notFound()
   }
 
-
-
   return (
      <ClientPage post={post}/>
   )
