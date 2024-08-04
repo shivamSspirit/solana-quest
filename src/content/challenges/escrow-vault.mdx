@@ -1,0 +1,862 @@
+---
+title: Solana Escrow Vault
+serial: 4
+author: shivam
+description: In this Quest, you'll discover PDA Accounts and how they operate in Solana. You'll also grasp how to programmatically sign with PDA Accounts.
+icon: 'OneChallenge'
+github_link: 'https://github.com/shivamSspirit/escrow-vault'
+---
+
+# Solana Escrow Vault
+
+[![art-2-1-01.png](https://i.postimg.cc/5NjZvS49/art-2-1-01.png)](https://postimg.cc/JGV6CJHS)
+
+
+# Introduction
+
+This guide will teach you how to create and deploy the Solana program and connect to UI for a basic on-chain escrow-vault dApp. This d-App will allow you to deposit and refund tokens in a escrow vault.
+
+
+# What you will learn
+
+- Setting up your environment
+- Using **npx create-solana-dapp**
+- Anchor program development
+- How to create and store data in PDA
+- How to programmatically sign with PDA account
+- Deploying a Solana program
+- Testing an on-chain program
+- Connecting an on-chain program to a React UI
+
+# Prerequisites
+
+For this guide, you will need to have your local development environment setup with a few tools:
+
+- [Rust](https://www.rust-lang.org/tools/install)
+- [Node JS](https://nodejs.org/en/download)
+- [Solana CLI & Anchor](https://solana.com/developers/guides/getstarted/setup-local-development)
+
+# What we are building
+
+We are developing an escrow vault program that transfers SPL tokens into a vault account and refunds tokens from the vault to the user account. This dApp will utilize solana’s PDA to sign the transaction.
+
+![escrowvaultpage](/ChallangeViews/quiz-3/escrow-land.jpeg)
+
+Live At: [escrow_vault_live](https://escrow-vault.vercel.app/escrow)
+
+# Setting up the project
+
+You can set up a new project by using:
+
+```bash
+npx create-solana-dapp
+```
+
+This CLI command enables quick Solana dApp creation. You can find the source code [here](https://github.com/solana-developers/create-solana-dapp).
+
+Now respond to the prompts as follows:
+
+- Enter a project name: escrow-vault
+- Select a preset: Next.js
+- Select a UI library: Tailwind
+- Select an Anchor template: counter program
+
+By selecting a counter for the Anchor template, a simple counter [program](https://solana.com/docs/terminology#program), written in Rust using the Anchor framework, will be generated for you. Before we start editing this generated template program, let's make sure everything is working as expected:
+
+```bash
+cd escrow-vault 
+```
+
+```bash
+npm install 
+```
+
+```bash
+npm run dev
+```
+
+Or you can directly clone this repo and set it up locally
+
+```bash
+git clone git@github.com:shivamSspirit/escrow-vault.git
+```
+
+# Dapp accounts overview
+
+![escrowaccount.png](/ChallangeViews/quiz-3/escrowacc.jpeg)
+
+In the above diagram, the user's [**wallet**](https://solana.com/docs/terminology#wallet) is a signer that will pay for all account creations.
+
+This d-App allows you to create a token mint account from the front end and send it to the Solana program. It then sets up the associated token account for the mint and signer. The signer creates an escrow PDA account to store some necessary states. Finally, the payer creates a vault token account to hold the tokens in the vault, with the escrow PDA having authority over it.
+
+# Anchor program development
+
+If you're new to Anchor, [**The Anchor Book**](https://book.anchor-lang.com/introduction/introduction.html) and [**Anchor Examples**](https://examples.anchor-lang.com/) are great references to help you learn.
+
+In escrow-vault, navigate to **anchor/programs/**escrow-vault**/src/lib.rs**.
+
+# Define your Anchor program
+
+```rust
+use anchor_lang::prelude::*; 
+// This is your program's public key and will automatically update when you build the project.
+declare_id!("FqfKDfzgDaf4JsEaP5eDX9qEedUPdfdv8uCcQDv4LszL");
+/// This is program module where you develope program logic
+ #[program]
+ pub mod escrow_vault {  
+   use super::*;
+ }
+ /// This is where you verfiy and validate account structs
+ #[derive(Accounts)]
+pub struct Escrowvault<'info> {
+  ...
+}
+```
+
+# Define state
+
+The state is a data structure utilized for storing information. In the Solana blockchain, since programs are stateless, the state is stored in accounts. You can create a hashmap-like structure to organize and manage data using PDA accounts.
+
+Using the Anchor framework, you can create an account by applying the **#[account]** attribute macro to the rust struct.
+
+The **#[derive(InitSpace)]** attribute allocates space for the Escrow account. In Solana, we must define the space for an account at the time of its creation because this required to pay rent for the storage used by the account.
+
+```rust
+use anchor_lang::prelude::*;
+
+#[account]
+#[derive(InitSpace)]
+pub struct Escrow {
+    pub seed: u64,
+    pub maker: Pubkey,
+    pub mint_a: Pubkey,
+    pub deposit: u64,
+    pub bump: u8,
+}
+```
+
+In the above code, the Escrow Account stores
+
+seed - as u64 to retrieve the Escrow PDA account
+maker - is a type of Pubkey and this is for the creator of the escrow account
+mint_a - is a type of Pubkey and this is for token mint 
+deposit - deposit token amount is Escrow
+bump - is a type of u8 to find valid PDA
+
+# Build program instructions
+
+First Open the programs/escrow_vault/src/lib.rs file and Add these two instruction handlers to it
+
+```rust
+use anchor_lang::prelude::*;
+
+pub mod contexts;
+use contexts::*;
+
+pub mod state;
+pub use state::*;
+
+declare_id!("3R1JYpXixqemMmWZ9rh2kQZnuPNvPgm2Zn3TY8AB5svH");
+
+#[program]
+pub mod escrow_vault {
+    use super::*;
+
+    // Make an escrow vault
+
+    pub fn make(ctx: Context<Make>, seed: u64, deposit: u64) -> Result<()> {
+        ctx.accounts.deposit(deposit)?;
+        ctx.accounts.save_escrow(seed, deposit, &ctx.bumps)
+    }
+
+    // Refund your tokens from escrow vault
+
+    pub fn refund(ctx: Context<Refund>) -> Result<()> {
+        ctx.accounts.refund_and_close_vault()
+    }
+}
+```
+
+In the above code, 
+
+we import the necessary states and contexts.
+
+The **#[program]** module contains two functions: one for setting up the escrow vault and another for refunding the token amount from the vault and closing it.
+
+# Create Escrow Vault Instruction
+
+let’s create a **contexts** folder at the **lib** file level and create a file named **make** in the **contexts** folder.
+
+In the **make** file add this code
+
+```rust
+use anchor_lang::prelude::*;
+
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token_interface::{transfer_checked, Mint, TokenAccount, TokenInterface, TransferChecked},
+};
+
+use crate::Escrow;
+
+#[derive(Accounts)]
+#[instruction(seed: u64)]
+pub struct Make<'info> {
+    #[account(mut)]
+    pub maker: Signer<'info>,
+    #[account(
+        mint::token_program = token_program
+    )]
+    pub mint_a: InterfaceAccount<'info, Mint>,
+    #[account(
+        mut,
+        associated_token::mint = mint_a,
+        associated_token::authority = maker,
+        associated_token::token_program = token_program
+    )]
+    pub maker_ata_a: InterfaceAccount<'info, TokenAccount>,
+    #[account(
+        init,
+        payer = maker,
+        space = 8 + Escrow::INIT_SPACE,
+        seeds = [b"escrow", maker.key().as_ref(), seed.to_le_bytes().as_ref()],
+        bump
+    )]
+    pub escrow: Account<'info, Escrow>,
+    #[account(
+        init,
+        payer = maker,
+        associated_token::mint = mint_a,
+        associated_token::authority = escrow,
+        associated_token::token_program = token_program
+    )]
+    pub vault: InterfaceAccount<'info, TokenAccount>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub token_program: Interface<'info, TokenInterface>,
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> Make<'info> {
+    pub fn save_escrow(&mut self, seed: u64, deposit: u64, bumps: &MakeBumps) -> Result<()> {
+        self.escrow.set_inner(Escrow {
+            seed,
+            maker: self.maker.key(),
+            mint_a: self.mint_a.key(),
+            deposit,
+            bump: bumps.escrow,
+        });
+        Ok(())
+    }
+
+    pub fn deposit(&mut self, deposit: u64) -> Result<()> {
+        let transfer_accounts = TransferChecked {
+            from: self.maker_ata_a.to_account_info(),
+            mint: self.mint_a.to_account_info(),
+            to: self.vault.to_account_info(),
+            authority: self.maker.to_account_info(),
+        };
+
+        let cpi_ctx = CpiContext::new(self.token_program.to_account_info(), transfer_accounts);
+
+        transfer_checked(cpi_ctx, deposit, self.mint_a.decimals)
+    }
+}
+```
+
+In the above code,
+
+## Imports-
+
+we import the **anchor_lang**, **anchor_spl** and **Escrow**.
+
+## Account creation and validation-
+
+In Anchor, account types and constraints are useful for security checks and account validation.
+
+The **#[derive(Accounts)]** attribute serializes and deserializes account data, while the **#[instruction(seed: u64)]** attribute contains arguments used in account creation.
+
+- The **maker** account is the signer that will pay for all account creation.
+- **mint_a** is a token mint account that is assigned to **token_program.**
+- **maker_ata_a** is a mutable associated token account with token mint **mint_a**. It has signer authority and is of the **token_program** account type.
+- escrow account is a PDA type of Escrow
+
+In the escrow, the init constraints create the account via a CPI to the system program and initialize it (setting its account discriminator).
+
+Space is initialized with the discriminator space, and all seeds (both static and dynamic) are combined into a slice of bytes and used as the key in the ledger for the PDA escrow account.
+
+The **bumps** field, of type [**Bump**](https://docs.rs/anchor-lang/latest/anchor_lang/trait.Bumps.html#), is generated by the **#[derive(Accounts)]** macro. It represents the bump seeds identified during constraint validation.
+
+The **bump** is an **u8** type that helps generate a PDA by modifying the Keypair from the usual elliptic curve.
+
+- A vault account is a token account where the user’s tokens are stored. It is associated with **mint_a** and has **escrow** account authority over it.
+- associated_token_program account is used to create associated token accounts.
+- token_program account is used to create token accounts.
+- system_program account is used to create new accounts.
+
+## Method implementation -
+
+- save_escrow fn saves state in Escrow account.
+- The deposit function creates a CPI to the token program and sends tokens from the signer's associated token account to the vault token account.
+
+# Refund From Escrow Instruction
+
+```rust
+use anchor_lang::prelude::*;
+
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token_interface::{
+        close_account, transfer_checked, CloseAccount, Mint, TokenAccount, TokenInterface,
+        TransferChecked,
+    },
+};
+
+use crate::Escrow;
+
+#[derive(Accounts)]
+pub struct Refund<'info> {
+    #[account(mut)]
+    maker: Signer<'info>,
+    mint_a: InterfaceAccount<'info, Mint>,
+    #[account(
+        mut,
+        associated_token::mint = mint_a,
+        associated_token::authority = maker,
+        associated_token::token_program = token_program
+    )]
+    maker_ata_a: InterfaceAccount<'info, TokenAccount>,
+    #[account(
+        mut,
+        close = maker,
+        has_one = mint_a,
+        has_one = maker,
+        seeds = [b"escrow", maker.key().as_ref(), escrow.seed.to_le_bytes().as_ref()],
+        bump = escrow.bump
+    )]
+    escrow: Account<'info, Escrow>,
+    #[account(
+        mut,
+        associated_token::mint = mint_a,
+        associated_token::authority = escrow,
+        associated_token::token_program = token_program
+    )]
+    pub vault: InterfaceAccount<'info, TokenAccount>,
+    associated_token_program: Program<'info, AssociatedToken>,
+    token_program: Interface<'info, TokenInterface>,
+    system_program: Program<'info, System>,
+}
+
+impl<'info> Refund<'info> {
+    pub fn refund_and_close_vault(&mut self) -> Result<()> {
+        let signer_seeds: [&[&[u8]]; 1] = [&[
+            b"escrow",
+            self.maker.to_account_info().key.as_ref(),
+            &self.escrow.seed.to_le_bytes()[..],
+            &[self.escrow.bump],
+        ]];
+
+        let transfer_accounts = TransferChecked {
+            from: self.vault.to_account_info(),
+            mint: self.mint_a.to_account_info(),
+            to: self.maker_ata_a.to_account_info(),
+            authority: self.escrow.to_account_info(),
+        };
+
+        let ctx = CpiContext::new_with_signer(
+            self.token_program.to_account_info(),
+            transfer_accounts,
+            &signer_seeds,
+        );
+
+        transfer_checked(ctx, self.vault.amount, self.mint_a.decimals)?;
+
+        let close_accounts = CloseAccount {
+            account: self.vault.to_account_info(),
+            destination: self.maker.to_account_info(),
+            authority: self.escrow.to_account_info(),
+        };
+
+        let ctx = CpiContext::new_with_signer(
+            self.token_program.to_account_info(),
+            close_accounts,
+            &signer_seeds,
+        );
+
+        close_account(ctx)
+    }
+}
+```
+
+In the above code,
+
+## Imports-
+
+we import the **anchor_lang**, **anchor_spl** and **Escrow**.
+
+## Account creation and validation-
+
+The **#[derive(Accounts)]** attribute serializes and deserializes account data.
+
+- The **maker** account is the signer that will pay for all account creation.
+- **mint_a** is a token mint account that is assigned to **token_program.**
+- **maker_ata_a** is a mutable associated token account with token mint **mint_a**. It has signer authority and is of the **token_program** account type.
+- escrow account is a PDA type of Escrow.
+- A vault account is a token account where the user’s tokens are stored. It is associated with **mint_a** and has **escrow** account authority over it.
+- associated_token_program account is used to create associated token accounts.
+- token_program account is used to create token accounts.
+- system_program account is used to create new accounts.
+
+## Method implementation -
+
+(programmatically sign with pda account)
+
+Note - In Solana, a PDA account is used to create a hashmap-like structure for accounts and to sign transactions on behalf of a program.
+
+In this current program, we are implementing vault features for the Refund account struct 
+
+the fn refund_and_close_vault(&mut self) takes Refund struct reference as argument and 
+
+store all signer seeds and bump byte slice references in **signer_seeds**
+
+```rust
+ let signer_seeds: [&[&[u8]]; 1] = [&[
+            b"escrow",
+            self.maker.to_account_info().key.as_ref(),
+            &self.escrow.seed.to_le_bytes()[..],
+            &[self.escrow.bump],
+        ]];
+```
+
+setup transfer accounts using TransferChecked(differ from usual Transfer) struct provided by anchor_spl
+
+```rust
+ let transfer_accounts = TransferChecked {
+            from: self.vault.to_account_info(),
+            mint: self.mint_a.to_account_info(),
+            to: self.maker_ata_a.to_account_info(),
+            authority: self.escrow.to_account_info(),
+       };
+```
+
+in the above code, we want to refund tokens to the user from the vault account with authority as an escrow account.
+
+create a new anchor cpi context with signer syntax
+
+```rust
+let ctx = CpiContext::new_with_signer(
+            self.token_program.to_account_info(),
+            transfer_accounts,
+            &signer_seeds,
+        );
+```
+
+in the above code,
+
+it just contains **&signer_seeds** as an extra argument from basic cpi context syntax
+we are creating cpi to token program to call **transfer_checked** method from spl token program
+
+```rust
+transfer_checked(ctx, self.vault.amount, self.mint_a.decimals)?;
+```
+
+after sending the tokens from the vault account to the user token account we close this vault token account by cpi to the token program with the close_account() method
+
+# Build and deploy the Anchor program
+
+From dapp’s root run
+
+```bash
+npm run anchor build
+```
+
+This will build your anchor program and generate a **target** folder(we will use generated IDL and types for the Solana program to connect our UI to this program).
+
+To deploy this program run
+
+```bash
+npm run anchor deploy
+```
+
+After this, the program will deployed to an address. Pick this program address and update this address in the following files.
+
+- escrow-vault/anchor/src/counter-export.ts
+- escrow-vault/anchor/Anchor.toml
+- escrow-vault /anchor/programs/escrow_vault/src/lib.rs
+
+At this stage, we are done with Escrow Vault Solana program development.
+
+# Connecting the Solana program to a UI
+
+**create-solana-dapp** already sets up a UI with data access and a wallet connector for you. All you need to do is simply modify it to fit your newly created program.
+
+Since this escrow-vault program has two instructions, we will need components in the UI that will be able to call each of these instructions:
+
+- Fund escrow vault
+- Refund from escrow vault
+
+In your project folder open **escrow-vault/anchor/src/counter-export.ts**
+
+```typescript
+// Here we export some useful types and functions for interacting with the Anchor program.
+import { AnchorProvider, Program } from '@coral-xyz/anchor';
+import { Cluster, PublicKey } from '@solana/web3.js';
+import EscrowIDL from '../target/idl/escrow_vault.json';
+import type { EscrowVault } from '../target/types/escrow_vault';
+
+// Re-export the generated IDL and type
+export { EscrowVault, EscrowIDL };
+
+// The programId is imported from the program IDL.
+export const Escrow_PROGRAM_ID = new PublicKey(EscrowIDL.address);
+
+// This is a helper function to get the Escrow Anchor program.
+export function getEscrowProgram(provider: AnchorProvider) {
+  return new Program(EscrowIDL as EscrowVault, provider);
+}
+
+// This is a helper function to get the program ID for the Escrow program depending on the cluster.
+export function getEscrowProgramId(cluster: Cluster) {
+  switch (cluster) {
+    case 'devnet':
+    case 'testnet':
+      // This is the program ID for the Escrow program on devnet and testnet.
+      return new PublicKey('3R1JYpXixqemMmWZ9rh2kQZnuPNvPgm2Zn3TY8AB5svH');
+    case 'mainnet-beta':
+    default:
+      return Escrow_PROGRAM_ID;
+  }
+}
+```
+
+In the above code, we are importing IDL and Program types from the generated target folder. and re-exporting IDL, types, program ID and Program API. After this setup let’s move to escrow_vault/web/components/escrow/escrow-data-access.tsx And update useEscrowProgram() to create a user’s escrow vault:
+
+```typescript
+const initializeEscrow = useMutation({
+    mutationKey: ['escrow', 'make_escrow', { cluster }],
+    mutationFn: async ({ demosecretKey, deposit, maker, setFirstMint, setFirstMintAta}: { demosecretKey: string; deposit: string; maker: PublicKey; setFirstMint: any; setFirstMintAta: any;}) => {
+
+      const feePayer = Keypair.fromSecretKey(
+        bs58.decode(demosecretKey)
+      );
+
+      const firstmintPubkey = await createMint(
+        connection, // conneciton
+        feePayer, // fee payer
+        maker, // mint authority
+        maker, // freeze authority 
+        8 // decimals
+      );
+
+      setFirstMint(firstmintPubkey);
+
+     
+      const firstmintata = await createAssociatedTokenAccount(
+        connection, // connection
+        feePayer, // fee payer
+        firstmintPubkey, // mint
+        maker // owner,
+      );
+
+      setFirstMintAta(firstmintata);
+
+
+      const txhashforFirstMintto = await mintToChecked(
+        connection, // connection
+        feePayer, // fee payer
+        firstmintPubkey, // mint
+        firstmintata, // receiver (should be a token account)
+        maker, // mint authority
+        new BN(9999999999999), // amount. if your decimals is 8, you mint 10^8 for 1 token.
+        8 // decimals
+      );
+    
+      const dnum = Number(deposit);
+
+
+      const escrow = PublicKey.findProgramAddressSync(
+        [Buffer.from("escrow"), maker.toBuffer(), seed.toArrayLike(Buffer, "le", 8)],
+        program.programId
+      )[0]
+
+      const vault = getAssociatedTokenAddressSync(firstmintPubkey, escrow, true, TOKEN_PROGRAM_ID)
+
+      return program.methods.make(seed, new BN(dnum)).accounts({
+        maker: maker,
+        mintA: firstmintPubkey,
+        makerAtaA: firstmintata,
+        escrow: escrow,
+        vault: vault,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId
+      }).rpc();
+    },
+
+    onSuccess: (signature) => {
+      transactionToast(signature);
+      return accounts.refetch();
+    },
+    onError: () => toast.error('Failed to initialize account'),
+  });
+```
+
+In the above code, 
+
+First, we create a signer keypair that will pay for the token minting process.
+Next, we create the first token mint, an associated token account (ATA) for the mint, and mint tokens in the user’s ATA.
+After that, we derive the escrow PDA and fetch the vault token account.
+
+finally, we call our first instruction **make()** to deposit tokens into vault account.
+
+Next, update the **useEscrowProgramAccount()** function to be able to refund tokens from vault:
+
+```typescript
+const refundFromEscrow = useMutation({
+    mutationKey: ['escrow', 'refund_from_escrow', { cluster }],
+    mutationFn: async ({ maker, firstMints, firstMintAta }: { maker: PublicKey; firstMints: PublicKey; firstMintAta: PublicKey }) => {
+
+      const escrow = PublicKey.findProgramAddressSync(
+        [Buffer.from("escrow"), maker.toBuffer(), seed.toArrayLike(Buffer, "le", 8)],
+        program.programId
+      )[0]
+
+      const vault = getAssociatedTokenAddressSync(firstMints, escrow, true, TOKEN_PROGRAM_ID)
+
+
+      return program.methods.refund().accounts({
+        maker: maker,
+        mintA: firstMints,
+        makerAtaA: firstMintAta,
+        escrow: escrow,
+        vault: vault,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId
+      }).rpc();
+
+    },
+
+    onSuccess: (signature) => {
+      transactionToast(signature);
+      return accounts.refetch();
+    },
+    onError: () => toast.error('Failed to refund from Escrow account'),
+  });
+```
+
+in above code,
+
+we derive the escrow PDA and fetch the vault token account.
+
+finally, we call our second instruction **refundFromEscrow()** to refund tokens from vault account to user account and close the vault account.
+
+Next update UI, for this, go into **escrow_vault/web/components/escrow/escrow-feature.tsx** and create a UI for the **Create Escrow** button
+
+```typescript
+'use client';
+
+import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletButton } from '../solana/solana-provider';
+import { AppHero, ellipsify } from '../ui/ui-layout';
+import { ExplorerLink } from '../cluster/cluster-ui';
+import { useEscrowProgram } from './escrow-data-access';
+import { EscrowAccountList } from './escrow-ui';
+import { useState } from 'react';
+import { PublicKey } from '@solana/web3.js';
+
+
+export default function EscrowFeature() {
+  const { publicKey } = useWallet();
+  const { programId } = useEscrowProgram();
+
+  // escrow create functionality
+  const { initializeEscrow } = useEscrowProgram();
+
+  const [deposit, setUserDeposit] = useState("");
+  const [demosecretKey, setDemoSecretKey] = useState<string>('');
+
+  const [firstMint, setFirstMint] = useState<PublicKey>();
+  const [firstMintAta, setFirstMintAta] = useState<PublicKey>();
+
+  const isDataValid = deposit.trim() !== "";
+
+  const handleSubmit = () => {
+    if (isDataValid && publicKey) {
+      initializeEscrow.mutateAsync({ demosecretKey, deposit, maker: publicKey, setFirstMint, setFirstMintAta });
+    }
+  }
+  return publicKey ? (
+    <div>
+      <AppHero
+        title="Escrow"
+        subtitle={
+          'Create a new Escrow account by clicking the "Create Escrow" button. The state of a account is stored on-chain and can be manipulated by calling the program\'s methods (make and refund).'
+        }
+      >
+        <p className="mb-6">
+         Escrow-vault program ID: <ExplorerLink
+            path={`account/${programId}`}
+            label={ellipsify(programId.toString())}
+          />
+        </p>
+
+        <p className="mb-3">
+         <strong className='text-red-600'>Warning</strong> - Use secret key only for your demo wallet which have devnet faucet only(never add real fund in this wallet).
+        </p>
+        <div className='flex flex-col space-y-4 p-4 max-w-md mx-auto bg-white shadow-md rounded-lg'>
+          <input
+            className='input input-bordered rounded-lg border border-gray-300 p-2'
+            type='text'
+            value={demosecretKey}
+            onChange={(e) => setDemoSecretKey(e.target.value)}
+            placeholder='Add demo wallet secret key'
+          />
+          <input
+            className='input input-bordered rounded-lg border border-gray-300 p-2'
+            type='text'
+            value={deposit}
+            onChange={(e) => setUserDeposit(e.target.value)}
+            placeholder='Add user deposit'
+          />
+          <button
+            className='btn btn-primary mt-3 px-4 py-2 rounded-lg disabled:opacity-99'
+            onClick={handleSubmit}
+            disabled={initializeEscrow.isPending || !isDataValid}
+          >
+            Create Escrow {initializeEscrow.isPending && '...'}
+          </button>
+        </div>
+      </AppHero>
+      <EscrowAccountList firstMint={firstMint!} firstMintAta={firstMintAta!} />
+    </div>
+  ) : (
+    <div className="max-w-4xl mx-auto">
+      <div className="hero py-[64px]">
+        <div className="hero-content text-center">
+          <WalletButton />
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+Next, create UI for Escrow vault account cards 
+
+```typescript
+'use client';
+
+import { ellipsify } from '../ui/ui-layout';
+import { ExplorerLink } from '../cluster/cluster-ui';
+import { PublicKey } from '@solana/web3.js';
+import {
+  useEscrowProgram,
+  useEscrowProgramAccount,
+} from './escrow-data-access';
+import { useWallet } from '@solana/wallet-adapter-react';
+
+
+export function EscrowAccountList({ firstMint, firstMintAta}: { firstMint: PublicKey; firstMintAta: PublicKey;}) {
+  const { accounts, getProgramAccount } = useEscrowProgram();
+
+  
+  if (getProgramAccount?.isLoading) {
+    return <span className="loading loading-spinner loading-lg"></span>;
+  }
+  if (!getProgramAccount.data?.value) {
+    return (
+      <div className="alert alert-info flex justify-center">
+        <span>
+          Program account not found. Make sure you have deployed the program and
+          are on the correct cluster.
+        </span>
+      </div>
+    );
+  }
+  return (
+    <div className={'space-y-6'}>
+      {accounts.isLoading ? (
+        <span className="loading loading-spinner loading-lg"></span>
+      ) : accounts.data?.length ? (
+        <div className="grid md:grid-cols-2 gap-4">
+          {accounts.data?.map((account: any) => (
+            <EscrowCard
+              key={account.publicKey.toString()}
+              account={account.publicKey}
+              firstMints={firstMint!}
+              firstMint={account.account.mintA.toString()}
+              firstMintAta={firstMintAta!}
+              tokendepositedAmount={account.account.deposit.toString()}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center">
+          <h2 className={'text-2xl'}>No accounts</h2>
+          No accounts found. Create one above to get started.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function EscrowCard({ account, firstMint, firstMintAta, tokendepositedAmount,firstMints }: { account: PublicKey; firstMint: PublicKey; firstMintAta: PublicKey; tokendepositedAmount:string; firstMints:PublicKey }) {
+  const {
+    accountQuery,
+    refundFromEscrow,
+  } = useEscrowProgramAccount({ account });
+
+  const { publicKey } = useWallet();
+
+  return accountQuery.isLoading ? (
+    <span className="loading loading-spinner loading-lg"></span>
+  ) : (
+    <div className="card card-bordered border-base-300 border-4 text-neutral-content shadow-lg rounded-lg p-6">
+      <div className="card-body items-center text-center">
+        <div className="space-y-6">
+          <div className="text-center space-y-4 flex flex-row gap-2">
+           Escrow acc: <p>
+              <ExplorerLink
+                path={`account/${account}`}
+                label={ellipsify(account.toString())}
+              />
+            </p>
+          </div>
+
+          <div className="text-center space-y-4 flex flex-row gap-2">
+           Token mint: <p>
+              <ExplorerLink
+                path={`account/${firstMint}`}
+                label={ellipsify(firstMint.toString())}
+              />
+            </p>
+          </div>
+
+          <div className="text-center space-y-4 flex flex-row gap-2">
+           vault Token Amount: <p>
+              {tokendepositedAmount.trim()}
+            </p>
+          </div>
+
+          <div className="card-actions justify-around">
+            <button
+              className="btn btn-xs lg:btn-md btn-outline btn-primary"
+              onClick={() => refundFromEscrow.mutateAsync({ maker: publicKey!, firstMints, firstMintAta })}
+              disabled={refundFromEscrow.isPending}
+            >
+              Refund from Escrow
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  );
+}
+```
+
+Resources-:
+
+github : [escrow_vault_github](https://github.com/shivamSspirit/escrow-vault)
+vercel : [escrow_vault](https://escrow-vault.vercel.app/escrow)
+code : [solana_example](https://github.com/solana-developers/program-examples/tree/main/tokens/escrow/anchor)

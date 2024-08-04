@@ -21,7 +21,7 @@ export default function Home() {
   const { theme } = useTheme()
   const sortedChallenges = allChallenges.sort((a, b) => a.serial - b.serial);
 
-  const firstThreeChallenges = sortedChallenges.slice(0, 3)
+  const firstFourChallenges = sortedChallenges.slice(0, 4)
   const restOfChallenges = sortedChallenges.slice(3)
   const [lastSubmitted] = useAtom(lastSubmittedAtom);
 
@@ -83,7 +83,7 @@ export default function Home() {
             <Divider className="w-3/5 lg:w-1/5 h-0.5" />
           </span>
           <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-            {firstThreeChallenges.map(c => (
+            {firstFourChallenges.map(c => (
               <ChallengeCard key={c.serial}
                 serial={c.serial}
                 link={`/challenge/${c.slugAsParams}`}
