@@ -7,14 +7,9 @@ icon: 'OneChallenge'
 github_link: 'https://github.com/shivamSspirit/escrow-vault'
 ---
 
-# Solana Escrow Vault
-
 [![art-2-1-01.png](https://i.postimg.cc/5NjZvS49/art-2-1-01.png)](https://postimg.cc/JGV6CJHS)
 
-# Introduction
-
 This guide will teach you how to create and deploy the Solana program and connect to UI for a basic on-chain escrow-vault dApp. This d-App will allow you to deposit and refund tokens in a escrow vault.
-
 
 # What you will learn
 
@@ -136,15 +131,15 @@ pub struct Escrow {
 
 In the above code, the Escrow Account stores
 
-seed - as u64 to retrieve the Escrow PDA account
-maker - is a type of Pubkey and this is for the creator of the escrow account
-mint_a - is a type of Pubkey and this is for token mint 
-deposit - deposit token amount is Escrow
-bump - is a type of u8 to find valid PDA
+**seed** - as u64 to retrieve the Escrow PDA account  
+**maker** - is a type of Pubkey and this is for the creator of the escrow account  
+**mint_a** - is a type of Pubkey and this is for token mint  
+**deposit** - deposit token amount is Escrow  
+**bump** - is a type of u8 to find valid PDA  
 
 # Build program instructions
 
-First Open the programs/escrow_vault/src/lib.rs file and Add these two instruction handlers to it
+First Open the **programs/escrow_vault/src/lib.rs** file and Add these two instruction handlers to it
 
 ```rust
 use anchor_lang::prelude::*;
@@ -176,10 +171,8 @@ pub mod escrow_vault {
 }
 ```
 
-In the above code, 
-
-we import the necessary states and contexts.
-
+In the above code,   
+we import the necessary states and contexts.  
 The **#[program]** module contains two functions: one for setting up the escrow vault and another for refunding the token amount from the vault and closing it.
 
 # Create Escrow Vault Instruction
@@ -261,14 +254,10 @@ impl<'info> Make<'info> {
     }
 }
 ```
-
 In the above code,
-
-## Imports-
-
-we import the **anchor_lang**, **anchor_spl** and **Escrow**.
-
-## Account creation and validation-
+## Imports-  
+we import the **anchor_lang**, **anchor_spl** and **Escrow**.  
+## Account creation and validation-  
 
 In Anchor, account types and constraints are useful for security checks and account validation.
 
@@ -407,13 +396,12 @@ The **#[derive(Accounts)]** attribute serializes and deserializes account data.
 
 ## Method implementation -
 
-(programmatically sign with pda account)
+(**programmatically sign with pda account**)
 
-Note - In Solana, a PDA account is used to create a hashmap-like structure for accounts and to sign transactions on behalf of a program.
+**Note** - In Solana, a PDA account is used to create a hashmap-like structure for accounts and to sign transactions on behalf of a program.
 
-In this current program, we are implementing vault features for the Refund account struct 
-
-the fn refund_and_close_vault(&mut self) takes Refund struct reference as argument and 
+In this current program, we are implementing vault features for the Refund account struct.   
+The fn refund_and_close_vault(&mut self) takes Refund struct reference as argument and -:
 
 store all signer seeds and bump byte slice references in **signer_seeds**
 
@@ -484,7 +472,7 @@ After this, the program will deployed to an address. Pick this program address a
 
 At this stage, we are done with Escrow Vault Solana program development.
 
-# Connecting the Solana program to a UI
+# Connecting Solana program to a UI
 
 **create-solana-dapp** already sets up a UI with data access and a wallet connector for you. All you need to do is simply modify it to fit your newly created program.
 
