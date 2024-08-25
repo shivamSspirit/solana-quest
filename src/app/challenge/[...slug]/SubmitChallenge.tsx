@@ -43,6 +43,8 @@ const challengeInputs: ChallegeInput[] = [
 
 const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, title }) => {
 
+  console.log("series", serial)
+
   const [mateAccountPDA] = useAtom(userAccountPDA)
   const [solQuest] = useAtom(solQuestAnchor)
   const [lastSubmitted] = useAtom(lastSubmittedAtom)
@@ -95,7 +97,7 @@ const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="gap-2" disabled={false} >
+        <Button className="gap-2" disabled={serial===1||serial===2}>
         
             <>
               <Rocket />

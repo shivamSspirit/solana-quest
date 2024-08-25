@@ -21,7 +21,7 @@ export default function Home() {
   const { theme } = useTheme()
   const sortedChallenges = allChallenges.sort((a, b) => a.serial - b.serial);
 
-  const firstFourChallenges = sortedChallenges.slice(0, 4)
+  const firstFourChallenges = sortedChallenges.slice(0, 6)
   const restOfChallenges = sortedChallenges.slice(3)
   const [lastSubmitted] = useAtom(lastSubmittedAtom);
 
