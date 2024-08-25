@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { solQuestAnchor, userAccountPDA, adminAccountPDA } from "@lib/atoms"
+import { solQuestAnchor, userAccountPDA, adminAccountPDA, userAccount } from "@lib/atoms"
 import { Lock, Rocket } from "@lib/icons"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { useAtom } from "jotai"
@@ -49,6 +49,7 @@ const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, 
   const [solQuest] = useAtom(solQuestAnchor)
   const [lastSubmitted] = useAtom(lastSubmittedAtom)
   const [challangeSubmit, setChallangeSubmit] = useAtom(aftersubmit);
+  const [mateAccount] = useAtom(userAccount);
 
   const { wallet } = useWallet();
   const [loading, setLoading] = useState(false)
@@ -58,6 +59,10 @@ const SubmitChallenge: React.FC<{ serial: number, title: string }> = ({ serial, 
     resolver: zodResolver(challengeSchema),
   })
   async function onSubmit(values: z.infer<typeof challengeSchema>) {
+
+    if(mateAccount['questCompletedByMate'].find((tx:any)=>tx.transaction===values.transactionSignature)){
+      return;
+    }
 
     const id = serial;
     const deployedUrl = values.deployedURL;
