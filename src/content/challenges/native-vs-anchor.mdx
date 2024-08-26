@@ -25,7 +25,7 @@ in this post, you will learn
 - How Anchor simplifies Solana’s on-chain program development
 - Basic technical concept comparison with Anchor framework
 
-# Basic Hello World Program In Native Rust
+# Hello World Program In Native Rust
 
 In this native Solana program, there is just one main entry point, where we call the program's instructions. this instruction data needs to be serialized and deserialized by Borsh. The entry point macro includes the program ID, a list of accounts used in the instruction, and the instruction data.
 For developing native on-chain programs, we use the solana_program crate. This is the base library for writing on-chain programs in Rust.
@@ -56,15 +56,15 @@ pub fn process_instruction(
 In the above code:
 
 - We used the Solana Program crate to import:
-    - `account_info::AccountInfo` struct for account information, such as account balance and account data.
-    - `entrypoint` for processing program instructions.
-    - `ProgramResult`, is a type representing the result that a Solana program returns.
-    - `pubkey::Pubkey`, a type of Ed25519 public key.
-    - The `msg` macro prints messages to the program log.
-- The `entrypoint!(process_instruction);` macro is used with the `process_instruction` instruction handler.
-- The `process_instruction` function is used to write the business logic for program instructions. In this program, it takes the program ID, a list of accounts used in the instruction, and the serialized instruction data as arguments and it simply prints "Hello, world!" to the program log.
+    - **account_info::AccountInfo** is a struct for account information, such as account balance and account data.
+    - **entrypoint** for processing program instructions.
+    - **ProgramResult**, is a type representing the result that a Solana program returns.
+    - **pubkey::Pubkey**, a type of Ed25519 public key.
+    - The **msg** macro prints messages to the program log.
+- The **entrypoint!(process_instruction);** macro is used with the **process_instruction** instruction handler.
+- The **process_instruction** function is used to write the business logic for program instructions. In this program, it takes the program ID, a list of accounts used in the instruction, and the serialized instruction data as arguments and it simply prints "Hello, world!" to the program log.
 
-# Basic Hello World Program In Anchor Rust
+# Hello World Program In Anchor Rust
 
 Anchor writes various boilerplate code for you, such as the serialization and deserialization of accounts and instruction data.
 Anchor handles certain security checks for you by providing Rust macros and attributes.
@@ -96,23 +96,23 @@ pub struct Initialize {}
 
 In an Anchor Solana program, all programs and components are included via `anchor_lang::prelude::*`.
 This re-exports the solana_program crate.
-The `declare_id!()` macro stores the on-chain program address.
-In the `#[program]` module, we define our first instruction named `initialize`, which takes `Context<Initialize>` as an argument and simply prints "hello world" to the program log.
+The **declare_id!()** macro stores the on-chain program address.
+In the **#[program]** module, we define our first instruction named **initialize**, which takes `Context<Initialize>` as an argument and simply prints "hello world" to the program log.
 
 - Context provides non-argument inputs to the program.
 
-`Context` is a generic type where `T` defines the list of accounts an instruction requires. When you use `Context`, you specify the concrete type of `T` as a struct that adopts the `Accounts` trait (e.g. `Context<Initialize>`). Through this context argument, the instruction can then access:
+**Context** is a generic type where **T** defines the list of accounts an instruction requires. When you use **Context**, you specify the concrete type of **T** as a struct that adopts the **Accounts** trait (e.g. `Context<Initialize>`). Through this context argument, the instruction can then access:
 
-- The accounts passed into the instruction (`ctx.accounts`)
-- The program ID (`ctx.program_id`) of the executing program
-- The remaining accounts (`ctx.remaining_accounts`). The `remaining_accounts` is a vector that contains all accounts that were passed into the instruction but are not declared in the `Accounts` struct.
-- The bumps for any PDA accounts in the `Accounts` struct (`ctx.bumps`)
+- The accounts passed into the instruction (**ctx.accounts**)
+- The program ID (**ctx.program_id**) of the executing program
+- The remaining accounts (**ctx.remaining_accounts**). The **remaining_accounts** is a vector that contains all accounts that were passed into the instruction but are not declared in the **Accounts** struct.
+- The bumps for any PDA accounts in the **Accounts** struct (**ctx.bumps**)
 
-The `#[derive(Accounts)]` attribute serializes and deserializes account data.
+The **#[derive(Accounts)]** attribute serializes and deserializes account data.
 
 This program simply prints the "hello world" message and does not require accounts to store any data.
 
-# Basic Counter program in native rust
+# Counter program in native rust
 
 ### Program features:-
 
@@ -217,15 +217,15 @@ pub fn process_increment_counter(
 let’s break it down:-
 
 In the following code block:-
-We import the `borsh` crate to serialize and deserialize account data.
+We import the **borsh** crate to serialize and deserialize account data.
 Next, we import some required modules and structs from the Solana program crate:
 
 - `account_info::{next_account_info, AccountInfo}`: This import is used to iterate over accounts and fetch account information.
-- `declare_id`: This is a convenience macro to declare a static public key and functions to interact with it.
-- `entrypoint::ProgramResult`: This type within the `entrypoint` module returns either a `Result` or a `ProgramError`.
-- The `msg` macro prints a message to the log.
-- `program_error::ProgramError` defines the reason for program failure.
-- `Pubkey` is the Solana account public key.
+- **declare_id**: This is a convenience macro to declare a static public key and functions to interact with it.
+- **entrypoint::ProgramResult**: This type within the **entrypoint** module returns either a **Result** or a **ProgramError**.
+- The **msg** macro prints a message to the log.
+- **program_error::ProgramError** defines the reason for program failure.
+- **Pubkey** is the Solana account public key.
 
 ```rust
 use borsh::{BorshDeserialize, BorshSerialize};
@@ -260,23 +260,23 @@ Next, Define an entrypoint and make it conditional on the `no-entrypoint` feat
 use solana_program::entrypoint;
 ```
 
-Next call entrypoint by providing argument process_instruction and make it conditional on the `no-entrypoint` feature.
+Next call entrypoint by providing argument process_instruction and make it conditional on the **no-entrypoint** feature.
 
 ```rust
 #[cfg(not(feature = "no-entrypoint"))]
 entrypoint!(process_instruction);
 ```
 
-Next, the `fn process_instruction` function takes three arguments as reference:
+Next, the **fn process_instruction** function takes three arguments as reference:
 
-- `_program_id: &Pubkey`
-- `accounts: &[AccountInfo]`
-- `instruction_data: &[u8]`
+- **_program_id: &Pubkey**
+- **accounts: &[AccountInfo]**
+- **instruction_data: &[u8]**
 
-and returns a `ProgramResult`.
-In `process_instruction`, we split the instruction data and destructure it into a tuple.
-The first element of the tuple takes the first byte from the instruction data and determines which instruction to execute; in our case, it's `process_increment_counter`.
-Next, we match the `instruction_discriminant` to determine which data structure is expected by the function and return the instruction or an error.
+and returns a **ProgramResult**.
+In **process_instruction**, we split the instruction data and destructure it into a tuple.
+The first element of the tuple takes the first byte from the instruction data and determines which instruction to execute; in our case, it's **process_increment_counter**.
+Next, we match the **instruction_discriminant** to determine which data structure is expected by the function and return the instruction or an error.
 
 It's standard practice to structure a program to expect the first byte (or another fixed number of bytes) to be an identifier for which instruction the program should run. This could be an integer or a string identifier. In this example, we'll use the first byte and map integers to instructions, with `0` corresponding to `process_increment_counter`.
 
@@ -300,16 +300,16 @@ pub fn process_instruction(
 }
 ```
 
-Next, the `process_increment_counter` function:
+Next, the **process_increment_counter** function:
 
-- Takes `accounts` and `instruction_data` as arguments.
-- Returns a `Result` and a `ProgramError`.
+- Takes **accounts** and **instruction_data** as arguments.
+- Returns a **Result** and a **ProgramError**.
 
 In the function body:
 
 - It first creates a mutable iterator instance over the accounts.
-- Then, it fetches the counter account using `next_account_info` and asserts whether this account is writable (mutable) or not.
-- Next, we deserialize the `Counter` struct account data using the `try_from_slice` method and increment the counter by one.
+- Then, it fetches the counter account using **next_account_info** and asserts whether this account is writable (mutable) or not.
+- Next, we deserialize the **Counter** struct account data using the **try_from_slice** method and increment the counter by one.
 - We then serialize the updated data.
 - Finally, we print the program log.
 
@@ -337,7 +337,7 @@ pub fn process_increment_counter(
 
 This is how native Solana programs work. We need to handle common tasks such as serialization and deserialization of account data, instruction data matching, converting raw data bytes to specified structs, and much more.
 
-# Basic Counter program in Anchor rust
+# Counter program in Anchor rust
 
 The Anchor framework uses macros and traits to generate boilerplate Rust code for you.
 
@@ -348,7 +348,7 @@ Anchor provides
 - [IDL](https://en.wikipedia.org/wiki/Interface_description_language) specification
 - TypeScript package for generating clients from IDL
 
-The `Context` type exposes instruction metadata and accounts for instruction logic, so manual account iteration and deserialization are no longer necessary.
+The **Context** type exposes instruction metadata and accounts for instruction logic, so manual account iteration and deserialization are no longer necessary.
 
 In this counter program, which is the same as the native version, we do not need to serialize and deserialize account data manually, nor do we need to match instruction handler data. we need to just create separate Contexts for instruction handlers.
 
@@ -404,7 +404,7 @@ pub struct Counter {
 
 Using the above code, we explain how Anchor uses types, attributes, and macros to simplify Solana’s on-chain development. 
 
-This import, `use anchor_lang::prelude::*;`, contains all the commonly used components of the crate. All programs should include this line, which also re-exports the `solana-program` crate.
+This import, `use anchor_lang::prelude::*;`, contains all the commonly used components of the crate. All programs should include this line, which also re-exports the **solana-program** crate.
 
 ### Declare ID part
 

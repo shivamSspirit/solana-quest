@@ -21,7 +21,7 @@ function ClientPage({ post }: { post: any }) {
     
 
     return (
-        <article className="py-6 prose dark:prose-invert mx-auto">
+        <article className="py-6 prose dark:prose-invert mx-auto prose-code:text-green-400 prose-a:text-green-400">
             <p>Challenge #{post.serial}</p>
             <h1 className="mb-2">{post.title}</h1>
             <hr className="block my-6 lg:my-10 border-muted-foreground/30" />

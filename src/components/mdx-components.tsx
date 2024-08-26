@@ -23,7 +23,7 @@ const mdxComponents = {
 
 const components = {
   Image,
-  mdxComponents
+  mdxComponents,
 }
 
 interface MdxProps {

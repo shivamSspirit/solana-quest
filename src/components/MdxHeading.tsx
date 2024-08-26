@@ -40,3 +40,4 @@ export const MdxH3 = (props:any) => <MdxHeading h='h3' id={`${props.children}`} 
 export const MdxH4 = (props:any) => <MdxHeading h='h4' id={`${props.children}`} {...props} />;
 export const MdxH5 = (props:any) => <MdxHeading h='h5' id={`${props.children}`} {...props} />;
 export const MdxH6 = (props:any) => <MdxHeading h='h6' id={`${props.children}`} {...props} />;
+
