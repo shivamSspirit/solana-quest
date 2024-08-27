@@ -98,9 +98,9 @@ export default function Home() {
 
         <section className="w-5/6 mx-auto flex flex-col-reverse lg:flex-row lg:gap-24 xl:gap-32">
           <div>
-            <h2 className="font-title py-4 text-5xl sm:text-6xl md:text-7xl lg:text-8xl bg-gradient-to-b from-title to-title/60 bg-clip-text text-transparent -mb-2 ">Join BuidlGuidl</h2>
+            <h2 className="font-title py-4 text-5xl sm:text-6xl md:text-7xl lg:text-8xl bg-gradient-to-b from-title to-title/60 bg-clip-text text-transparent -mb-2 ">Join SolGuidl</h2>
             <Divider className="w-full lg:w-4/6 h-0.5 lg:h-1 block mb-6" />
-            <p>The BuidlGuidl is a curated group of Solana builders creating products, prototypes, and tutorials to enrich the web3 ecosystem. A place to show off your builds and meet other builders. Start crafting your Web3 portfolio by submitting your d-apps.</p>
+            <p>The SolGuidl is a curated group of Solana builders creating products, prototypes, and tutorials to enrich the web3 ecosystem. A place to show off your builds and meet other builders. Start crafting your Web3 portfolio by submitting your d-apps.</p>
             <Button asChild disabled={true} className={"tracking-wide px-10 gap-2 w-fit "}
               outerClass="w-fit h-fit mt-8" >
               <Link href={"/"} >
