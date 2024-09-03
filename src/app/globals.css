@@ -114,7 +114,7 @@ pre[class*='language-'] {
 
 	font-family: 'Operator Mono', 'Fira Code', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 	font-weight: 400;
-	font-size: 12px;
+	font-size: 14px;
 	line-height: 25px;
 	letter-spacing: 0.5px;
 	text-shadow: 0 1px #222245;
@@ -282,4 +282,12 @@ code.language-css .token.selector > .token.pseudo-element {
 .line-highlight.line-highlight:before,
 .line-highlight.line-highlight[data-end]:after {
 	content: '';
+}
+
+/* style for font and width change */
+
+.w-change{
+  max-width: 75ch !important;
+  font-size: 1.2rem !important;
+  line-height: 1.49 !important;
 }

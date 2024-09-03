@@ -45,7 +45,7 @@ from-[-4.59%] to-[100%] `,
         secondary:
           "bg-secondary hover:bg-secondary/90",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-foreground underline-offset-4 hover:underline",
+        link: "text-foreground underline-offset-4 hover:underline cursor-pointer",
       },
       size: {
         default: "h-10 px-4 py-2",
