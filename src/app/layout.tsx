@@ -16,6 +16,21 @@ const RammettoOne = Rammetto_One({ weight: '400', display: "swap", variable: "--
 export const metadata: Metadata = {
   title: 'Solana Quest',
   description: 'Learn how to build on Solana; the superpowers and the gotchas.',
+  openGraph:{
+    title: 'Solana Quest',
+    description: 'Learn how to build on Solana; the superpowers and the gotchas.',
+    url:'https://solanaquest.vercel.app/',
+    siteName:'Solana Quest',
+    images:[
+      {
+        url:'https://ibb.co/9m0RYVGH',
+        width:800,
+        height:600,
+        alt:'Solana quest',
+        type:'image/png',
+      }
+    ]
+  }
 }
 
 export default function RootLayout({
